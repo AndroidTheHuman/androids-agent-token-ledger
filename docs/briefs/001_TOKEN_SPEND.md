@@ -162,7 +162,7 @@ Codes, applied in this order (a `tool_result` takes its `tool_use`'s code, match
    - **Stop condition:** if the median for `tool_result` units of CODE or DOC lies outside 2.0–5.0, T0′ or the unit sizing is wrong. The part stops and reports the medians, and the brief is amended before going on.
 
 **Amendment, 2026-11-09 (T0 → T0′).** The stop fired in part A (session `874927de`). The original T0 assumed that earlier thinking isn't re-sent, which gave tool_result medians of CODE 1.929 (n = 195) and DOC 2.107 (n = 407). The owner left the amendment to the next session, which tested two replacements on the same unit cache (`data/private/diag/diag3.mjs`, not committed):
-- (b) "thinking leaves at the next human prompt" is rejected. At 66 PROMPT gaps after a turn with thinking (median 25,104 thinking tokens), Δ matched the previous call's whole output plus the new units, with median residual −44 tokens. In 65 of the 66 gaps, the residual was closer to 0 than to minus the turn's thinking.
+- (b) "thinking leaves at the next human prompt" is rejected. At 66 PROMPT gaps after a turn with thinking (median 20,886 thinking tokens), Δ matched the previous call's whole output plus the new units, with median residual −47 tokens. In all 66 gaps, the residual was closer to 0 than to minus the turn's thinking.
 - (a) "thinking stays" is taken, as T0′. The transcripts don't hold thinking's text: in 9,406 of 10,904 calls that recorded thinking tokens, the THINK chars are 0, and the rest run at a median of 0.24 chars per token. So THINK units weigh the recorded tokens, not chars ÷ r.
 
 The 2.0–5.0 range, the code table and the register (§4) are unchanged.
