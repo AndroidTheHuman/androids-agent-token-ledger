@@ -4,6 +4,9 @@
 // can measure any project, the kit's own sessions included; the functions are exported and the
 // CLI runs only when this file is the entry point. The measures, thresholds and output are the
 // game's, unchanged: run on the same transcripts, it writes the same rows.
+// Brief 001 changes (this repo): the row's `title` is the session id's first 8 characters (D6: the
+// ai-title and the first prompt are transcript text, which no committed file may hold); `context`
+// and `runs` are exported so src/ imports them instead of copying them (D5).
 //
 // Claude Code keeps every session's transcript in ~/.claude/projects/<project-slug>/<id>.jsonl,
 // with the token usage of each model call. This tool turns those into a ledger, so the cost of
@@ -91,7 +94,7 @@ export interface Row {
   flags: string[];
 }
 
-const context = (u: Usage): number =>
+export const context = (u: Usage): number =>
   (u.input_tokens ?? 0) + (u.cache_read_input_tokens ?? 0) + (u.cache_creation_input_tokens ?? 0);
 
 /** Claude Code's folder name for a project path: every character but A–Z, a–z and 0–9 becomes '-'. */
@@ -124,7 +127,7 @@ const commandOf = (b: Block): string => {
 };
 
 // the command runs `program` (at the start or after ; && || or a newline), not merely mentions it
-const runs = (program: string, command: string): boolean =>
+export const runs = (program: string, command: string): boolean =>
   new RegExp(`(^|[;&|]\\s*|\\n\\s*)${program.replace(/ /g, '\\s+')}\\b`).test(command);
 
 // What a session's calls cost at list prices (brief 027 A.5): each call at its own model's rates.
@@ -187,8 +190,6 @@ interface Call {
 export function summarise(id: string, entries: Entry[], agents: AgentUsage, gate: string = GATE): Row | null {
   const calls = new Map<string, Call>(); // one model call is split over several entries
   const toolUses = new Map<string, Block>();
-  let title = '';
-  let firstPrompt = '';
   let prompts = 0;
   let costUSD: number | null = null;
   let linesAdded: number | null = null;
@@ -200,19 +201,12 @@ export function summarise(id: string, entries: Entry[], agents: AgentUsage, gate
 
   for (const e of entries) {
     if (e.timestamp !== undefined) stamps.push(e.timestamp);
-    if (e.type === 'ai-title' && e.aiTitle !== undefined) title = e.aiTitle;
     if (e.type === 'cost-state') {
       // a resumed session can start with a reset record, so keep the largest
       if ((e.totalCostUSD ?? 0) > (costUSD ?? 0)) costUSD = e.totalCostUSD ?? null;
       if ((e.totalLinesAdded ?? 0) > (linesAdded ?? 0)) linesAdded = e.totalLinesAdded ?? null;
     }
-    if (isHumanPrompt(e)) {
-      prompts++;
-      if (firstPrompt === '') {
-        const c = e.message?.content;
-        firstPrompt = typeof c === 'string' ? c : (c?.find((b) => b.type === 'text')?.text ?? '');
-      }
-    }
+    if (isHumanPrompt(e)) prompts++;
     const content = e.message?.content;
     if (e.type === 'assistant' && e.isSidechain !== true) {
       const u = e.message?.usage;
@@ -275,7 +269,7 @@ export function summarise(id: string, entries: Entry[], agents: AgentUsage, gate
   return {
     id,
     start: first,
-    title: (title !== '' ? title : firstPrompt).replace(/\s+/g, ' ').replace(/\|/g, '/').slice(0, 60),
+    title: id.slice(0, 8),
     hours: Math.round(((Date.parse(last) - Date.parse(first)) / 3_600_000) * 10) / 10 || 0,
     prompts,
     calls: calls.size,
