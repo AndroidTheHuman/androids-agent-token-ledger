@@ -303,11 +303,12 @@ export function runReport(dataDir: string = join(ROOT, 'data'), docsDir: string 
   const ledgerPath = join(corpusDir, 'game-ledger.json');
   const ledger = existsSync(ledgerPath) ? readJson<LedgerRow[]>(ledgerPath) : [];
   for (const r of ledger) points.set(r.id, pointOf(r, null));
-  const parityMismatches: string[] = [];
+  type Parity = { calls: number; peakK: number; reReadM: number };
+  const parityMismatches: { id: string; ledger: Parity; corpus: Parity }[] = [];
   for (const s of sessions) {
     if (s.project !== 'game') continue;
     const l = ledger.find((r) => r.id === s.id);
-    if (l !== undefined && (l.calls !== s.calls || l.peakK !== s.peakK || l.reReadM !== s.reReadM)) parityMismatches.push(`${s.id.slice(0, 8)} calls ${l.calls}/${s.calls} peakK ${l.peakK}/${s.peakK} reReadM ${l.reReadM}/${s.reReadM} (ledger/corpus)`);
+    if (l !== undefined && (l.calls !== s.calls || l.peakK !== s.peakK || l.reReadM !== s.reReadM)) parityMismatches.push({ id: s.id.slice(0, 8), ledger: { calls: l.calls, peakK: l.peakK, reReadM: l.reReadM }, corpus: { calls: s.calls, peakK: s.peakK, reReadM: s.reReadM } });
     points.set(s.id, pointOf(s, s.base1K));
   }
   const rulesPath = join(dataDir, 'rules.json');
@@ -334,7 +335,7 @@ export function runReport(dataDir: string = join(ROOT, 'data'), docsDir: string 
   lines.push(
     `identities: worst token residual ${r6(worstTok)} tokens (limit 1); worst per-call cost residual $${worstCost.toExponential(2)} (limit 1e-9); worst session total vs row.listUSD $${r6(worstVsRow)} (cents rounding ≤ 0.01)`,
     `cache_creation split mismatches: ${splitMismatch} calls`,
-    `parity vs the game ledger: ${parityMismatches.length} mismatches${parityMismatches.length > 0 ? '\n  ' + parityMismatches.join('\n  ') : ''}`,
+    `parity vs the game ledger: ${parityMismatches.length} mismatches${parityMismatches.map(({ id, ledger: l, corpus: c }) => `\n  ${id} calls ${l.calls}/${c.calls} peakK ${l.peakK}/${c.peakK} reReadM ${l.reReadM}/${c.reReadM} (ledger/corpus)`).join('')}`,
     `sessions ${sessions.length}, category rows ${cats.length}, total $${overall.totalUSD.toFixed(2)}`,
   );
   return { stopped: false, calibration: cal, lines };

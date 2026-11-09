@@ -1,0 +1,1003 @@
+{
+ "overall": {
+  "n": {
+   "sessions": 175,
+   "calls": 12923,
+   "agentCalls": 1814,
+   "units": 79970
+  },
+  "totalUSD": 1179.686642,
+  "mainUSD": 1082.58587,
+  "m1": {
+   "cacheReadUSD": 510.295306,
+   "cacheWriteUSD": 323.029932,
+   "inputUSD": 0.103854,
+   "outputUSD": 346.25755,
+   "thinkUSD": 176.6747,
+   "share": {
+    "cacheRead": 0.4326,
+    "cacheWrite": 0.2738,
+    "input": 0.0001,
+    "output": 0.2935
+   }
+  },
+  "m2": {
+   "byCode": {
+    "THINK": {
+     "usd": 317.472774,
+     "share": 0.2691
+    },
+    "DOC": {
+     "usd": 185.301497,
+     "share": 0.1571
+    },
+    "BASE": {
+     "usd": 176.044747,
+     "share": 0.1492
+    },
+    "OUT": {
+     "usd": 173.923424,
+     "share": 0.1474
+    },
+    "CODE": {
+     "usd": 93.763822,
+     "share": 0.0795
+    },
+    "EDIT": {
+     "usd": 85.276206,
+     "share": 0.0723
+    },
+    "SEARCH": {
+     "usd": 63.212599,
+     "share": 0.0536
+    },
+    "SHELL": {
+     "usd": 58.051104,
+     "share": 0.0492
+    },
+    "INJECT": {
+     "usd": 22.589856,
+     "share": 0.0191
+    },
+    "GATE": {
+     "usd": 1.298521,
+     "share": 0.0011
+    },
+    "WEB": {
+     "usd": 1.189543,
+     "share": 0.001
+    },
+    "AGENT": {
+     "usd": 1.130383,
+     "share": 0.001
+    },
+    "PROMPT": {
+     "usd": 0.211367,
+     "share": 0.0002
+    },
+    "COMPACT": {
+     "usd": 0.127286,
+     "share": 0.0001
+    },
+    "SKILL": {
+     "usd": 0.093513,
+     "share": 0.0001
+    }
+   },
+   "top50": [
+    "THINK",
+    "DOC",
+    "BASE"
+   ],
+   "maxShare": 0.2691
+  },
+  "m3": {
+   "baseUSD": 176.044747,
+   "baseSysUSD": 9.954771,
+   "baseToolsUSD": 72.444918,
+   "baseMsgUSD": 51.929358,
+   "docSteerUSD": 113.468185,
+   "baseShare": 0.1492,
+   "docSteerShare": 0.0962,
+   "bothShare": 0.2454
+  },
+  "m4": {
+   "toolResultUSD": 381.178179,
+   "byTool": {
+    "Read": {
+     "usd": 232.887081,
+     "share": 0.611
+    },
+    "Bash": {
+     "usd": 119.841851,
+     "share": 0.3144
+    },
+    "Grep": {
+     "usd": 13.641918,
+     "share": 0.0358
+    },
+    "PowerShell": {
+     "usd": 5.857728,
+     "share": 0.0154
+    },
+    "Edit": {
+     "usd": 5.040599,
+     "share": 0.0132
+    },
+    "Write": {
+     "usd": 1.796893,
+     "share": 0.0047
+    },
+    "WebSearch": {
+     "usd": 0.6743,
+     "share": 0.0018
+    },
+    "ExitPlanMode": {
+     "usd": 0.337325,
+     "share": 0.0009
+    },
+    "Agent": {
+     "usd": 0.321218,
+     "share": 0.0008
+    },
+    "WebFetch": {
+     "usd": 0.271859,
+     "share": 0.0007
+    },
+    "Glob": {
+     "usd": 0.182008,
+     "share": 0.0005
+    },
+    "TaskStop": {
+     "usd": 0.142118,
+     "share": 0.0004
+    },
+    "AskUserQuestion": {
+     "usd": 0.131356,
+     "share": 0.0003
+    },
+    "SendMessage": {
+     "usd": 0.022673,
+     "share": 0.0001
+    },
+    "Skill": {
+     "usd": 0.022639,
+     "share": 0.0001
+    },
+    "Monitor": {
+     "usd": 0.003627,
+     "share": 0
+    },
+    "SubagentHandback": {
+     "usd": 0.002986,
+     "share": 0
+    },
+    "ToolSearch": {
+     "usd": 0,
+     "share": 0
+    },
+    "TodoWrite": {
+     "usd": 0,
+     "share": 0
+    }
+   },
+   "top": "Read",
+   "topShare": 0.611
+  },
+  "m5": {
+   "gateUSD": 1.298521,
+   "share": 0.0011
+  },
+  "m6": {
+   "agentsUSD": 97.100772,
+   "share": 0.0823
+  },
+  "m7": {
+   "coldRecacheUSD": 3.1709,
+   "share": 0.0027
+  },
+  "m8": {
+   "past250USD": 325.9838,
+   "mainUSD": 1082.58587,
+   "share": 0.3011
+  },
+  "unpriced": {
+   "calls": 59,
+   "tokens": 3714500,
+   "sessions": 3
+  }
+ },
+ "byProject": {
+  "game": {
+   "n": {
+    "sessions": 171,
+    "calls": 12759,
+    "agentCalls": 1797,
+    "units": 79096
+   },
+   "totalUSD": 1165.485758,
+   "mainUSD": 1068.384986,
+   "m1": {
+    "cacheReadUSD": 505.928344,
+    "cacheWriteUSD": 318.676073,
+    "inputUSD": 0.102751,
+    "outputUSD": 340.77859,
+    "thinkUSD": 173.92088,
+    "share": {
+     "cacheRead": 0.4341,
+     "cacheWrite": 0.2734,
+     "input": 0.0001,
+     "output": 0.2924
+    }
+   },
+   "m2": {
+    "byCode": {
+     "THINK": {
+      "usd": 312.991311,
+      "share": 0.2686
+     },
+     "DOC": {
+      "usd": 182.878757,
+      "share": 0.1569
+     },
+     "BASE": {
+      "usd": 174.597757,
+      "share": 0.1498
+     },
+     "OUT": {
+      "usd": 171.159159,
+      "share": 0.1469
+     },
+     "CODE": {
+      "usd": 92.921107,
+      "share": 0.0797
+     },
+     "EDIT": {
+      "usd": 84.018666,
+      "share": 0.0721
+     },
+     "SEARCH": {
+      "usd": 63.014848,
+      "share": 0.0541
+     },
+     "SHELL": {
+      "usd": 57.355026,
+      "share": 0.0492
+     },
+     "INJECT": {
+      "usd": 22.526192,
+      "share": 0.0193
+     },
+     "GATE": {
+      "usd": 1.273465,
+      "share": 0.0011
+     },
+     "WEB": {
+      "usd": 1.189543,
+      "share": 0.001
+     },
+     "AGENT": {
+      "usd": 1.130383,
+      "share": 0.001
+     },
+     "PROMPT": {
+      "usd": 0.208868,
+      "share": 0.0002
+     },
+     "COMPACT": {
+      "usd": 0.127286,
+      "share": 0.0001
+     },
+     "SKILL": {
+      "usd": 0.09339,
+      "share": 0.0001
+     }
+    },
+    "top50": [
+     "THINK",
+     "DOC",
+     "BASE"
+    ],
+    "maxShare": 0.2686
+   },
+   "m3": {
+    "baseUSD": 174.597757,
+    "baseSysUSD": 9.811067,
+    "baseToolsUSD": 71.493401,
+    "baseMsgUSD": 51.577589,
+    "docSteerUSD": 113.085578,
+    "baseShare": 0.1498,
+    "docSteerShare": 0.097,
+    "bothShare": 0.2468
+   },
+   "m4": {
+    "toolResultUSD": 377.291004,
+    "byTool": {
+     "Read": {
+      "usd": 230.881036,
+      "share": 0.6119
+     },
+     "Bash": {
+      "usd": 118.023434,
+      "share": 0.3128
+     },
+     "Grep": {
+      "usd": 13.637009,
+      "share": 0.0361
+     },
+     "PowerShell": {
+      "usd": 5.857728,
+      "share": 0.0155
+     },
+     "Edit": {
+      "usd": 5.015366,
+      "share": 0.0133
+     },
+     "Write": {
+      "usd": 1.766867,
+      "share": 0.0047
+     },
+     "WebSearch": {
+      "usd": 0.6743,
+      "share": 0.0018
+     },
+     "ExitPlanMode": {
+      "usd": 0.337325,
+      "share": 0.0009
+     },
+     "Agent": {
+      "usd": 0.321218,
+      "share": 0.0009
+     },
+     "WebFetch": {
+      "usd": 0.271859,
+      "share": 0.0007
+     },
+     "Glob": {
+      "usd": 0.182008,
+      "share": 0.0005
+     },
+     "TaskStop": {
+      "usd": 0.142118,
+      "share": 0.0004
+     },
+     "AskUserQuestion": {
+      "usd": 0.128878,
+      "share": 0.0003
+     },
+     "SendMessage": {
+      "usd": 0.022673,
+      "share": 0.0001
+     },
+     "Skill": {
+      "usd": 0.022572,
+      "share": 0.0001
+     },
+     "Monitor": {
+      "usd": 0.003627,
+      "share": 0
+     },
+     "SubagentHandback": {
+      "usd": 0.002986,
+      "share": 0
+     },
+     "ToolSearch": {
+      "usd": 0,
+      "share": 0
+     }
+    },
+    "top": "Read",
+    "topShare": 0.6119
+   },
+   "m5": {
+    "gateUSD": 1.273465,
+    "share": 0.0011
+   },
+   "m6": {
+    "agentsUSD": 97.100772,
+    "share": 0.0833
+   },
+   "m7": {
+    "coldRecacheUSD": 3.1688,
+    "share": 0.0027
+   },
+   "m8": {
+    "past250USD": 322.7897,
+    "mainUSD": 1068.384986,
+    "share": 0.3021
+   },
+   "unpriced": {
+    "calls": 14,
+    "tokens": 1095430,
+    "sessions": 2
+   }
+  },
+  "kit": {
+   "n": {
+    "sessions": 2,
+    "calls": 102,
+    "agentCalls": 0,
+    "units": 556
+   },
+   "totalUSD": 10.5472,
+   "mainUSD": 10.5472,
+   "m1": {
+    "cacheReadUSD": 3.686747,
+    "cacheWriteUSD": 3.157217,
+    "inputUSD": 0.000816,
+    "outputUSD": 3.70242,
+    "thinkUSD": 1.61154,
+    "share": {
+     "cacheRead": 0.3495,
+     "cacheWrite": 0.2993,
+     "input": 0.0001,
+     "output": 0.351
+    }
+   },
+   "m2": {
+    "byCode": {
+     "THINK": {
+      "usd": 2.742277,
+      "share": 0.26
+     },
+     "DOC": {
+      "usd": 2.135285,
+      "share": 0.2025
+     },
+     "OUT": {
+      "usd": 2.114117,
+      "share": 0.2004
+     },
+     "EDIT": {
+      "usd": 1.088093,
+      "share": 0.1032
+     },
+     "BASE": {
+      "usd": 1.061299,
+      "share": 0.1006
+     },
+     "CODE": {
+      "usd": 0.701813,
+      "share": 0.0665
+     },
+     "SHELL": {
+      "usd": 0.539035,
+      "share": 0.0511
+     },
+     "SEARCH": {
+      "usd": 0.120252,
+      "share": 0.0114
+     },
+     "INJECT": {
+      "usd": 0.028377,
+      "share": 0.0027
+     },
+     "GATE": {
+      "usd": 0.014174,
+      "share": 0.0013
+     },
+     "PROMPT": {
+      "usd": 0.002478,
+      "share": 0.0002
+     }
+    },
+    "top50": [
+     "THINK",
+     "DOC",
+     "OUT"
+    ],
+    "maxShare": 0.26
+   },
+   "m3": {
+    "baseUSD": 1.061299,
+    "baseSysUSD": 0.104996,
+    "baseToolsUSD": 0.695169,
+    "baseMsgUSD": 0.261134,
+    "docSteerUSD": 0.382607,
+    "baseShare": 0.1006,
+    "docSteerShare": 0.0363,
+    "bothShare": 0.1369
+   },
+   "m4": {
+    "toolResultUSD": 3.315697,
+    "byTool": {
+     "Read": {
+      "usd": 1.731183,
+      "share": 0.5221
+     },
+     "Bash": {
+      "usd": 1.530627,
+      "share": 0.4616
+     },
+     "Write": {
+      "usd": 0.027378,
+      "share": 0.0083
+     },
+     "Edit": {
+      "usd": 0.024031,
+      "share": 0.0072
+     },
+     "AskUserQuestion": {
+      "usd": 0.002478,
+      "share": 0.0007
+     }
+    },
+    "top": "Read",
+    "topShare": 0.5221
+   },
+   "m5": {
+    "gateUSD": 0.014174,
+    "share": 0.0013
+   },
+   "m6": {
+    "agentsUSD": 0,
+    "share": 0
+   },
+   "m7": {
+    "coldRecacheUSD": 0.0016,
+    "share": 0.0002
+   },
+   "m8": {
+    "past250USD": 3.1941,
+    "mainUSD": 10.5472,
+    "share": 0.3028
+   },
+   "unpriced": {
+    "calls": 0,
+    "tokens": 0,
+    "sessions": 0
+   }
+  },
+  "ledger": {
+   "n": {
+    "sessions": 1,
+    "calls": 34,
+    "agentCalls": 0,
+    "units": 167
+   },
+   "totalUSD": 3.653684,
+   "mainUSD": 3.653684,
+   "m1": {
+    "cacheReadUSD": 0.680215,
+    "cacheWriteUSD": 1.196642,
+    "inputUSD": 0.000287,
+    "outputUSD": 1.77654,
+    "thinkUSD": 1.14228,
+    "share": {
+     "cacheRead": 0.1862,
+     "cacheWrite": 0.3275,
+     "input": 0.0001,
+     "output": 0.4862
+    }
+   },
+   "m2": {
+    "byCode": {
+     "THINK": {
+      "usd": 1.739186,
+      "share": 0.476
+     },
+     "OUT": {
+      "usd": 0.650148,
+      "share": 0.1779
+     },
+     "BASE": {
+      "usd": 0.385691,
+      "share": 0.1056
+     },
+     "DOC": {
+      "usd": 0.287455,
+      "share": 0.0787
+     },
+     "EDIT": {
+      "usd": 0.169447,
+      "share": 0.0464
+     },
+     "SHELL": {
+      "usd": 0.157043,
+      "share": 0.043
+     },
+     "CODE": {
+      "usd": 0.140902,
+      "share": 0.0386
+     },
+     "SEARCH": {
+      "usd": 0.077499,
+      "share": 0.0212
+     },
+     "INJECT": {
+      "usd": 0.035287,
+      "share": 0.0097
+     },
+     "GATE": {
+      "usd": 0.010882,
+      "share": 0.003
+     },
+     "SKILL": {
+      "usd": 0.000123,
+      "share": 0
+     },
+     "PROMPT": {
+      "usd": 0.000021,
+      "share": 0
+     }
+    },
+    "top50": [
+     "THINK",
+     "OUT"
+    ],
+    "maxShare": 0.476
+   },
+   "m3": {
+    "baseUSD": 0.385691,
+    "baseSysUSD": 0.038708,
+    "baseToolsUSD": 0.256348,
+    "baseMsgUSD": 0.090635,
+    "docSteerUSD": 0,
+    "baseShare": 0.1056,
+    "docSteerShare": 0,
+    "bothShare": 0.1056
+   },
+   "m4": {
+    "toolResultUSD": 0.571478,
+    "byTool": {
+     "Bash": {
+      "usd": 0.28779,
+      "share": 0.5036
+     },
+     "Read": {
+      "usd": 0.274862,
+      "share": 0.481
+     },
+     "Grep": {
+      "usd": 0.004909,
+      "share": 0.0086
+     },
+     "Write": {
+      "usd": 0.002648,
+      "share": 0.0046
+     },
+     "Edit": {
+      "usd": 0.001202,
+      "share": 0.0021
+     },
+     "Skill": {
+      "usd": 0.000067,
+      "share": 0.0001
+     }
+    },
+    "top": "Bash",
+    "topShare": 0.5036
+   },
+   "m5": {
+    "gateUSD": 0.010882,
+    "share": 0.003
+   },
+   "m6": {
+    "agentsUSD": 0,
+    "share": 0
+   },
+   "m7": {
+    "coldRecacheUSD": 0.0005,
+    "share": 0.0001
+   },
+   "m8": {
+    "past250USD": 0,
+    "mainUSD": 3.653684,
+    "share": 0
+   },
+   "unpriced": {
+    "calls": 0,
+    "tokens": 0,
+    "sessions": 0
+   }
+  },
+  "omni": {
+   "n": {
+    "sessions": 1,
+    "calls": 28,
+    "agentCalls": 17,
+    "units": 151
+   },
+   "totalUSD": 0,
+   "mainUSD": 0,
+   "m1": {
+    "cacheReadUSD": 0,
+    "cacheWriteUSD": 0,
+    "inputUSD": 0,
+    "outputUSD": 0,
+    "thinkUSD": 0,
+    "share": {
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "input": 0,
+     "output": 0
+    }
+   },
+   "m2": {
+    "byCode": {
+     "BASE": {
+      "usd": 0,
+      "share": 0
+     },
+     "CODE": {
+      "usd": 0,
+      "share": 0
+     },
+     "OUT": {
+      "usd": 0,
+      "share": 0
+     },
+     "SEARCH": {
+      "usd": 0,
+      "share": 0
+     },
+     "AGENT": {
+      "usd": 0,
+      "share": 0
+     },
+     "EDIT": {
+      "usd": 0,
+      "share": 0
+     },
+     "PROMPT": {
+      "usd": 0,
+      "share": 0
+     },
+     "SHELL": {
+      "usd": 0,
+      "share": 0
+     },
+     "THINK": {
+      "usd": 0,
+      "share": 0
+     }
+    },
+    "top50": [
+     "BASE"
+    ],
+    "maxShare": 0
+   },
+   "m3": {
+    "baseUSD": 0,
+    "baseSysUSD": 0,
+    "baseToolsUSD": 0,
+    "baseMsgUSD": 0,
+    "docSteerUSD": 0,
+    "baseShare": 0,
+    "docSteerShare": 0,
+    "bothShare": 0
+   },
+   "m4": {
+    "toolResultUSD": 0,
+    "byTool": {
+     "Read": {
+      "usd": 0,
+      "share": 0
+     },
+     "Bash": {
+      "usd": 0,
+      "share": 0
+     },
+     "Glob": {
+      "usd": 0,
+      "share": 0
+     },
+     "Grep": {
+      "usd": 0,
+      "share": 0
+     },
+     "Agent": {
+      "usd": 0,
+      "share": 0
+     },
+     "Edit": {
+      "usd": 0,
+      "share": 0
+     },
+     "Write": {
+      "usd": 0,
+      "share": 0
+     },
+     "ExitPlanMode": {
+      "usd": 0,
+      "share": 0
+     },
+     "TodoWrite": {
+      "usd": 0,
+      "share": 0
+     },
+     "AskUserQuestion": {
+      "usd": 0,
+      "share": 0
+     }
+    },
+    "top": "Read",
+    "topShare": 0
+   },
+   "m5": {
+    "gateUSD": 0,
+    "share": 0
+   },
+   "m6": {
+    "agentsUSD": 0,
+    "share": 0
+   },
+   "m7": {
+    "coldRecacheUSD": 0,
+    "share": 0
+   },
+   "m8": {
+    "past250USD": 0,
+    "mainUSD": 0,
+    "share": 0
+   },
+   "unpriced": {
+    "calls": 45,
+    "tokens": 2619070,
+    "sessions": 1
+   }
+  }
+ },
+ "m9": {
+  "E1": {
+   "rule": "E1",
+   "windows": {
+    "beforeStart": "2026-09-26T15:03:55.000Z",
+    "beforeEnd": "2026-10-02T15:03:55.000Z",
+    "afterStart": "2026-10-02T17:07:16.000Z",
+    "afterEnd": "2026-10-08T17:07:16.000Z"
+   },
+   "metrics": [
+    {
+     "metric": "peakK",
+     "nBefore": 17,
+     "nAfter": 19,
+     "before": 470,
+     "after": 247,
+     "changePct": -47.4468085106383,
+     "p": 0.000999900009999,
+     "tooFew": false
+    },
+    {
+     "metric": "reReadM",
+     "nBefore": 17,
+     "nAfter": 19,
+     "before": 27.2,
+     "after": 6.7,
+     "changePct": -75.36764705882352,
+     "p": 0.0005999400059994001,
+     "tooFew": false
+    },
+    {
+     "metric": "calls",
+     "nBefore": 17,
+     "nAfter": 19,
+     "before": 84,
+     "after": 46,
+     "changePct": -45.23809523809524,
+     "p": 0.0197980201979802,
+     "tooFew": false
+    },
+    {
+     "metric": "listUSD",
+     "nBefore": 17,
+     "nAfter": 19,
+     "before": 15.28,
+     "after": 5.92,
+     "changePct": -61.25654450261781,
+     "p": 0.00029997000299970003,
+     "tooFew": false
+    },
+    {
+     "metric": "multiCommit",
+     "nBefore": 17,
+     "nAfter": 19,
+     "before": 0.6470588235294118,
+     "after": 0.47368421052631576,
+     "changePct": -26.79425837320575,
+     "p": 0.24127587241275872,
+     "tooFew": false
+    }
+   ]
+  },
+  "E2": {
+   "rule": "E2",
+   "windows": {
+    "beforeStart": "2026-10-05T00:24:25.000Z",
+    "beforeEnd": "2026-10-12T00:24:25.000Z",
+    "afterStart": "2026-10-14T00:42:18.000Z",
+    "afterEnd": "2026-10-20T14:45:28.000Z"
+   },
+   "metrics": [
+    {
+     "metric": "peakK",
+     "nBefore": 32,
+     "nAfter": 31,
+     "before": 239.5,
+     "after": 287,
+     "changePct": 19.832985386221296,
+     "p": 0.9926007399260074,
+     "tooFew": false
+    },
+    {
+     "metric": "reReadM",
+     "nBefore": 32,
+     "nAfter": 31,
+     "before": 9.100000000000001,
+     "after": 12.7,
+     "changePct": 39.560439560439534,
+     "p": 0.9005099490050995,
+     "tooFew": false
+    },
+    {
+     "metric": "calls",
+     "nBefore": 32,
+     "nAfter": 31,
+     "before": 60,
+     "after": 77,
+     "changePct": 28.333333333333332,
+     "p": 0.9335066493350664,
+     "tooFew": false
+    },
+    {
+     "metric": "listUSD",
+     "nBefore": 32,
+     "nAfter": 31,
+     "before": 5.435,
+     "after": 5.85,
+     "changePct": 7.635694572217113,
+     "p": 0.6615338466153384,
+     "tooFew": false
+    },
+    {
+     "metric": "multiCommit",
+     "nBefore": 32,
+     "nAfter": 31,
+     "before": 0.90625,
+     "after": 0.4838709677419355,
+     "changePct": -46.60734149054505,
+     "p": 0.0005999400059994001,
+     "tooFew": false
+    },
+    {
+     "metric": "base1K",
+     "nBefore": 28,
+     "nAfter": 31,
+     "before": 45.7,
+     "after": 49.6,
+     "changePct": 8.533916849015313,
+     "p": 1,
+     "tooFew": false
+    }
+   ]
+  }
+ },
+ "m10": {
+  "sessions": 208,
+  "nonOpus": 43,
+  "atOpusMinusOwnUSD": 104.89,
+  "totalUSD": 1500.2099999999998,
+  "share": 0.06991687830370416
+ },
+ "checks": {
+  "worstTokenResidual": 0,
+  "worstCostResidualUSD": 6.106226635438361e-16,
+  "worstSessionTotalVsRowUSD": 0.004984,
+  "splitMismatchCalls": 0,
+  "parityMismatchesVsGameLedger": [
+   {
+    "id": "4d89f881",
+    "ledger": {
+     "calls": 102,
+     "peakK": 399,
+     "reReadM": 23.4
+    },
+    "corpus": {
+     "calls": 109,
+     "peakK": 415,
+     "reReadM": 26.2
+    }
+   }
+  ]
+ }
+}

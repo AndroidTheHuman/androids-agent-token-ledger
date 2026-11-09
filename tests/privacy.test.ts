@@ -30,7 +30,8 @@ const FLAGS = [
 ];
 const MODEL_LABEL = new RegExp(`^${MODEL}(?: ${EFFORT})?(?: \\+ ${MODEL}(?: ${EFFORT})?)*$`);
 
-export const allowedString = (s: string): boolean => TOKEN.test(s) || FLAGS.some((r) => r.test(s)) || MODEL_LABEL.test(s);
+/** The empty string holds no characters, so no text: categories.json's `tool` is '' on every unit that isn't a tool_result. */
+export const allowedString = (s: string): boolean => s === '' || TOKEN.test(s) || FLAGS.some((r) => r.test(s)) || MODEL_LABEL.test(s);
 
 function strings(value: unknown, path: string, out: { path: string; s: string }[]): void {
   if (typeof value === 'string') out.push({ path, s: value });
@@ -45,11 +46,11 @@ function strings(value: unknown, path: string, out: { path: string; s: string }[
 
 describe('allowed strings', () => {
   it('accepts ids, timestamps, codes, tool names, labels, extensions and the kit\'s derived strings', () => {
-    for (const s of ['22d76ec3-818f-47be-a84c-d3c71ebed64e', '22d76ec3', '2026-11-09T19:44:03.120Z', '2026-10-02T10:00:00+02:00', 'GATE', 'BASE.SYS', 'E1', 'Read', 'mcp__srv__tool', 'agent-a1b2c3', 'main', 'game', '.md']) expect(allowedString(s), s).toBe(true);
+    for (const s of ['', '22d76ec3-818f-47be-a84c-d3c71ebed64e', '22d76ec3', '2026-11-09T19:44:03.120Z', '2026-10-02T10:00:00+02:00', 'GATE', 'BASE.SYS', 'E1', 'Read', 'mcp__srv__tool', 'agent-a1b2c3', 'main', 'game', '.md']) expect(allowedString(s), s).toBe(true);
     for (const s of ['context 171k', 're-read', '3 commits', '8 gates', '5 tool errors', '1 cold re-cache', '4 big reads', 'waited 22m', 'model switch', 'unpriced haiku-4.5', 'other iterations', 'opus-5.5 xhigh', 'sonnet-5.5', 'opus-5.5 xhigh + sonnet-5.5 high']) expect(allowedString(s), s).toBe(true);
   });
   it('rejects prose, paths, commands and anything with spaces that is not a derived string', () => {
-    for (const s of ['please fix the build', 'fix bug', 'hello world', 'docs/briefs/001.md', 'C:\\Users\\x', 'npm run check', 'rm -rf /', 'a'.repeat(101), '', 'unpriced the thing now', 'opus-5.5 chatty']) expect(allowedString(s), s).toBe(false);
+    for (const s of ['please fix the build', 'fix bug', 'hello world', 'docs/briefs/001.md', 'C:\\Users\\x', 'npm run check', 'rm -rf /', 'a'.repeat(101), ' ', 'unpriced the thing now', 'opus-5.5 chatty']) expect(allowedString(s), s).toBe(false);
   });
 });
 

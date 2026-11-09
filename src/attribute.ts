@@ -130,7 +130,7 @@ export function attribute(x: Extracted, ratios: Ratios = {}): Attribution {
   const live: Live[] = [];
   let prevCtx = 0;
   let prevOut = 0;
-  let prevThink = 0;
+  let prevThink: number | undefined; // the previous call's thinking tokens, undefined when not recorded
 
   for (let k = 1; k <= x.calls.length; k++) {
     const call = x.calls[k - 1] as (typeof x.calls)[number];
@@ -180,21 +180,32 @@ export function attribute(x: Extracted, ratios: Ratios = {}): Attribution {
       out.base1K = Math.round(C / 100) / 10;
     } else {
       const delta = C - prevCtx;
-      const est = gapUnits.map((g) => (g.code === 'THINK' ? 0 : g.chars / (ratios[g.code] ?? DEFAULT_R)));
-      const estTotal = est.reduce((a, b) => a + b, 0);
+      // T0′ (brief §5 step 2, amended): thinking stays in the context. THINK units weigh the previous call's
+      // recorded thinking tokens, shared equally (transcripts hold little or none of thinking's text); with no
+      // THINK unit to carry them, they weigh as a synthetic THINK row. Unrecorded: chars ÷ r like any unit.
+      const nThink = gapUnits.filter((g) => g.code === 'THINK').length;
+      const est = gapUnits.map((g) =>
+        g.code === 'THINK' && prevThink !== undefined ? prevThink / nThink : g.chars / (ratios[g.code] ?? DEFAULT_R),
+      );
+      const thinkEst = nThink === 0 && prevThink !== undefined ? prevThink : 0;
+      const estTotal = est.reduce((a, b) => a + b, 0) + thinkEst;
       let tokens: number[];
+      let thinkTokens: number;
       let synthetic = 0;
       if (delta >= 0) {
-        // calibration: a gap with one user-side unit says what that unit cost in tokens
+        // calibration: a gap with one user-side unit says what that unit cost in tokens (T0′: Δ − the whole output)
         const user = gapUnits.filter((g) => g.role === 'user');
         const only = user.length === 1 ? (user[0] as Unit) : undefined;
         if (only !== undefined && only.chars > 0) {
-          const t = delta - (prevOut - prevThink);
+          const t = delta - prevOut;
           if (t > 0) out.samples.push({ code: only.code, kind: only.kind, chars: only.chars, tokens: t });
         }
-        if (estTotal > 0) tokens = est.map((e) => (delta * e) / estTotal);
-        else {
+        if (estTotal > 0) {
+          tokens = est.map((e) => (delta * e) / estTotal);
+          thinkTokens = (delta * thinkEst) / estTotal;
+        } else {
           tokens = est.map(() => 0);
+          thinkTokens = 0;
           synthetic = delta;
         }
       } else {
@@ -202,9 +213,15 @@ export function attribute(x: Extracted, ratios: Ratios = {}): Attribution {
         out.drops++;
         const shrink = estTotal > C && estTotal > 0 ? C / estTotal : 1;
         tokens = est.map((e) => e * shrink);
+        thinkTokens = thinkEst * shrink;
         const olderNow = sumTokens(live);
-        const s = olderNow > 0 ? Math.max(0, C - tokens.reduce((a, b) => a + b, 0)) / olderNow : 0;
+        const s = olderNow > 0 ? Math.max(0, C - tokens.reduce((a, b) => a + b, 0) - thinkTokens) / olderNow : 0;
         for (const l of live) l.tokens *= s;
+      }
+      if (thinkTokens > 0) {
+        const r = rec('THINK', false, '');
+        r.ctxTokens += thinkTokens;
+        added.push({ tokens: thinkTokens, rec: r });
       }
       gapUnits.forEach((g, j) => {
         const r = rec(g.code, g.steer, g.kind === 'tool_result' ? g.tool : '');
@@ -262,7 +279,7 @@ export function attribute(x: Extracted, ratios: Ratios = {}): Attribution {
     }
     prevCtx = C;
     prevOut = outTok;
-    prevThink = thinkTok;
+    prevThink = u.output_tokens_details?.thinking_tokens === undefined ? undefined : thinkTok;
   }
 
   out.categories = [...recs.values()];

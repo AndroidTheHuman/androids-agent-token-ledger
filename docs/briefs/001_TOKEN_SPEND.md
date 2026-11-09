@@ -1,6 +1,7 @@
 # Brief 001 — Where the tokens go, and which rules moved them (research)
 
 **Status:** approved (2026-11-09) by the owner, with all five resolutions proposed at drafting: the transcript snapshot (D1), no titles in committed ledgers (D6), the corpus's aggregates as the dashboard's sample (D8), rules read as observations (D4), and the calibration stop condition (§5).
+**Amended:** 2026-11-09, §5 steps 2 and 5: T0 → T0′ (thinking stays in the context), after part A's stop condition fired; the owner delegated the choice. Evidence is in §5, below the attribution steps.
 **Kind:** research brief, in four parts. Its deliverable is four things: a **tool** (a standalone ledger CLI plus a static dashboard), a **corpus** (every surviving Claude Code transcript), **metrics**, and **hand codes with an agreement check**, ending in a findings document.
 - Part A builds the attribution tool over the corpus, captures the corpus's derived records and the rule timeline, and copies this brief's register into the findings document.
 - Part B reviews part A (a Sonnet trial), then codes a sample blind and scores the tool against it.
@@ -144,7 +145,7 @@ Codes, applied in this order (a `tool_result` takes its `tool_use`'s code, match
 ### Attribution (per transcript, main and each sub-agent file alone)
 
 1. **Call 1:** BASE gets C₁, the call's context.
-2. **Call k ≥ 2:** Δ = Cₖ − Cₖ₋₁. The gap's units are those after call k−1's last entry, plus call k−1's own blocks. THINK units weigh 0 (assumption T0: earlier thinking isn't re-sent). Each other unit weighs chars ÷ r(code), where r = 3.5 until calibration (step 5).
+2. **Call k ≥ 2:** Δ = Cₖ − Cₖ₋₁. The gap's units are those after call k−1's last entry, plus call k−1's own blocks. THINK units weigh call k−1's recorded `thinking_tokens`, shared equally among its THINK units (assumption T0′: thinking stays in the context; amended 2026-11-09, see the note below the steps). If call k−1 recorded thinking tokens and the gap holds no THINK unit, they weigh as a synthetic THINK row with `units` unchanged. A THINK unit with no recorded `thinking_tokens` weighs chars ÷ r. Each other unit weighs chars ÷ r(code), where r = 3.5 until calibration (step 5).
    - **Δ ≥ 0:** Δ is split by weight. If every weight is 0, Δ goes to INJECT.
    - **Δ < 0** (compaction or context editing): the gap's units get chars ÷ r. Then every older live unit scales by one factor, so the live total equals Cₖ. The session's `drops` counter goes up by one.
 3. **Prices per call:** split the kit's `listPriceUSD` into input, 5-minute write, 1-hour write, cache read and output, using the same rates. A test checks that the parts sum to `listPriceUSD`.
@@ -155,10 +156,16 @@ Codes, applied in this order (a `tool_result` takes its `tool_use`'s code, match
 4. **Identities**, checked by tests on synthetic transcripts:
    - at each call, the live units sum to Cₖ (within 1 token);
    - each call's unit costs plus output cost equal its `listPriceUSD` (within $1e-9).
-5. **Calibration:** in each gap with exactly one non-THINK unit on the user side, that unit's tokens are Δ − (the call's output − thinking).
+5. **Calibration:** in each gap with exactly one non-THINK unit on the user side, that unit's tokens are Δ − the call's output (T0′: the thinking within it included).
    - For each code with ≥ 20 such gaps, r(code) is the median of chars ÷ tokens. Other codes keep 3.5.
    - The ratios go to `data/corpus/calibration.json`, and the scan reruns once with them.
-   - **Stop condition:** if the median for `tool_result` units of CODE or DOC lies outside 2.0–5.0, T0 or the unit sizing is wrong. The part stops and reports the medians, and the brief is amended before going on.
+   - **Stop condition:** if the median for `tool_result` units of CODE or DOC lies outside 2.0–5.0, T0′ or the unit sizing is wrong. The part stops and reports the medians, and the brief is amended before going on.
+
+**Amendment, 2026-11-09 (T0 → T0′).** The stop fired in part A (session `874927de`). The original T0 assumed that earlier thinking isn't re-sent, which gave tool_result medians of CODE 1.929 (n = 195) and DOC 2.107 (n = 407). The owner left the amendment to the next session, which tested two replacements on the same unit cache (`data/private/diag/diag3.mjs`, not committed):
+- (b) "thinking leaves at the next human prompt" is rejected. At 66 PROMPT gaps after a turn with thinking (median 25,104 thinking tokens), Δ matched the previous call's whole output plus the new units, with median residual −44 tokens. In 65 of the 66 gaps, the residual was closer to 0 than to minus the turn's thinking.
+- (a) "thinking stays" is taken, as T0′. The transcripts don't hold thinking's text: in 9,406 of 10,904 calls that recorded thinking tokens, the THINK chars are 0, and the rest run at a median of 0.24 chars per token. So THINK units weigh the recorded tokens, not chars ÷ r.
+
+The 2.0–5.0 range, the code table and the register (§4) are unchanged.
 
 ### Outputs (`npm run ledger -- report`)
 

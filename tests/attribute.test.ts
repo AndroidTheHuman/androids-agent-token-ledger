@@ -50,9 +50,11 @@ describe('the identities (brief §5, step 4)', () => {
     // BASE is then read in calls 2 (all 1000 cache-read tokens) and 3 (1000/2020 of 2020)
     expect(base.readTokens).toBeCloseTo(2000, 6);
     expect(base.readUSD).toBeCloseTo((2000 * p.cacheRead) / 1e6, 12);
-    // thinking is weightless and costs only its output tokens: 10 thinking tokens at the output rate
+    // T0′: thinking stays in the context at its recorded size (10 tokens' weight in gap 2), and its output tokens cost the output rate
     const think = find(a.categories, 'THINK');
-    expect(think.ctxTokens).toBe(0);
+    const readInput = JSON.stringify({ file_path: 'docs/a.md' }).length;
+    expect(think.ctxTokens).toBeCloseTo((1020 * 10) / (10 + readInput / DEFAULT_R + 3500 / DEFAULT_R), 6);
+    expect(think.readTokens).toBeGreaterThan(0);
     expect(think.units).toBe(1);
     expect(think.outputUSD).toBeCloseTo((10 * p.output) / 1e6, 12);
     // the rest of the output (30 + 30 + 20 tokens) is OUT
@@ -67,9 +69,9 @@ describe('the identities (brief §5, step 4)', () => {
   it('split the gap by chars ÷ 3.5 and give it exactly the context growth', () => {
     const ex = extract(normal(), { agent: false });
     const a = attribute(ex);
-    // gap 2 (call 1's thinking, Read call, Read result): Δ = 1020; weights: 0, len(input)/3.5, 3500/3.5
+    // gap 2 (call 1's thinking, Read call, Read result): Δ = 1020; weights: 10 recorded thinking tokens, len(input)/3.5, 3500/3.5
     const readInput = JSON.stringify({ file_path: 'docs/a.md' }).length;
-    const w = readInput / DEFAULT_R + 3500 / DEFAULT_R;
+    const w = 10 + readInput / DEFAULT_R + 3500 / DEFAULT_R;
     const resultTokens = (1020 * (3500 / DEFAULT_R)) / w;
     expect(find(a.categories, 'DOC', false, 'Read').ctxTokens).toBeCloseTo(resultTokens, 6);
   });
@@ -110,7 +112,7 @@ describe('the identities (brief §5, step 4)', () => {
   it('when every weight is 0 the growth goes to INJECT', () => {
     const entries = [
       human(100),
-      asst('m1', thinking(500), usage({ input: 5, w1: 95, out: 4, think: 4 })),
+      asst('m1', thinking(500), usage({ input: 5, w1: 95, out: 4, think: 0 })), // recorded as 0: the block weighs 0
       attachment('model', undefined, { text: x(50) }), // 0 characters by rule
       asst('m2', text(1), usage({ read: 100, input: 1, w1: 39, out: 1 })),
     ];
@@ -118,6 +120,63 @@ describe('the identities (brief §5, step 4)', () => {
     expect(find(a.categories, 'INJECT').ctxTokens).toBe(40);
     expect(a.worstTokenResidual).toBeLessThan(1e-6);
     expect(a.worstCostResidual).toBeLessThan(1e-9);
+  });
+
+  describe('T0′: thinking stays in the context (brief §5 step 2, amended 2026-11-09)', () => {
+    /** call 1 with two thinking blocks of `chars` each, `think` recorded (or not), then a 700-char tool_result and call 2 at ctx 1000 + Δ. */
+    const twoThink = (chars: number, think: number | undefined, delta: number): Raw[] => [
+      human(100),
+      asst('m1', thinking(chars), usage({ input: 5, w1: 995, out: 60, ...(think === undefined ? {} : { think }) })),
+      asst('m1', thinking(chars), usage({ input: 5, w1: 995, out: 60, ...(think === undefined ? {} : { think }) })),
+      asst('m1', toolUse('t1', 'Bash', { command: 'echo' }), usage({ input: 5, w1: 995, out: 60, ...(think === undefined ? {} : { think }) })),
+      result('t1', x(700)),
+      asst('m2', text(1), usage({ read: 1000, input: 1, w1: delta - 1, out: 1 })),
+    ];
+    const useW = JSON.stringify({ command: 'echo' }).length / DEFAULT_R;
+
+    it('THINK units share the recorded thinking tokens equally, whatever their characters', () => {
+      const a = attribute(extract(twoThink(0, 40, 300), { agent: false }));
+      const w = 40 + useW + 700 / DEFAULT_R;
+      const think = find(a.categories, 'THINK');
+      expect(think.units).toBe(2);
+      expect(think.ctxTokens).toBeCloseTo((300 * 40) / w, 6);
+      expect(a.worstTokenResidual).toBeLessThan(1e-6);
+      expect(a.worstCostResidual).toBeLessThan(1e-9);
+    });
+
+    it('a THINK unit with no recorded thinking tokens weighs chars ÷ r', () => {
+      const a = attribute(extract(twoThink(70, undefined, 300), { agent: false }));
+      const w = 140 / DEFAULT_R + useW + 700 / DEFAULT_R;
+      expect(find(a.categories, 'THINK').ctxTokens).toBeCloseTo((300 * (140 / DEFAULT_R)) / w, 6);
+    });
+
+    it('recorded thinking with no THINK unit in the gap weighs as a synthetic THINK row, units unchanged', () => {
+      const entries = [
+        human(100),
+        asst('m1', toolUse('t1', 'Bash', { command: 'echo' }), usage({ input: 5, w1: 995, out: 60, think: 40 })),
+        result('t1', x(700)),
+        asst('m2', text(1), usage({ read: 1000, input: 1, w1: 299, out: 1 })),
+      ];
+      const a = attribute(extract(entries, { agent: false }));
+      const think = find(a.categories, 'THINK');
+      expect(think.units).toBe(0);
+      expect(think.ctxTokens).toBeCloseTo((300 * 40) / (40 + useW + 700 / DEFAULT_R), 6);
+      expect(a.worstTokenResidual).toBeLessThan(1e-6);
+      expect(a.worstCostResidual).toBeLessThan(1e-9);
+    });
+
+    it('a shrinking context keeps the thinking at its own size and still sums to the context', () => {
+      const entries = [
+        ...twoThink(0, 40, 300),
+        asst('m2', toolUse('t2', 'Bash', { command: 'echo' }), usage({ read: 1000, input: 1, w1: 299, out: 31, think: 30 })),
+        result('t2', x(70)),
+        asst('m3', text(1), usage({ read: 0, input: 1, w1: 499, out: 1 })), // ctx 500 < 1300
+      ];
+      const a = attribute(extract(entries, { agent: false }));
+      expect(a.drops).toBe(1);
+      expect(a.worstTokenResidual).toBeLessThan(1e-6);
+      expect(a.worstCostResidual).toBeLessThan(1e-9);
+    });
   });
 
   it('splits BASE by the first request shape when there is one', () => {
@@ -166,6 +225,12 @@ describe('calibration', () => {
     expect(cal.byCode['CODE']).toEqual({ n: 25, median: 3.5 });
     expect(cal.ratios['CODE']).toBe(3.5);
     expect(cal.stop).toEqual([]);
+  });
+
+  it('T0′: subtracts the previous call\'s whole output, thinking included', () => {
+    // 1000-token result; the previous call wrote 50 output tokens of which 20 were thinking, so Δ = 1050
+    const e: Raw[] = [human(10), asst('c0', toolUse('k0', 'Read', { file_path: 'src/a.ts' }), usage({ input: 10, w1: 990, out: 50, think: 20 })), result('k0', x(2200)), asst('c1', text(1), usage({ read: 1000, input: 10, w1: 1040, out: 1 }))];
+    expect(attribute(extract(e, { agent: false })).samples).toEqual([{ code: 'CODE', kind: 'tool_result', chars: 2200, tokens: 1000 }]);
   });
 
   it('keeps the default ratio for a code with fewer than 20 gaps', () => {
