@@ -32,5 +32,5 @@ wrong model's rates).
 
 | Start | Session | Model | Prompts | Calls | Work | Waited | Peak ctx | Re-read | Agents | Out (think) | Cost | Commits | $/commit | Lines + | Flags |
 |---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|---|
-| 2026-11-09 19:44 | 874927de | sonnet-5.5 xhigh | 1 | 13 | 2m | 1m | 88k | 0.8M | 0 | 11k (6k) | $0.51 | 0 | — | — |  |
+| 2026-11-09 19:44 | 874927de | sonnet-5.5 xhigh | 1 | 56 | 25m | 3m | 284k | 9.3M | 0 | 188k (103k) | $4.76 | 4 | $1.19 | — | context 284k, 4 commits |
 | 2026-11-09 00:28 | 22d76ec3 | opus-5.5 xhigh | 2 | 34 | 15m | 1m | 178k | 3.4M | 0 | 89k (57k) | $3.65 | 1 | $3.65 | 459 |  |
