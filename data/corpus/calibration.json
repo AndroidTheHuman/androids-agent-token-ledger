@@ -1,0 +1,103 @@
+{
+ "gaps": 2832,
+ "ratios": {
+  "CODE": 1.929,
+  "DOC": 2.107,
+  "EDIT": 0.715,
+  "GATE": 1.432,
+  "INJECT": 1.775,
+  "SEARCH": 1.309,
+  "SHELL": 1.498
+ },
+ "byCode": {
+  "AGENT": {
+   "n": 3,
+   "median": 1.523
+  },
+  "CODE": {
+   "n": 195,
+   "median": 1.929
+  },
+  "DOC": {
+   "n": 407,
+   "median": 2.107
+  },
+  "EDIT": {
+   "n": 419,
+   "median": 0.715
+  },
+  "GATE": {
+   "n": 27,
+   "median": 1.432
+  },
+  "INJECT": {
+   "n": 34,
+   "median": 1.775
+  },
+  "OUT": {
+   "n": 5,
+   "median": 3.81
+  },
+  "PROMPT": {
+   "n": 13,
+   "median": 0.566
+  },
+  "SEARCH": {
+   "n": 633,
+   "median": 1.309
+  },
+  "SHELL": {
+   "n": 1095,
+   "median": 1.498
+  },
+  "WEB": {
+   "n": 1,
+   "median": 1.269
+  }
+ },
+ "toolResults": {
+  "AGENT": {
+   "n": 3,
+   "median": 1.523
+  },
+  "CODE": {
+   "n": 195,
+   "median": 1.929
+  },
+  "DOC": {
+   "n": 407,
+   "median": 2.107
+  },
+  "EDIT": {
+   "n": 419,
+   "median": 0.715
+  },
+  "GATE": {
+   "n": 27,
+   "median": 1.432
+  },
+  "OUT": {
+   "n": 5,
+   "median": 3.81
+  },
+  "PROMPT": {
+   "n": 9,
+   "median": 0.759
+  },
+  "SEARCH": {
+   "n": 633,
+   "median": 1.309
+  },
+  "SHELL": {
+   "n": 1095,
+   "median": 1.498
+  },
+  "WEB": {
+   "n": 1,
+   "median": 1.269
+  }
+ },
+ "stop": [
+  "CODE"
+ ]
+}
