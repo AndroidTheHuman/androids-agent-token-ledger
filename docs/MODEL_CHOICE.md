@@ -17,7 +17,7 @@ Which model runs which kind of package, and how a kind earns a cheaper model. Th
 
 | Kind of package | Runs on | Status |
 | --- | --- | --- |
-| Tool part whose brief gives the expected numbers | Opus 5.5, xhigh | back on the strong model: the first trial here (brief 001 part A on Sonnet 5.5 xhigh, 2026-11-09) failed on two latent D1s (Trial log). Trying Sonnet again needs the owner. Prior: the game promoted this kind after two clean trials (kit `examples/04-trial-log.md`); a promotion doesn't carry across projects |
+| Tool part whose brief gives the expected numbers | Opus 5.5, xhigh | back on the strong model: the first trial here (brief 001 part A on Sonnet 5.5 xhigh, 2026-11-09) failed on two latent D1s (Trial log); the owner accepted the verdict. Sonnet may be tried again on a narrower kind (Promotion). Prior: the game promoted this kind after two clean trials (kit `examples/04-trial-log.md`); a promotion doesn't carry across projects |
 | Content or data part with expected numbers | Opus 5.5, xhigh | not tried |
 | Handoff merge and trial review | Opus 5.5, xhigh | fixed while any kind is on trial: the reviewer must be the stronger model |
 | Briefs, hand codes, findings | Opus 5.5, xhigh | not for trial: the judgment is the product |
@@ -53,7 +53,7 @@ Which model runs which kind of package, and how a kind earns a cheaper model. Th
 
 **Sub-agent trials** test a model on a side task inside a session whose own model is not on trial, so a result has one cause. The brief fixes the task, the verbatim prompt, the measures and the verdict before the run. The ledger counts sub-agents apart (its Agents column). The next session reviews the run as above.
 
-**Promotion.** Two clean trials in a row move a kind to its trial model. Reviews then stop, and the handoff's usual checks remain. A fail moves the kind back to the strong model with the reason in the log, and trying it again needs the owner. While a kind is on trial, the review's cost comes on top of the session's. Only promotion makes the saving real.
+**Promotion.** Two clean trials in a row move a kind to its trial model. Reviews then stop, and the handoff's usual checks remain. A fail moves the kind back to the strong model with the reason in the log. The owner reads a fail as the kind carrying too much responsibility or complexity for that model, not as a ban (2026-11-09: "it's about finding where they would fit"): a brief may propose a trial on a narrower kind, and the owner's approval of the brief starts it. Re-trying the same kind unchanged still needs the owner's word. While a kind is on trial, the review's cost comes on top of the session's. Only promotion makes the saving real.
 
 ## Outside agents
 
@@ -89,4 +89,4 @@ Agents from other providers read the repo without writing to it: `AGENTS.md` set
 - **D3** The stop's diagnosis was right (T0 is wrong, thinking is re-sent), but it left (b) "untested" when the unit cache could test it. Its option (a) would also have sized THINK by characters, and 9,406 of 10,904 thinking calls hold 0 THINK characters. Taken as written, (a) would have spread about 12 points of cost share (THINK's re-reads: THINK is 26.9% of cost, its output 15.0%) over the other codes in M2.
 - **D4** `pointOf` falls back from `listUSD` to Claude Code's `costUSD` without saying so (it never fires: all 208 game points carry `listUSD`). `multiCommit`'s permutation statistic is a mean difference, since a median of 0/1 values is degenerate; I'd make the same call, but it went unreported. `METRICS.md`'s M9 tables end in an unlabeled column.
 - **What went right:** the trial stopped at the stop condition instead of amending the brief. Its checkpoint numbers were accurate and reproduced (MANIFEST byte-identical, the stop medians to 3 decimals, parity). The register copy was verbatim and committed before any scan, the D6 diff is minimal, and the judgment calls were complete apart from the D4 items. Calls and re-read are well inside 1.3 × the reference (101 calls, 17.7M), but the part stopped early, so it's smaller than a full part.
-- **Verdict:** fail, by the rule's letter: any D1. Both D1s were latent, and neither changed a number.
+- **Verdict:** fail, by the rule's letter: any D1. Both D1s were latent, and neither changed a number. The owner accepted it (2026-11-09) and asked that trials go on, to find which kinds fit Sonnet.

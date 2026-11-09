@@ -9,7 +9,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { scan } from '../tools/sessions.ts';
 import type { Row } from '../tools/sessions.ts';
-import { PROJECTS, ROOT, defaultScan, findDirs, freshCount, scanCorpus } from './corpus.ts';
+import { MAX_PROJECTS, ROOT, corpusProjects, defaultScan, findDirs, freshCount, scanCorpus } from './corpus.ts';
 import type { ManifestEntry } from './corpus.ts';
 import { runReport, writeGameLedger } from './report.ts';
 import type { SessionOut } from './report.ts';
@@ -26,8 +26,9 @@ function check(): number {
   let bad = 0;
   const manifest = readJson<ManifestEntry[]>(join(dataDir, 'corpus', 'MANIFEST.json'));
   const base = defaultScan('');
+  const { projects } = corpusProjects(base.liveBase, base.rawBase);
   out('MANIFEST (main/agents in the manifest vs a fresh recursive file count of the same sessions):');
-  for (const { label, slug } of PROJECTS) {
+  for (const { label, slug } of projects) {
     const inManifest = manifest.filter((m) => m.project === label);
     const sessions = new Set(inManifest.map((m) => m.session));
     const dirs = findDirs(slug, base.liveBase, base.rawBase);
@@ -43,7 +44,7 @@ function check(): number {
   const stored = new Map(readJson<SessionOut[]>(join(dataDir, 'corpus', 'sessions.json')).map((s) => [s.id, s]));
   let mismatches = 0;
   let compared = 0;
-  for (const { label } of PROJECTS) {
+  for (const { label } of projects) {
     const dir = join(dataDir, 'private', 'merged', label);
     if (!existsSync(dir)) continue;
     for (const fresh of scan(dir)) {
@@ -89,7 +90,8 @@ switch (command) {
     }
     const result = scanCorpus({ ...defaultScan(before), log: out });
     out(`excluded by --before (${result.excluded.length}): ${result.excluded.join(', ') || 'none'}`);
-    out(`unknown folders, listed by label and not scanned (${result.unknown.length}): ${result.unknown.join(', ') || 'none'}`);
+    out(`unknown folders that joined the corpus under their slug (${result.joined.length}): ${result.joined.join(', ') || 'none'}`);
+    out(`unknown folders past the ${MAX_PROJECTS}-project cap, listed and not scanned (${result.unknown.length}): ${result.unknown.join(', ') || 'none'}${result.unknown.length > 0 ? '  (the owner names the one that joins)' : ''}`);
     out(`MANIFEST.json: ${result.manifest.length} files`);
     break;
   }

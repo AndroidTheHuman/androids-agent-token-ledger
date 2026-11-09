@@ -1,5 +1,6 @@
-// The corpus (brief 001 D1, §5 "Corpus capture"): every transcript of the four folders, live plus the
-// snapshot, the larger copy where a file is in both, only sessions that ended before `--before`.
+// The corpus (brief 001 D1, §5 "Corpus capture"): every transcript of the four folders (and at most one
+// more, MAX_PROJECTS), live plus the snapshot, the larger copy where a file is in both, only sessions
+// that ended before `--before`.
 // Reads transcripts; writes only under data/ (the cache in data/private/ is git-ignored).
 // Runs under plain Node (type stripping), so it uses erasable TypeScript only.
 
@@ -40,9 +41,12 @@ export interface ManifestEntry {
   last: string;
 }
 
+/** The corpus holds at most five projects: §2's four and one more (D1, amended by the owner 2026-11-09). */
+export const MAX_PROJECTS = 5;
+
 /**
  * Folders in the live base or a snapshot that §2's table doesn't name, by their label (their slug).
- * They are listed, not scanned: D1's corpus is the four folders.
+ * `corpusProjects` decides whether they join the corpus or are only listed.
  */
 export function unknownFolders(liveBase: string, rawBase: string): string[] {
   const bases = [liveBase, ...(existsSync(rawBase) ? readdirSync(rawBase).map((d) => join(rawBase, d)) : [])];
@@ -53,6 +57,17 @@ export function unknownFolders(liveBase: string, rawBase: string): string[] {
     for (const d of readdirSync(b, { withFileTypes: true })) if (d.isDirectory() && !known.has(d.name.toLowerCase())) out.add(labelOf(d.name));
   }
   return [...out].sort();
+}
+
+/**
+ * The projects a scan reads: §2's four, plus the unknown folders, each under its slug, while the total
+ * stays within MAX_PROJECTS. When more unknown folders exist than places, none joins and all are listed:
+ * the owner names the one that joins by adding it to PROJECTS, so the corpus never grows on its own.
+ */
+export function corpusProjects(liveBase: string, rawBase: string): { projects: { label: string; slug: string }[]; joined: string[]; listed: string[] } {
+  const unknown = unknownFolders(liveBase, rawBase);
+  if (PROJECTS.length + unknown.length <= MAX_PROJECTS) return { projects: [...PROJECTS, ...unknown.map((s) => ({ label: s, slug: s }))], joined: unknown, listed: [] };
+  return { projects: [...PROJECTS], joined: [], listed: unknown };
 }
 
 /** The existing directories for a slug: the live one, then each snapshot's. */
@@ -150,7 +165,8 @@ export interface ScanResult {
   manifest: ManifestEntry[];
   counts: Record<string, { main: number; agents: number; fresh: { main: number; agents: number } }>;
   excluded: string[]; // session ids left out by --before
-  unknown: string[]; // folders §2 doesn't name, by label: listed, not scanned
+  joined: string[]; // folders §2 doesn't name that joined the corpus under their slug (within MAX_PROJECTS)
+  unknown: string[]; // folders §2 doesn't name, by label: listed, not scanned, because they would pass MAX_PROJECTS
 }
 
 export const defaultScan = (before: string): ScanOptions => ({
@@ -182,8 +198,9 @@ export function scanCorpus(o: ScanOptions): ScanResult {
   const before = Date.parse(o.before);
 
   const manifest: ManifestEntry[] = [];
-  const result: ScanResult = { manifest, counts: {}, excluded: [], unknown: unknownFolders(o.liveBase, o.rawBase) };
-  for (const { label, slug } of PROJECTS) {
+  const { projects, joined, listed } = corpusProjects(o.liveBase, o.rawBase);
+  const result: ScanResult = { manifest, counts: {}, excluded: [], joined, unknown: listed };
+  for (const { label, slug } of projects) {
     const dirs = findDirs(slug, o.liveBase, o.rawBase);
     const sessions = groupSessions(listFiles(dirs));
     const merged = join(mergedBase, label);

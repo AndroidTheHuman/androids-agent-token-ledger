@@ -1,7 +1,7 @@
 # Brief 001 — Where the tokens go, and which rules moved them (research)
 
 **Status:** approved (2026-11-09) by the owner, with all five resolutions proposed at drafting: the transcript snapshot (D1), no titles in committed ledgers (D6), the corpus's aggregates as the dashboard's sample (D8), rules read as observations (D4), and the calibration stop condition (§5).
-**Amended:** 2026-11-09, §5 steps 2 and 5: T0 → T0′ (thinking stays in the context), after part A's stop condition fired; the owner delegated the choice. Evidence is in §5, below the attribution steps.
+**Amended:** 2026-11-09, §5 steps 2 and 5: T0 → T0′ (thinking stays in the context), after part A's stop condition fired; the owner delegated the choice. Evidence is in §5, below the attribution steps. 2026-11-09, D1 and §5 "Corpus capture": a fifth project's folder may join the corpus, capped at five projects (owner: "I'm up for a fifth project, just make sure this doesn't endlessly grow").
 **Kind:** research brief, in four parts. Its deliverable is four things: a **tool** (a standalone ledger CLI plus a static dashboard), a **corpus** (every surviving Claude Code transcript), **metrics**, and **hand codes with an agreement check**, ending in a findings document.
 - Part A builds the attribution tool over the corpus, captures the corpus's derived records and the rule timeline, and copies this brief's register into the findings document.
 - Part B reviews part A (a Sonnet trial), then codes a sample blind and scores the tool against it.
@@ -67,7 +67,7 @@ A reader afterwards can open a dashboard and see, for the owner's real sessions,
 
 | # | Decision | Why |
 | --- | --- | --- |
-| D1 | **Corpus:** every `*.jsonl` in the four folders of §2, including `<session>/subagents/`, united with the snapshot `data/private/raw/2026-11-09/`. When a file is in both, the larger copy is used. Only sessions whose last entry is before the scanning session's first entry count (`--before`). The game's committed ledger @ `636f378` adds session-level rows, read with `git show`, so the game's working tree is never touched | "Every surviving transcript" (kit plan, package C). The snapshot saves the 2026-10-10 files from deletion, and `--before` keeps a half-written session out |
+| D1 | **Corpus:** every `*.jsonl` in the four folders of §2 (and at most one more folder, so five projects at most; amended 2026-11-09), including `<session>/subagents/`, united with the snapshot `data/private/raw/2026-11-09/`. When a file is in both, the larger copy is used. Only sessions whose last entry is before the scanning session's first entry count (`--before`). The game's committed ledger @ `636f378` adds session-level rows, read with `git show`, so the game's working tree is never touched | "Every surviving transcript" (kit plan, package C). The snapshot saves the 2026-10-10 files from deletion, and `--before` keeps a half-written session out |
 | D2 | **No transcript text is committed.** Committed outputs hold only numbers, session ids, timestamps, the codes of §5, tool names, project labels and paths' extensions. Excerpts for the hand read live in `data/private/` (git-ignored). `tests/privacy.test.ts` enforces this | `CLAUDE.md` rule 5 |
 | D3 | **Attribution by measured deltas.** The context growth between two calls is measured exactly. Within one gap it is split across the gap's units by characters ÷ a per-code ratio. No tokenizer, no API calls | Transcripts never leave the machine, and the per-gap totals are exact |
 | D4 | **Rules are the game's, dated as in §2.** E1 and E2 are read in before/after windows, E3 directly from the ledger's two rates, and E4 is out of scope: its spend moves to other providers' plans, which no transcript here records. No window crosses X1. The results are observations, not causes | n = 1 project, no control group. Testing causes is package D's job |
@@ -104,7 +104,7 @@ Cost means list price, main thread plus sub-agents, priced calls only. "D" means
 - It writes `data/corpus/MANIFEST.json`: `{project, session, file: "main" | "agent-<id>", bytes, sha256, first, last}` per file.
 - It caches per-unit records (no text) in `data/private/units/<session>.json`.
 - `--before` is the scanning session's start: the Start of `npm run sessions -- --current`, run first.
-- Project labels come from §2's table. An unknown folder gets its slug as its label, and is listed.
+- Project labels come from §2's table. An unknown folder gets its slug as its label, and is listed. While the corpus stays at five projects or fewer, unknown folders join it under that label (amended 2026-11-09). When more unknown folders exist than places, none joins, all are listed, and the owner names the one that joins.
 - `npm run ledger -- game-ledger` writes `data/corpus/game-ledger.json`: the rows of `git -C "<game>" show 636f378:docs/session-ledger.json` with `title` dropped.
 - `data/rules.json`: E1–E4 and X1–X2 from §2. Each entry has `{id, sha[], committedAt}`, with `committedAt` taken from `git -C "<game>" show -s --format=%cI <sha>`. For a multi-commit event, the first sha opens the event and the last closes it.
 
