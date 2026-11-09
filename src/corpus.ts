@@ -40,6 +40,21 @@ export interface ManifestEntry {
   last: string;
 }
 
+/**
+ * Folders in the live base or a snapshot that §2's table doesn't name, by their label (their slug).
+ * They are listed, not scanned: D1's corpus is the four folders.
+ */
+export function unknownFolders(liveBase: string, rawBase: string): string[] {
+  const bases = [liveBase, ...(existsSync(rawBase) ? readdirSync(rawBase).map((d) => join(rawBase, d)) : [])];
+  const known = new Set(PROJECTS.map((p) => p.slug.toLowerCase()));
+  const out = new Set<string>();
+  for (const b of bases) {
+    if (!existsSync(b)) continue;
+    for (const d of readdirSync(b, { withFileTypes: true })) if (d.isDirectory() && !known.has(d.name.toLowerCase())) out.add(labelOf(d.name));
+  }
+  return [...out].sort();
+}
+
 /** The existing directories for a slug: the live one, then each snapshot's. */
 export function findDirs(slug: string, liveBase: string, rawBase: string): string[] {
   const out: string[] = [];
@@ -135,6 +150,7 @@ export interface ScanResult {
   manifest: ManifestEntry[];
   counts: Record<string, { main: number; agents: number; fresh: { main: number; agents: number } }>;
   excluded: string[]; // session ids left out by --before
+  unknown: string[]; // folders §2 doesn't name, by label: listed, not scanned
 }
 
 export const defaultScan = (before: string): ScanOptions => ({
@@ -166,7 +182,7 @@ export function scanCorpus(o: ScanOptions): ScanResult {
   const before = Date.parse(o.before);
 
   const manifest: ManifestEntry[] = [];
-  const result: ScanResult = { manifest, counts: {}, excluded: [] };
+  const result: ScanResult = { manifest, counts: {}, excluded: [], unknown: unknownFolders(o.liveBase, o.rawBase) };
   for (const { label, slug } of PROJECTS) {
     const dirs = findDirs(slug, o.liveBase, o.rawBase);
     const sessions = groupSessions(listFiles(dirs));

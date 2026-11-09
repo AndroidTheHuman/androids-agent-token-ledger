@@ -17,7 +17,7 @@ Which model runs which kind of package, and how a kind earns a cheaper model. Th
 
 | Kind of package | Runs on | Status |
 | --- | --- | --- |
-| Tool part whose brief gives the expected numbers | Sonnet 5.5, xhigh | on trial here, 0 of 2. Prior: the game promoted this kind after two clean trials (kit `examples/04-trial-log.md`); a promotion doesn't carry across projects |
+| Tool part whose brief gives the expected numbers | Opus 5.5, xhigh | back on the strong model: the first trial here (brief 001 part A on Sonnet 5.5 xhigh, 2026-11-09) failed on two latent D1s (Trial log). Trying Sonnet again needs the owner. Prior: the game promoted this kind after two clean trials (kit `examples/04-trial-log.md`); a promotion doesn't carry across projects |
 | Content or data part with expected numbers | Opus 5.5, xhigh | not tried |
 | Handoff merge and trial review | Opus 5.5, xhigh | fixed while any kind is on trial: the reviewer must be the stronger model |
 | Briefs, hand codes, findings | Opus 5.5, xhigh | not for trial: the judgment is the product |
@@ -81,3 +81,12 @@ Agents from other providers read the repo without writing to it: `AGENTS.md` set
 
 | Date | Package | Model | Calls | Peak | Re-read | Cost | At strong-model rates | `/usage` change | D1 / D2 / D3 / D4 | Review cost | Verdict |
 | --- | --- | --- | --: | --: | --: | --: | --: | --- | --- | --: | --- |
+| 2026-11-09 | brief 001 part A, steps 1–3 and half of 4 (stopped at the calibration stop condition) | Sonnet 5.5 xhigh | 56 | 284k | 9.3M | $4.76 | $7.66 | session 0 → 16% (+16), week 48 → 51% (+3) | 2 / 0 / 1 / 3 | $3.62 (the whole reviewing session `1e2da25b`, including the T0 amendment and part A's finish; the review alone isn't separable) | **fail** |
+
+**2026-11-09, brief 001 part A, the findings** (reviewed by session `1e2da25b` on Opus 5.5 xhigh, against commits `0846652`, `158e2b7`, `21dc6b8`, `9668f2c`):
+- **D1** The tool's committed outputs failed the privacy gate written in the same commit (`21dc6b8`). `report.ts` wrote `tool: ""` to `categories.json` and the game-ledger parity mismatches as sentences to `summary.json`, and `tests/privacy.test.ts` rejects both (`''` by name). Latent: the stop came before `report` wrote them. The gate caught it at the first full report, and no text leaked. Fixed in `aa66312`: the test accepts exactly `''`, and the mismatches are structured.
+- **D1** §5's "an unknown folder gets its slug as its label, and is listed" wasn't implemented (`labelOf` was defined, never called), and the handoff didn't say so. It has no effect on today's corpus, since no unknown folder exists. Fixed: `unknownFolders` in `src/corpus.ts`, printed by `scan`, 2 tests. It lists such folders and doesn't scan them, because D1 limits the corpus to the four folders.
+- **D3** The stop's diagnosis was right (T0 is wrong, thinking is re-sent), but it left (b) "untested" when the unit cache could test it. Its option (a) would also have sized THINK by characters, and 9,406 of 10,904 thinking calls hold 0 THINK characters. Taken as written, (a) would have spread about 12 points of cost share (THINK's re-reads: THINK is 26.9% of cost, its output 15.0%) over the other codes in M2.
+- **D4** `pointOf` falls back from `listUSD` to Claude Code's `costUSD` without saying so (it never fires: all 208 game points carry `listUSD`). `multiCommit`'s permutation statistic is a mean difference, since a median of 0/1 values is degenerate; I'd make the same call, but it went unreported. `METRICS.md`'s M9 tables end in an unlabeled column.
+- **What went right:** the trial stopped at the stop condition instead of amending the brief. Its checkpoint numbers were accurate and reproduced (MANIFEST byte-identical, the stop medians to 3 decimals, parity). The register copy was verbatim and committed before any scan, the D6 diff is minimal, and the judgment calls were complete apart from the D4 items. Calls and re-read are well inside 1.3 × the reference (101 calls, 17.7M), but the part stopped early, so it's smaller than a full part.
+- **Verdict:** fail, by the rule's letter: any D1. Both D1s were latent, and neither changed a number.

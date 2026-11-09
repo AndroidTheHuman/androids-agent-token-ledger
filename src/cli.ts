@@ -89,6 +89,7 @@ switch (command) {
     }
     const result = scanCorpus({ ...defaultScan(before), log: out });
     out(`excluded by --before (${result.excluded.length}): ${result.excluded.join(', ') || 'none'}`);
+    out(`unknown folders, listed by label and not scanned (${result.unknown.length}): ${result.unknown.join(', ') || 'none'}`);
     out(`MANIFEST.json: ${result.manifest.length} files`);
     break;
   }
