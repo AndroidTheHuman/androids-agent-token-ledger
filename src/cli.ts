@@ -1,8 +1,10 @@
-// npm run ledger -- <command>   (brief 001 §5; `sample` and `agree` arrive in part B, `dashboard` in part D)
+// npm run ledger -- <command>   (brief 001 §5 and §6; `dashboard` arrives in part D)
 //   scan --before=<ISO>   read D1's corpus: MANIFEST.json, the merged copy and the per-unit cache
 //   game-ledger           the game's committed ledger (no titles) and the rule timeline, by `git show`
 //   report                calibrate, attribute, write sessions/categories/summary/calibration and METRICS.md
 //   check                 the part A checkpoints: MANIFEST counts, parity with the kit's ledger, identities
+//   sample                the hand read's sample (data/private/handread/sample.jsonl) and key (data/handread/key.json)
+//   agree                 score the tool against data/handread/codes.json; write docs/research/HANDREAD.md
 // Runs under plain Node (type stripping), so it uses erasable TypeScript only.
 
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
@@ -11,6 +13,7 @@ import { scan } from '../tools/sessions.ts';
 import type { Row } from '../tools/sessions.ts';
 import { MAX_PROJECTS, ROOT, corpusProjects, defaultScan, findDirs, freshCount, scanCorpus } from './corpus.ts';
 import type { ManifestEntry } from './corpus.ts';
+import { BAR, runAgree, runSample } from './handread.ts';
 import { runReport, writeGameLedger } from './report.ts';
 import type { SessionOut } from './report.ts';
 
@@ -109,7 +112,26 @@ switch (command) {
   case 'check':
     process.exit(check() === 0 ? 0 : 1);
     break;
+  case 'sample': {
+    const r = runSample(dataDir);
+    out(`sample.jsonl and key.json: ${r.n} units`);
+    out(`per code, sampled / units with characters: ${Object.keys(r.perCode).map((c) => `${c} ${r.perCode[c]}/${r.pool[c]}`).join(', ')}`);
+    break;
+  }
+  case 'agree': {
+    const r = runAgree(dataDir, join(ROOT, 'docs'));
+    if (r.agreement === undefined) {
+      for (const p of r.problems) out(`codes.json: ${p}`);
+      out('no scores computed; HANDREAD.md not written');
+      process.exit(2);
+    }
+    const a = r.agreement;
+    out(`units ${a.n}; kappa ${a.kappa.toFixed(3)} (bar ${BAR}: ${a.kappa >= BAR ? 'met' : 'under'}); off-table codes ${a.offTable}`);
+    out(`F1 per code (n hand/tool): ${a.perCode.map((c) => `${c.code} ${c.f1 === null ? 'n/a' : c.f1.toFixed(3)} (${c.nHand}/${c.nTool})`).join(', ')}`);
+    out('HANDREAD.md written');
+    break;
+  }
   default:
-    out('usage: npm run ledger -- scan --before=<ISO> | game-ledger | report | check');
+    out('usage: npm run ledger -- scan --before=<ISO> | game-ledger | report | check | sample | agree');
     process.exit(command === '' ? 0 : 2);
 }

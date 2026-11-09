@@ -1,5 +1,6 @@
 // Calls, units and codes (brief 001 §5). Pure functions over parsed transcript entries: no I/O,
-// and no transcript text leaves this file, only lengths, tool names and codes.
+// and no transcript text leaves this file, only lengths, tool names and codes, except through
+// `ExtractOptions.onUnit`, which only the hand read's sampler passes (its output stays in data/private/).
 // Runs under plain Node (type stripping), so it uses erasable TypeScript only.
 
 import { isHumanPrompt } from '../tools/sessionMeasures.ts';
@@ -151,16 +152,19 @@ export function classifyUse(name: string, input: Record<string, unknown> | undef
 
 // ── Characters ───────────────────────────────────────────────────────────────────────────────
 
-const textLen = (c: unknown): number => {
-  if (typeof c === 'string') return c.length;
-  if (!Array.isArray(c)) return 0;
-  let n = 0;
+/** The text parts of a block's content, the ones `textLen` counts. */
+const textParts = (c: unknown): string[] => {
+  if (typeof c === 'string') return [c];
+  if (!Array.isArray(c)) return [];
+  const out: string[] = [];
   for (const p of c) {
     const t = p !== null && typeof p === 'object' ? (p as { text?: unknown }).text : undefined;
-    if (typeof t === 'string') n += t.length;
+    if (typeof t === 'string') out.push(t);
   }
-  return n;
+  return out;
 };
+
+const textLen = (c: unknown): number => textParts(c).reduce((n, t) => n + t.length, 0);
 
 const ZERO_ATTACHMENTS = new Set(['prompt_snapshot', 'deferred_tools_record', 'credential_org', 'remote_session_change', 'model']);
 
@@ -174,6 +178,13 @@ export function attachmentChars(e: Raw): number {
   const a = e.attachment;
   if (a === undefined) return 0;
   return ZERO_ATTACHMENTS.has(String(a['type'])) ? 0 : JSON.stringify(a).length;
+}
+
+/** The text `attachmentChars` counts, in the same order. */
+function attachmentText(e: Raw): string {
+  if (Array.isArray(e.rendered)) return e.rendered.flatMap((r) => textParts(r !== null && typeof r === 'object' ? (r as { content?: unknown }).content : undefined)).join('\n');
+  const a = e.attachment;
+  return a === undefined || ZERO_ATTACHMENTS.has(String(a['type'])) ? '' : JSON.stringify(a);
 }
 
 // ── Extraction ───────────────────────────────────────────────────────────────────────────────
@@ -199,6 +210,18 @@ export interface ExtractOptions {
   /** A sub-agent transcript: its entries are sidechain entries, which a main transcript ignores. */
   agent: boolean;
   gate?: string;
+  /** The hand read only (brief §6): called with each unit's index and what it puts into the context. */
+  onUnit?: (i: number, body: UnitText) => void;
+}
+
+/**
+ * What a unit puts into the context, as a hand coder sees it: `input` is a tool_use's input, and on a
+ * tool_result its tool_use's input (JSON); `text` is the block's text, the result's text parts, or the
+ * attachment's text. Transcript text: it never leaves data/private/.
+ */
+export interface UnitText {
+  input: string;
+  text: string;
 }
 
 /**
@@ -237,11 +260,14 @@ export function extract(entries: readonly Raw[], opts: ExtractOptions): Extracte
   order.forEach((c, i) => callIndex.set(c.info.id, i + 1));
 
   const units: Unit[] = [];
-  const uses = new Map<string, { name: string; cls: UseClass }>();
+  const uses = new Map<string, { name: string; cls: UseClass; input: unknown }>();
   const seen = new Set<string>();
   let started = 0;
   let n = 0;
-  const add = (gap: number, role: Unit['role'], kind: Kind, code: Code, steer: boolean, tool: string, chars: number): void => {
+  const onUnit = opts.onUnit;
+  const body = (text: string, input = ''): UnitText => ({ input, text });
+  const add = (gap: number, role: Unit['role'], kind: Kind, code: Code, steer: boolean, tool: string, chars: number, text: () => UnitText): void => {
+    if (onUnit !== undefined) onUnit(n, text());
     units.push({ i: n++, gap, role, kind, code: gap === 1 ? 'BASE' : code, steer: gap === 1 ? false : steer, tool, chars });
   };
 
@@ -257,32 +283,36 @@ export function extract(entries: readonly Raw[], opts: ExtractOptions): Extracte
       const ci = e.message?.id === undefined ? undefined : callIndex.get(e.message.id);
       if (ci === undefined || !Array.isArray(content)) return;
       for (const b of content as Block[]) {
-        if (b.type === 'thinking') add(ci + 1, 'assistant', 'thinking', 'THINK', false, '', textLen((b as { thinking?: unknown }).thinking));
-        else if (b.type === 'text') add(ci + 1, 'assistant', 'text', 'OUT', false, '', b.text?.length ?? 0);
+        if (b.type === 'thinking') {
+          const t = (b as { thinking?: unknown }).thinking;
+          add(ci + 1, 'assistant', 'thinking', 'THINK', false, '', textLen(t), () => body(textParts(t).join('')));
+        } else if (b.type === 'text') add(ci + 1, 'assistant', 'text', 'OUT', false, '', b.text?.length ?? 0, () => body(b.text ?? ''));
         else if (b.type === 'tool_use') {
           const cls = classifyUse(b.name ?? '', b.input, gate);
-          if (b.id !== undefined) uses.set(b.id, { name: b.name ?? '', cls });
-          add(ci + 1, 'assistant', 'tool_use', cls.code, cls.steer, b.name ?? '', JSON.stringify(b.input ?? {}).length);
+          const input = JSON.stringify(b.input ?? {});
+          if (b.id !== undefined) uses.set(b.id, { name: b.name ?? '', cls, input: b.input ?? {} });
+          add(ci + 1, 'assistant', 'tool_use', cls.code, cls.steer, b.name ?? '', input.length, () => body('', input));
         }
       }
     } else if (e.type === 'user') {
       const gap = started + 1;
       const textCode = (text: string): Code => (e.isCompactSummary === true ? 'COMPACT' : isHumanPrompt(e) ? 'PROMPT' : e.isMeta === true || text.startsWith('<') ? 'INJECT' : 'OTHER');
-      if (typeof content === 'string') add(gap, 'user', 'text', textCode(content), false, '', content.length);
+      if (typeof content === 'string') add(gap, 'user', 'text', textCode(content), false, '', content.length, () => body(content));
       else if (Array.isArray(content)) {
         for (const b of content as Block[]) {
-          if (b.type === 'text') add(gap, 'user', 'text', textCode(b.text ?? ''), false, '', b.text?.length ?? 0);
+          if (b.type === 'text') add(gap, 'user', 'text', textCode(b.text ?? ''), false, '', b.text?.length ?? 0, () => body(b.text ?? ''));
           else if (b.type === 'tool_result') {
             const use = b.tool_use_id === undefined ? undefined : uses.get(b.tool_use_id);
-            if (use === undefined) add(gap, 'user', 'tool_result', 'OTHER', false, '?', textLen(b.content));
-            else add(gap, 'user', 'tool_result', use.cls.resultCode, use.cls.steer, use.name, textLen(b.content));
+            const result = (): UnitText => body(textParts(b.content).join('\n'), use === undefined ? '' : JSON.stringify(use.input));
+            if (use === undefined) add(gap, 'user', 'tool_result', 'OTHER', false, '?', textLen(b.content), result);
+            else add(gap, 'user', 'tool_result', use.cls.resultCode, use.cls.steer, use.name, textLen(b.content), result);
           }
         }
       }
     } else if (e.type === 'attachment') {
-      add(started + 1, 'user', 'attachment', 'INJECT', false, '', attachmentChars(e));
+      add(started + 1, 'user', 'attachment', 'INJECT', false, '', attachmentChars(e), () => body(attachmentText(e)));
     } else if (e.type === 'system' && e.subtype === 'compact_boundary') {
-      add(started + 1, 'user', 'boundary', 'COMPACT', false, '', typeof e.content === 'string' ? e.content.length : 0);
+      add(started + 1, 'user', 'boundary', 'COMPACT', false, '', typeof e.content === 'string' ? e.content.length : 0, () => body(typeof e.content === 'string' ? e.content : ''));
     }
   });
 
