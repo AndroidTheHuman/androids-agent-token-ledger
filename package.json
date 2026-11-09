@@ -1,0 +1,21 @@
+{
+  "name": "token-ledger",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Research project: where coding-agent sessions spend their tokens, and which harness rules change that. Built on the agentic-harness kit (lite tier).",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check": "npm run typecheck && npm run test",
+    "sessions": "node --no-warnings tools/sessions.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.2"
+  }
+}

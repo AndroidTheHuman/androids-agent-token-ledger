@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node --no-warnings tools/sessions.ts --hook",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
