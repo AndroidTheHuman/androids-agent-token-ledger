@@ -35,7 +35,7 @@ wrong model's rates).
 
 | Start | Session | Model | Prompts | Calls | Work | Waited | Peak ctx | Re-read | Agents | Out (think) | Cost | Commits | $/commit | Lines + | Flags |
 |---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|---|
-| 2026-11-10 18:52 | 2a3ec6ee | opus-5.5 xhigh | 1 | 28 | 5m | 1m | 109k | 2.1M | 0 | 24k (15k) | $1.55 | 0 | — | — |  |
+| 2026-11-10 18:52 | 2a3ec6ee | opus-5.5 xhigh | 1 | 44 | 9m | 1m | 152k | 4.3M | 0 | 46k (26k) | $2.76 | 1 | $2.76 | — |  |
 | 2026-11-10 15:47 | 99cb6cca | opus-5.5 xhigh | 2 | 19 | 7m | 0m | 163k | 1.6M | 0 | 40k (29k) | $2.17 | 1 | $2.17 | — |  |
 | 2026-11-10 15:04 | e51e26df | opus-5.5 xhigh | 1 | 38 | 8m | 1m | 143k | 3.8M | 0 | 43k (24k) | $2.52 | 3 | $0.84 | — | 3 commits |
 | 2026-11-10 14:28 | 5fa6cda1 | sonnet-5.5 xhigh | 1 | 62 | 15m | 2m | 224k | 9.4M | 0 | 110k (56k) | $2.83 | 4 | $0.71 | — | 4 commits, 5 big reads |
