@@ -5,17 +5,20 @@ by session id in `docs/session-ledger.json`, and rows outlive their transcripts)
 skill records the current session; the owner can run it any time.
 
 **Reading it.** Every model call re-reads the whole context, so *Re-read* (cache reads summed over
-the session) is what a long session costs; it grows roughly with calls × context. *Cost* is Claude
-Code's own figure where the transcript records one, else the same API-price figure computed from the
-tokens; the two agree to the cent on almost every session that has both. On a subscription it is a
-relative measure, not a bill, and `/usage` is the subscription's own. *Commits* and *Lines +* are the
-rough measure of what was delivered.
+the session) is what a long session costs; it grows roughly with calls × context. *Cost* is the API
+list price computed from the session's tokens, sub-agents included (`PRICES` in
+`tools/sessionMeasures.ts`); an old row with no computed figure shows Claude Code's own recorded one.
+The price check printed after each run compares the two on the rows that have both, model by model,
+and says FAILED when a model's recorded total is more than 5% off its computed total; a row can sit a
+few percent above, for calls Claude Code bills but doesn't write to the transcript. On a subscription it is a relative measure, not a
+bill, and `/usage` is the subscription's own. *Commits* and *Lines +* are the rough measure of what
+was delivered.
 
 *Work* is the time from each prompt to the session's last action before the next prompt; *Waited* is
 the part of it spent waiting on shell commands: foreground commands from call to result, and idle
 stretches that end when a background command reports back. *Model* is the main session's model and
-effort. Cache reads cost the same on Opus 5.5 and Sonnet 5.5 ($0.20 per million), so for the same
-tokens a Sonnet session costs a fifth to a quarter less, not half.
+effort. Every Sonnet 5.5 rate is half the Opus 5.5 rate, cache reads included ($0.10 against $0.20
+per million), so for the same tokens a Sonnet session costs half as much.
 
 **Sub-agents.** Each sub-agent has its own context, so it doesn't grow *Peak ctx*, but its calls cost
 the same way. *Re-read* includes them; *Agents* is how many ran, their share of the re-read and the
@@ -32,10 +35,12 @@ wrong model's rates).
 
 | Start | Session | Model | Prompts | Calls | Work | Waited | Peak ctx | Re-read | Agents | Out (think) | Cost | Commits | $/commit | Lines + | Flags |
 |---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|---|
-| 2026-11-10 15:04 | e51e26df | opus-5.5 xhigh | 1 | 35 | 7m | 1m | 136k | 3.4M | 0 | 37k (24k) | $2.26 | 2 | $1.13 | — | 2 commits |
-| 2026-11-10 14:28 | 5fa6cda1 | sonnet-5.5 xhigh | 1 | 62 | 15m | 2m | 224k | 9.4M | 0 | 110k (56k) | $3.77 | 4 | $0.94 | — | 4 commits, 5 big reads |
+| 2026-11-10 18:52 | 2a3ec6ee | opus-5.5 xhigh | 1 | 28 | 5m | 1m | 109k | 2.1M | 0 | 24k (15k) | $1.55 | 0 | — | — |  |
+| 2026-11-10 15:47 | 99cb6cca | opus-5.5 xhigh | 2 | 19 | 7m | 0m | 163k | 1.6M | 0 | 40k (29k) | $2.17 | 1 | $2.17 | — |  |
+| 2026-11-10 15:04 | e51e26df | opus-5.5 xhigh | 1 | 38 | 8m | 1m | 143k | 3.8M | 0 | 43k (24k) | $2.52 | 3 | $0.84 | — | 3 commits |
+| 2026-11-10 14:28 | 5fa6cda1 | sonnet-5.5 xhigh | 1 | 62 | 15m | 2m | 224k | 9.4M | 0 | 110k (56k) | $2.83 | 4 | $0.71 | — | 4 commits, 5 big reads |
 | 2026-11-10 14:01 | ba1ea19b | opus-5.5 xhigh | 1 | 62 | 17m | 4m | 184k | 7.4M | 0 | 79k (42k) | $4.29 | 4 | $1.07 | — | 4 commits |
 | 2026-11-09 21:35 | 904c719a | opus-5.5 xhigh | 1 | 44 | 14m | 1m | 173k | 5M | 1 (0.3M, ≤84k) | 70k (30k) | $4.23 | 5 | $0.85 | — | 5 commits |
 | 2026-11-09 20:49 | 1e2da25b | opus-5.5 xhigh | 1 | 60 | 15m | 2m | 205k | 7.5M | 0 | 77k (41k) | $4.47 | 3 | $1.49 | — | 3 commits, 7 gates |
-| 2026-11-09 19:44 | 874927de | sonnet-5.5 xhigh | 1 | 59 | 25m | 3m | 286k | 10.2M | 0 | 190k (103k) | $4.97 | 5 | $0.99 | — | context 286k, 5 commits |
+| 2026-11-09 19:44 | 874927de | sonnet-5.5 xhigh | 1 | 59 | 25m | 3m | 286k | 10.2M | 0 | 190k (103k) | $3.95 | 5 | $0.79 | — | context 286k, 5 commits |
 | 2026-11-09 00:28 | 22d76ec3 | opus-5.5 xhigh | 2 | 34 | 15m | 1m | 178k | 3.4M | 0 | 89k (57k) | $3.65 | 1 | $3.65 | 459 |  |

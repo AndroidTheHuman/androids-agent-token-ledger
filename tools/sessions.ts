@@ -3,7 +3,11 @@
 // folder and the gate command are parameters (--project, --slug, --ledger, --gate), so one copy
 // can measure any project, the kit's own sessions included; the functions are exported and the
 // CLI runs only when this file is the entry point. The measures, thresholds and output are the
-// game's, unchanged: run on the same transcripts, it writes the same rows.
+// game's: run on the same transcripts, it writes the same rows, except `listUSD` on a row with a
+// Sonnet 5.5 call (the corrected rate in sessionMeasures.ts). Also changed on 2026-11-10 (audit
+// finding 1): *Cost* is `listUSD` first and Claude Code's recorded figure only where no list price
+// was computed; the price check compares recorded with computed cost model by model and says FAILED
+// outside a bar; the legend's price sentences follow; the GATE comment names no rule number.
 // Brief 001 changes (this repo): the row's `title` is the session id's first 8 characters (D6: the
 // ai-title and the first prompt are transcript text, which no committed file may hold); `context`
 // and `runs` are exported so src/ imports them instead of copying them (D5).
@@ -35,7 +39,7 @@ import { hasOtherIterations, isHumanPrompt, listPriceUSD, modelLabel, sessionTim
 import type { Block, Entry, Usage } from './sessionMeasures.ts';
 
 // ── Settings: edit these for your project ───────────────────────────────────────────────────
-const GATE = 'npm run check'; // the full gate (CLAUDE.md rule 2); each run counts toward `gates`
+const GATE = 'npm run check'; // the default full gate (the gate rule in CLAUDE.md; --gate sets another); each run counts toward `gates`
 
 // ── Thresholds (also printed in the ledger's legend) ─────────────────────────────────────────
 const SOFT_CONTEXT = 250_000; // past this, finish the step and hand off
@@ -316,8 +320,9 @@ function loadLedger(path: string): Map<string, Row> {
   return m;
 }
 
-// Claude Code's own figure where the transcript records one, else the one computed from the tokens
-const costOf = (r: Row): number | null => r.costUSD ?? r.listUSD ?? null;
+// The list price computed from the tokens; Claude Code's own figure only on an old row that has no
+// computed one. Mixing the two hid a wrong rate until 2026-11-10 (audit finding 1).
+export const costOf = (r: Row): number | null => r.listUSD ?? r.costUSD ?? null;
 const money = (r: Row): string => {
   const c = costOf(r);
   return c === null ? '—' : `$${c.toFixed(2)}`;
@@ -347,15 +352,48 @@ export function table(rows: Row[]): string {
   );
 }
 
-/** Computed vs recorded cost over the rows that have both (brief 027 A.5), or null when none does. */
-function priceCheck(rows: Row[]): string | null {
+/** A row's models without their effort: "opus-5.5 xhigh + sonnet-5.5 xhigh" → "opus-5.5 + sonnet-5.5". */
+const modelsOf = (r: Row): string => (r.model ?? '—').replace(/ (low|medium|high|xhigh|max)\b/g, '');
+
+/**
+ * The bar for a model's recorded cost over its computed cost, summed over its rows that have both.
+ * A wrong rate moves the whole model (Sonnet 5.5's doubled cache-read rate put it at 0.706); a single
+ * row can sit a few percent off for reasons that aren't a rate, such as calls Claude Code bills but
+ * doesn't write to the transcript, so rows off by more than 5% are counted but don't fail the check.
+ */
+export const PRICE_BAR = { low: 0.95, high: 1.05, row: 0.05 } as const;
+
+/**
+ * Computed vs recorded cost over the rows that have both (brief 027 A.5), model by model, or null
+ * when no row has both. A median over all rows hid a wrong rate that sat in one model's rows until
+ * 2026-11-10, so the check is per model and says FAILED when a model's ratio is outside PRICE_BAR.
+ */
+export function priceCheck(rows: Row[]): string | null {
   const both = rows.filter((r) => r.costUSD !== null && r.listUSD !== undefined);
   if (both.length === 0) return null;
-  const diffs = both.map((r) => ({ id: r.id, d: Math.abs((r.listUSD as number) - (r.costUSD as number)) })).sort((a, b) => a.d - b.d);
-  const mid = Math.floor(diffs.length / 2);
-  const median = diffs.length % 2 === 1 ? (diffs[mid] as { d: number }).d : ((diffs[mid - 1] as { d: number }).d + (diffs[mid] as { d: number }).d) / 2;
-  const largest = diffs[diffs.length - 1] as { id: string; d: number };
-  return `Price check: computed vs recorded cost on ${both.length} rows: median difference $${median.toFixed(2)}, largest $${largest.d.toFixed(2)} (${largest.id.slice(0, 8)})`;
+  const groups = new Map<string, { n: number; list: number; recorded: number; off: number }>();
+  for (const r of both) {
+    const list = r.listUSD as number;
+    const recorded = r.costUSD as number;
+    const g = groups.get(modelsOf(r)) ?? { n: 0, list: 0, recorded: 0, off: 0 };
+    g.n++;
+    g.list += list;
+    g.recorded += recorded;
+    if (Math.abs(recorded - list) > PRICE_BAR.row * list) g.off++;
+    groups.set(modelsOf(r), g);
+  }
+  let failed = false;
+  const parts = [...groups]
+    .sort(([a], [b]) => (a < b ? -1 : 1))
+    .map(([m, g]) => {
+      const ratio = g.list === 0 ? 1 : g.recorded / g.list;
+      const bad = ratio < PRICE_BAR.low || ratio > PRICE_BAR.high;
+      failed ||= bad;
+      return `${m} ${ratio.toFixed(3)} over ${g.n} rows (${g.off} off by > ${PRICE_BAR.row * 100}%)${bad ? ' OUTSIDE THE BAR' : ''}`;
+    });
+  const head = failed ? 'Price check FAILED' : 'Price check';
+  const tail = failed ? '. Check PRICES against the live price page' : '';
+  return `${head}: recorded cost over computed, by model (bar ${PRICE_BAR.low}–${PRICE_BAR.high}): ${parts.join('; ')}${tail}`;
 }
 
 function render(rows: Row[]): string {
@@ -366,17 +404,20 @@ by session id in \`docs/session-ledger.json\`, and rows outlive their transcript
 skill records the current session; the owner can run it any time.
 
 **Reading it.** Every model call re-reads the whole context, so *Re-read* (cache reads summed over
-the session) is what a long session costs; it grows roughly with calls × context. *Cost* is Claude
-Code's own figure where the transcript records one, else the same API-price figure computed from the
-tokens; the two agree to the cent on almost every session that has both. On a subscription it is a
-relative measure, not a bill, and \`/usage\` is the subscription's own. *Commits* and *Lines +* are the
-rough measure of what was delivered.
+the session) is what a long session costs; it grows roughly with calls × context. *Cost* is the API
+list price computed from the session's tokens, sub-agents included (\`PRICES\` in
+\`tools/sessionMeasures.ts\`); an old row with no computed figure shows Claude Code's own recorded one.
+The price check printed after each run compares the two on the rows that have both, model by model,
+and says FAILED when a model's recorded total is more than 5% off its computed total; a row can sit a
+few percent above, for calls Claude Code bills but doesn't write to the transcript. On a subscription it is a relative measure, not a
+bill, and \`/usage\` is the subscription's own. *Commits* and *Lines +* are the rough measure of what
+was delivered.
 
 *Work* is the time from each prompt to the session's last action before the next prompt; *Waited* is
 the part of it spent waiting on shell commands: foreground commands from call to result, and idle
 stretches that end when a background command reports back. *Model* is the main session's model and
-effort. Cache reads cost the same on Opus 5.5 and Sonnet 5.5 ($0.20 per million), so for the same
-tokens a Sonnet session costs a fifth to a quarter less, not half.
+effort. Every Sonnet 5.5 rate is half the Opus 5.5 rate, cache reads included ($0.10 against $0.20
+per million), so for the same tokens a Sonnet session costs half as much.
 
 **Sub-agents.** Each sub-agent has its own context, so it doesn't grow *Peak ctx*, but its calls cost
 the same way. *Re-read* includes them; *Agents* is how many ran, their share of the re-read and the

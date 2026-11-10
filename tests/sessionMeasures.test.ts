@@ -1,6 +1,8 @@
 // Session measures for the ledger: work and waited time, the model label and the price from
 // the tokens, on synthetic transcript entries.
-// Ported from Infinity Autobattler tests/sessionMeasures.test.ts @ 636f378. Changes: this header only.
+// Ported from Infinity Autobattler tests/sessionMeasures.test.ts @ 636f378. Changes: Sonnet 5.5's
+// expected prices follow the corrected cache-read rate ($0.10 per million), one test pins Sonnet at
+// half of Opus, and this header.
 
 import { describe, expect, it } from 'vitest';
 import { hasOtherIterations, listPriceUSD, modelLabel, sessionTiming, shortModel, type Entry } from '../tools/sessionMeasures';
@@ -84,14 +86,19 @@ describe('listPriceUSD (A.5)', () => {
 
   it('prices input, output, cache reads and both cache writes at the model rates', () => {
     expect(listPriceUSD('claude-opus-5-5', split(0, 100_000))).toBeCloseTo(1.200008, 9);
-    expect(listPriceUSD('claude-sonnet-5-5', split(0, 100_000))).toBeCloseTo(0.700004, 9);
+    expect(listPriceUSD('claude-sonnet-5-5', split(0, 100_000))).toBeCloseTo(0.600004, 9);
     expect(listPriceUSD('claude-opus-5-5', split(100_000, 0))).toBeCloseTo(0.900008, 9);
-    expect(listPriceUSD('claude-sonnet-5-5', split(100_000, 0))).toBeCloseTo(0.550004, 9);
+    expect(listPriceUSD('claude-sonnet-5-5', split(100_000, 0))).toBeCloseTo(0.450004, 9);
+  });
+
+  it('prices Sonnet 5.5 at half of Opus 5.5 for the same tokens, cache reads included', () => {
+    expect(listPriceUSD('claude-sonnet-5-5', { cache_read_input_tokens: 1_000_000 })).toBeCloseTo(0.1, 9);
+    expect(listPriceUSD('claude-sonnet-5-5', split(100_000, 100_000))).toBeCloseTo((listPriceUSD('claude-opus-5-5', split(100_000, 100_000)) as number) / 2, 9);
   });
 
   it('counts all cache writes as 1-hour writes without a split', () => {
     expect(listPriceUSD('claude-opus-5-5', usage)).toBeCloseTo(1.200008, 9);
-    expect(listPriceUSD('claude-sonnet-5-5', { ...usage, cache_creation: null })).toBeCloseTo(0.700004, 9);
+    expect(listPriceUSD('claude-sonnet-5-5', { ...usage, cache_creation: null })).toBeCloseTo(0.600004, 9);
   });
 
   it('is null for a model with no price', () => {

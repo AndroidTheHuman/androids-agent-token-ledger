@@ -1,6 +1,8 @@
 // Session measures for the ledger.
-// Ported from Infinity Autobattler tools/sessionMeasures.ts @ 636f378. Changes: none but this
-// header (the "A.4", "A.5" tags name the game's brief 027 parts that built each measure).
+// Ported from Infinity Autobattler tools/sessionMeasures.ts @ 636f378. Changes: Sonnet 5.5's
+// cache-read rate in PRICES is $0.10 per million, not the game's $0.20 (the owner checked the live
+// price page on 2026-11-10; evidence/AUDIT_FABLE_2026-11.md finding 1), and this header (the "A.4",
+// "A.5" tags name the game's brief 027 parts that built each measure).
 //
 // Pure functions over Claude Code's transcript entries: how long a session worked and how much
 // of that it waited on shell commands, which model and effort it ran on, and what its tokens cost
@@ -146,10 +148,12 @@ export interface Prices {
   readonly write1h: number;
 }
 
-// Anthropic list prices, 2026-10; a 5-minute cache write is 1.25 × input, a 1-hour write 2 ×. Dollars per million tokens.
+// Anthropic list prices, checked on the live price page 2026-11-10; a cache read is 0.05 × input, a
+// 5-minute cache write 1.25 ×, a 1-hour write 2 ×. Dollars per million tokens. Every Sonnet 5.5 rate
+// is half the Opus 5.5 rate.
 export const PRICES: Readonly<Record<string, Prices>> = {
   'claude-opus-5-5': { input: 4, output: 20, cacheRead: 0.2, write5m: 5, write1h: 8 },
-  'claude-sonnet-5-5': { input: 2, output: 10, cacheRead: 0.2, write5m: 2.5, write1h: 4 },
+  'claude-sonnet-5-5': { input: 2, output: 10, cacheRead: 0.1, write5m: 2.5, write1h: 4 },
 };
 
 /**

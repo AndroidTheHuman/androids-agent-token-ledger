@@ -47,55 +47,68 @@ A **call** is an assistant `message.id` with context > 0. A **unit** is one bloc
 
 Part C, written 2026-11-10. Every figure below comes from `data/corpus/summary.json` (rendered as tables in `docs/research/METRICS.md`) or `docs/research/HANDREAD.md`. Each reading applies the register above as written; no threshold moved after the counts were read.
 
-Unless a line says otherwise, n is 175 main sessions in 4 projects (12,923 main-thread calls, 1,814 sub-agent calls, 79,970 units), and cost is $1,179.69 at list price over priced calls.
+Unless a line says otherwise, n is 175 main sessions in 4 projects (12,923 main-thread calls, 1,814 sub-agent calls, 79,970 units), and cost is $1,102.39 at list price over priced calls.
+
+**Corrected 2026-11-10, after part C.** Part C priced Sonnet 5.5's cache reads at $0.20 per million, the rate in the kit's `PRICES`; the live price page's rate is $0.10, half of Opus 5.5's like every other Sonnet rate (the kit's audit finding 1, fixed at kit `917a546`). The corpus was rescanned at the same `--before` with the corrected rate: the 42 sessions with a Sonnet call moved from $266.54 to $189.20, no other session's price moved, and no token count moved. The 37 game ledger rows with no surviving transcript keep the game's committed prices; all of them start before the first call off Opus (2026-10-13), so the rate doesn't reach them. The register's thresholds did not move; four readings did:
+
+| # | Part C, at the old rate | Now |
+| --- | --- | --- |
+| Q1 | Output 29.35%: neither bar | Output 31.41%: the output bar is met |
+| Q2 | THINK + DOC + BASE | THINK + OUT + DOC |
+| Q8 | 30.1%: met | 28.4%: neither bar |
+| Q11 | 7.0%: not met | 12.8%: met |
+
+Every other reading stands, with the corrected figures below. Part C's text at the old rate is in git at `e5b817b`.
 
 ### The answers
 
 | # | Value (n) | Reading | Hand-read caveat |
 | --- | --- | --- | --- |
-| Q1 | Cache read 43.3%, cache write 27.4%, output 29.35% (of which thinking $176.67), uncached input 0.0%. `METRICS.md` prints output as 29.3% because it rounds the stored four-place share again | **Neither bar met**: cache reads under 50%, output under 30%. Q1 sets no order between context-size rules and effort or model rules | None: token types come from recorded usage, not from codes |
-| Q2 | THINK 26.9%, DOC 15.7%, BASE 14.9%; the smallest set reaching 50% is THINK + DOC + BASE; the largest code is 26.9% | **Met**: THINK, DOC and BASE are D's first target set. Spend is not diffuse (the largest code is over 15%) | DOC F1 0.966. THINK and BASE are not hand-coded: BASE is the first call's measured context, and THINK rests on T0′ (Limits). Every hand-coded code in M2 met the bar |
-| Q3 | BASE + DOC.STEER 24.5% (BASE 14.9%, DOC with steer 9.6%) | **Met** (≥ 20%): a tighter start-read budget gets a D trial | DOC F1 0.966. The `steer` tag is a path rule the hand read didn't check, and BASE is not hand-coded |
-| Q4 | Read 61.1% of tool-result cost (Read $232.89 of $381.18); Bash 31.4% | **Met** (≥ 40%): "read narrowly / cut output" gets a D metric on Read | None from the hand read: tools are named, not coded. But a gap's cost is split between its Read and Bash results by the per-code ratios and T0′, so the shares carry the attribution limits (Limits) |
-| Q5 | GATE 0.1% ($1.30) | **Under 2%**: "one gate per batch" is not a cost lever | GATE F1 0.929 (precision 0.867: 2 of the tool's 15 sampled GATE units were SHELL to the coder), and no sampled GATE was missed. The sample is drawn per code, not per dollar, so it doesn't bound GATE's cost error |
-| Q6 | Sub-agent calls 8.2% ($97.10; 1,814 calls) | **Neither bar** (between 5% and 20%): no D metric now; not ruled out | None: by transcript file |
-| Q7 | Cold re-cache 0.3% ($3.17) | **Under 3%**: the idle guard is not a cost lever | None |
-| Q8 | 30.1% of main-thread cost ($325.98 of $1,082.59) | **Met** (≥ 30%): the 250k limit is D's first rule, with a target | None: from recorded context sizes |
+| Q1 | Cache read 39.3%, cache write 29.3%, output 31.41% (of which thinking $176.67), uncached input 0.0% | **Output bar met** (≥ 30%): effort and model rules come first. Cache reads are under 50% | None: token types come from recorded usage, not from codes |
+| Q2 | THINK 27.9%, OUT 15.8%, DOC 15.5%, BASE 14.3%; the smallest set reaching 50% is THINK + OUT + DOC; the largest code is 27.9% | **Met**: THINK, OUT and DOC are D's first target set. Spend is not diffuse (the largest code is over 15%) | OUT F1 1.000, DOC F1 0.966. THINK is not hand-coded and rests on T0′ (Limits). Every hand-coded code in M2 met the bar |
+| Q3 | BASE + DOC.STEER 23.5% (BASE 14.3%, DOC with steer 9.2%) | **Met** (≥ 20%): a tighter start-read budget gets a D trial | DOC F1 0.966. The `steer` tag is a path rule the hand read didn't check, and BASE is not hand-coded |
+| Q4 | Read 59.8% of tool-result cost (Read $205.71 of $344.11); Bash 33.2% | **Met** (≥ 40%): "read narrowly / cut output" gets a D metric on Read | None from the hand read: tools are named, not coded. But a gap's cost is split between its Read and Bash results by the per-code ratios and T0′, so the shares carry the attribution limits (Limits) |
+| Q5 | GATE 0.1% ($1.19) | **Under 2%**: "one gate per batch" is not a cost lever | GATE F1 0.929 (precision 0.867: 2 of the tool's 15 sampled GATE units were SHELL to the coder), and no sampled GATE was missed. The sample is drawn per code, not per dollar, so it doesn't bound GATE's cost error |
+| Q6 | Sub-agent calls 8.8% ($96.88; 1,814 calls) | **Neither bar** (between 5% and 20%): no D metric now; not ruled out | None: by transcript file |
+| Q7 | Cold re-cache 0.3% ($3.20) | **Under 3%**: the idle guard is not a cost lever | None |
+| Q8 | 28.4% of main-thread cost ($285.80 of $1,005.51) | **Neither bar** (between 10% and 30%): the 250k limit is not D's first rule; not ruled out | None: from recorded context sizes |
 | Q9 | E1, n 17 before / 19 after: median peak 470k → 247k (−47.4%, p 0.0010); re-read 27.2M → 6.7M (−75.4%, p 0.0006) | **Associated**: both fall ≥ 25% with p < 0.05. The case study may say E1 "coincided with" the fall | None: session-level rows |
 | Q10 | E2, n 32 / 31 (`base1K` 28 / 31): peak 239.5k → 287k (+19.8%, p 0.9926); re-read 9.1M → 12.7M (+39.6%, p 0.9005); `base1K` 45.7k → 49.6k (+8.5%, p 1.0000) | **Not associated**: none of the three fell. The case study may not say E2 "coincided with" a fall | None |
-| Q11 | $104.89 more at Opus rates over the 43 of 208 priced game sessions that ran a call off Opus: 7.0% of the game's $1,500.21 | **Not met** (under 10%): routing is not a lever worth more trials in D | None |
+| Q11 | $182.23 more at Opus rates over the 43 of 208 priced game sessions that ran a call off Opus: 12.8% of the game's $1,422.87 | **Met** (≥ 10%): routing is a lever worth more trials in D | None |
 
 No figure above uses a code under the hand read's bar. OTHER is the only one (F1 0.000, n hand 1, n tool 0), and M2 has no OTHER row: the tool gave no costed unit that code.
 
 ### Notes on the readings
 
-- **Q1 and Q8 sit at their bars.** Output is 29.35% against 30%, and the cost past 250k is 30.1% against 30%. Both come from recorded usage and context sizes, not from attribution, so neither moves with T0′ or the classifier. The readings stand as written; package D should know both are near the line.
-- **THINK leads under T0′.** THINK's $317.47 holds its output ($176.67, M1's thinking); the rest is earlier thinking re-read and re-written as context on later calls, which T0′ assumes (brief §5, the amendment). Its place at the top of M2 rests on that assumption.
-- **What the fixed start is made of.** Where the first request's shape was recorded, BASE splits into tool schemas $72.44, the first messages $51.93 and the system text $9.95. The tool schemas are the largest known part, and a start-read budget doesn't reach them: they are set by which tools and servers a session loads.
+- **Q1 and Q8 sit near their bars, and the price correction moved both across.** Output is 31.41% against 30%, and the cost past 250k is 28.4% against 30%. Both come from recorded usage and context sizes, so neither moves with T0′ or the classifier, but both move with the price table: one rate, $0.10 per million off on one model, carried each across its line. Package D should know both are near the line.
+- **Q2's set is one of several.** OUT (15.8%), DOC (15.5%) and BASE (14.3%) sit within 1.5 points, and THINK + DOC + BASE also reaches 50% (57.6%). The tool takes the largest codes first, as it did for part C; the correction moved OUT past DOC and BASE.
+- **THINK leads under T0′.** THINK's $307.04 holds its output ($176.67, M1's thinking); the rest is earlier thinking re-read and re-written as context on later calls, which T0′ assumes (brief §5, the amendment). Its place at the top of M2 rests on that assumption.
+- **What the fixed start is made of.** Where the first request's shape was recorded, BASE splits into tool schemas $63.11, the first messages $45.46 and the system text $8.54. The tool schemas are the largest known part, and a start-read budget doesn't reach them: they are set by which tools and servers a session loads.
 - **Q5 measures a rule in force.** "One gate per batch" arrived with E1, and every priced transcript in the corpus starts after E1 (`MANIFEST.json`'s `first`; the one older file is omni's, and omni is unpriced). So 0.1% is the gate's cost with the rule in place. It does not say what dropping the rule would cost.
 - **Q10's rises are not tested.** The register reads falls only (a one-sided test). The three medians rose; that is an observation, not a reading. The after-window ends at X1.
 - **E2's multi-commit share fell** (0.906 → 0.484, −46.6%, p 0.0006). The register didn't name this metric for Q10, so it is not a reading, and nothing here rests on it. D may register it before testing it again.
 
 ### Proposal for package D
 
-The rules and content types to target first, in this order, each with its metric and this corpus's baseline. D sets the targets.
+The rules and content types to target first, in this order, each with its metric and this corpus's baseline. D sets the targets. Q1's output reading puts effort and model rules first.
 
-1. **The 250k limit** (Q8). Metric M8: main-thread cost past 250k ÷ main-thread cost. Baseline 30.1%.
-2. **Thinking** (Q2, THINK 26.9%). Candidate rules: effort per kind of part, and session length, since under T0′ a call's thinking is re-read on every later call. Metric: THINK's M2 share, with M1's thinking output ($176.67) beside it, so the output part and the carried part of thinking's cost are reported apart. Those two figures alone can't tell effort from session length; that needs per-call thinking over comparable work.
-3. **The start read** (Q2's DOC and BASE; Q3). A tighter start-read budget, as a trial. Metric M3: BASE + DOC.STEER, baseline 24.5%, reported with DOC.STEER (9.6%) and BASE's parts apart, since the tool schemas ($72.44 where split) are outside a reading budget.
-4. **Read narrowly on Read** (Q4). Metric M4: Read's share of tool-result cost, baseline 61.1%.
+1. **Thinking** (Q1, Q2: THINK 27.9%). Candidate rules: effort per kind of part, and session length, since under T0′ a call's thinking is re-read on every later call. Metric: THINK's M2 share, with M1's thinking output ($176.67) beside it, so the output part and the carried part of thinking's cost are reported apart. Those two figures alone can't tell effort from session length; that needs per-call thinking over comparable work.
+2. **Model routing** (Q1, Q11). More routing trials, under `docs/MODEL_CHOICE.md`'s protocol. Metric M10: the routed sessions' cost at Opus rates minus their cost, over the game's cost, baseline 12.8%. It is a price difference at fixed usage, and a trial's review cost comes on top until a kind is promoted.
+3. **The model's own output** (Q2: OUT 15.8%). The text and tool calls the model writes, re-read as context on every later call. Metric: OUT's M2 share, baseline 15.8%.
+4. **The start read** (Q2's DOC; Q3). A tighter start-read budget, as a trial. Metric M3: BASE + DOC.STEER, baseline 23.5%, reported with DOC.STEER (9.2%) and BASE's parts apart, since the tool schemas ($63.11 where split) are outside a reading budget.
+5. **Read narrowly on Read** (Q4). Metric M4: Read's share of tool-result cost, baseline 59.8%.
 
-Not targets, by the register: trimming the gate's output (Q5), the idle guard (Q7), and more routing trials (Q11). Undecided: sub-agents (Q6, 8.2%), which get no place in the first set, and the order between context-size and effort rules (Q1).
+Not targets, by the register: trimming the gate's output (Q5) and the idle guard (Q7). Undecided: the 250k limit (Q8, 28.4%) and sub-agents (Q6, 8.8%), which get no place in the first set.
 
 ### Claims package E may and may not make
 
 **May**, each with its n and the words "list price" and "one owner's sessions":
-- Cost by token type over 175 sessions: cache reads 43.3%, cache writes 27.4%, output 29.35%.
-- Thinking, doc reads and the fixed start were the largest content codes, at 26.9%, 15.7% and 14.9% of cost, with thinking sized by recorded thinking tokens and assumed to stay in the context.
-- 30.1% of main-thread cost went to calls past 250k context.
+- Cost by token type over 175 sessions: cache reads 39.3%, cache writes 29.3%, output 31.4%.
+- Thinking, the model's own output and doc reads were the largest content codes, at 27.9%, 15.8% and 15.5% of cost, with thinking sized by recorded thinking tokens and assumed to stay in the context.
+- 28.4% of main-thread cost went to calls past 250k context.
 - Session economy (E1) coincided with a fall in median peak context per session from 470k to 247k and in re-read from 27.2M to 6.7M (n 17 before, 19 after, six-day windows, p 0.0010 and 0.0006). Median list cost per session in the same windows went from $15.28 to $5.92; the association was declared on peak and re-read, so cost is reported beside them, not as the test. All of these are per session: E1 also brought one package per session and briefs in parts, which moves work into more, smaller sessions.
 - Gate runs cost 0.1% of list price, with "one gate per batch" in force.
-- The calls routed off Opus would have cost $104.89 more at Opus list rates for the same tokens, 7.0% of the game's cost. How many tokens Opus would have used is not observed, so this is a price difference at fixed usage, not a measured saving.
+- The calls routed off Opus would have cost $182.23 more at Opus list rates for the same tokens, 12.8% of the game's cost. How many tokens Opus would have used is not observed, so this is a price difference at fixed usage, not a measured saving.
 - The content classifier agreed with a blind hand coder at κ 0.970 over 180 units.
 
 **May not:**
@@ -107,13 +120,15 @@ Not targets, by the register: trimming the gate's output (Q5), the idle guard (Q
 - Carry these shares to other projects or owners.
 - Say anything about subscription usage. Every figure is list price, and providers don't publish how a plan weighs models (`docs/MODEL_CHOICE.md` → What a trial weighs).
 - Cite the figures in brief §2's "Known before this register" as this brief's findings.
+- Cite part C's figures at the old Sonnet rate (output 29.35%, past 250k 30.1%, routing 7.0%) as findings.
 
 ### Limits
 
-- **One project.** The game is 171 of 175 sessions and $1,165.49 of the $1,179.69. The kit (2 sessions), ledger (1) and omni (1) columns in `METRICS.md` rest on one or two sessions each, and omni's 45 calls are all unpriced.
+- **One project.** The game is 171 of 175 sessions and $1,088.19 of the $1,102.39. The kit (2 sessions), ledger (1) and omni (1) columns in `METRICS.md` rest on one or two sessions each, and omni's 45 calls are all unpriced.
 - **The windows.** E1's are six days on each side (n 17 / 19). No September transcript survives, so the before-window rests entirely on the game's committed ledger, and part A's parity check could only test the after-window. E2's are seven days before and up to X1 after (n 32 / 31). Several metrics run per event; the register named in advance which ones read. The permutation test is conservative on ties (`docs/IDEAS.md`).
 - **X1.** Windows pick sessions by start time, so none starts after X1. But one session in E2's after-window started before X1 and ended after it (`e92b49f9`, `MANIFEST.json`), so post-X1 activity is not wholly excluded; without it, all three of Q10's medians still rise (`docs/research/OUTSIDE_REVIEW.md`, item 5). M1–M8 pool sessions from before and after X1, so they mix two kinds of work.
 - **Unpriced calls (D7).** 59 calls (3,714,500 tokens, 3 sessions) are counted but left out of every cost share.
+- **Prices.** List prices are the kit's `PRICES`, checked against the live price page on 2026-11-10; until then Sonnet 5.5's cache read was priced at twice its rate (the correction above). Claude Code's recorded cost sits 1–4% above the computed one on many game sessions from 2026-10-21 on, on both models; the kit hasn't found why.
 - **The format is undocumented.** The tool reads transcript fields Anthropic doesn't document; a change in Claude Code can break a measure without an error.
 - **T0′.** THINK, the largest code, is sized by recorded thinking tokens under the assumption that thinking stays in the context (brief §5, the amendment, tested on the corpus's own gaps). M1, M8, M9 and M10 don't rest on it.
 - **Attribution inside a gap.** Each gap's total is exact; splitting it across units uses per-code character ratios, and codes with fewer than 20 single-unit gaps keep 3.5.
@@ -127,15 +142,15 @@ This project's own sessions are part of its corpus, so the cost of the research 
 | Session | Work | Model | Calls | List price |
 |---|---|---|--:|--:|
 | `22d76ec3` | lite tier adopted, brief 001 written | opus-5.5 xhigh | 34 | $3.65 |
-| `874927de` | part A, steps 1 to 3 and half of 4 (the first Sonnet trial) | sonnet-5.5 xhigh | 59 | $4.97 |
+| `874927de` | part A, steps 1 to 3 and half of 4 (the first Sonnet trial) | sonnet-5.5 xhigh | 59 | $3.95 |
 | `1e2da25b` | part A finished (T0′), part B's trial review of part A | opus-5.5 xhigh | 60 | $4.47 |
 | `904c719a` | part B: the hand read | opus-5.5 xhigh | 44 | $4.23 |
 | `ba1ea19b` | part C: these findings and the Codex claims check | opus-5.5 xhigh | 62 | $4.29 |
-| `5fa6cda1` | part D: the dashboard, this section and `README.md` (the second Sonnet trial) | sonnet-5.5 xhigh | 62 | $3.77 |
-| **Total** | six sessions | | **321** | **$25.38** |
+| `5fa6cda1` | part D: the dashboard, this section and `README.md` (the second Sonnet trial) | sonnet-5.5 xhigh | 62 | $2.83 |
+| **Total** | six sessions | | **321** | **$23.42** |
 
 - **Sessions and time.** Six sessions in two days (2026-11-09 and 2026-11-10), 1.7 hours of session time, 101 minutes of it work in the ledger's sense.
-- **Cost.** $25.38 at list price: $16.64 on Opus 5.5 and $8.74 on Sonnet 5.5. For comparison, the corpus the project measures is $1,179.69 over 175 sessions, so the research cost about 2% of what it measured. The two Sonnet trials were $8.74 of it, and each had a review cost as well (`docs/MODEL_CHOICE.md` → Trial log).
+- **Cost.** $23.42 at list price: $16.64 on Opus 5.5 and $6.78 on Sonnet 5.5 (at the corrected rate; part D wrote $25.38 and $8.74 at the old one). For comparison, the corpus the project measures is $1,102.39 over 175 sessions, so the research cost about 2% of what it measured. The two Sonnet trials were $6.78 of it, and each had a review cost as well (`docs/MODEL_CHOICE.md` → Trial log).
 - **Tests.** 86 tests in 9 files at part D's gate, from 10 in 1 file when the lite tier was adopted; 73 in 7 files before part D.
 - **Outside findings.** One Codex claims check on this document (`docs/research/OUTSIDE_REVIEW.md`): 8 items, 8 confirmed, all new, and no reading changed. One of them found a bug in the tool (`report` rounded shares twice, so 6 cells of `METRICS.md` were one tenth off), fixed in part D with one shared formatter (`src/format.ts`).
 - **Checks inside the project.** The trial review of part A found 2 D1, 0 D2, 1 D3 and 3 D4, a fail; that of part D found 0 D1, 0 D2, 1 D3 and 1 D4, clean. The hand read, coded blind by an Opus sub-agent, agreed with the classifier at κ 0.970.

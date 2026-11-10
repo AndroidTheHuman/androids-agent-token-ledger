@@ -68,9 +68,12 @@ describe('dashboard/data.js', () => {
       ['kit cache read', browser(byProject['kit']?.m1.cacheReadUSD ?? NaN, byProject['kit']?.totalUSD ?? NaN)],
       ['kit DOC', browser(byProject['kit']?.m2.byCode['DOC']?.usd ?? NaN, byProject['kit']?.totalUSD ?? NaN)],
     ];
+    // 'all output' and 'all CODE' were 29.4% and 7.9% before Sonnet 5.5's cache-read rate was
+    // corrected (2026-11-10); at the new figures they no longer round differently twice, and the two
+    // kit cells (no Sonnet calls, unchanged) still do.
     expect(cells).toEqual([
-      ['all output', '29.4%'],
-      ['all CODE', '7.9%'],
+      ['all output', '31.4%'],
+      ['all CODE', '7.1%'],
       ['all Glob', '0.0%'],
       ['game Glob', '0.0%'],
       ['kit cache read', '35.0%'],
