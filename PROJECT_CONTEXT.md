@@ -9,7 +9,7 @@ What exists in the code right now, one fact per line. Sessions never append here
 ## Now
 
 - Status: brief 001 closed 2026-11-10 (parts A to D; `docs/archive/2026-11/001_TOKEN_SPEND.md`); its findings were re-read the same day at Sonnet 5.5's published cache-read rate (`92d32df`), and four readings changed.
-- Next: no brief is active; the next one is the owner's call. The kit's plan (revision 2026-11-10) defers package D and names package E next (names, privacy pass, claims check, push).
+- Next: brief 002 (public release, package E's token-ledger side), approved by the owner 2026-11-10; part A on Opus 5.5 xhigh.
 - Gate: `npm run check` (typecheck + vitest), 91/91 tests in 10 files.
 - Kit: `C:\Users\xande\agentic-harness` @ `917a546` (`git -C <kit> rev-parse --short HEAD`). Every file ported from it says so in its header.
 
@@ -18,6 +18,7 @@ What exists in the code right now, one fact per line. Sessions never append here
 | Phase | Brief | Kind | Status |
 |---|---|---|---|
 | 0 | 001 token spend and harness rules | research | done (closed 2026-11-10, archived) |
+| E | 002 public release (token-ledger's side) | implementation | approved 2026-11-10 |
 
 ## Architecture as built
 
@@ -69,3 +70,6 @@ What exists in the code right now, one fact per line. Sessions never append here
 - `README.md` holds the commands.
 - Panel 3 of the dashboard draws the game's committed ledger, whose 42 rows with a Sonnet call carry the game's old cache-read rate; `sessions.json`, M9 and M10 use the corpus's re-priced rows.
 - Two corpus transcripts (`c2870417` game, `2203dd1d` kit) grew by a few hundred bytes after 2026-11-09 with no later timestamp; the rescan of 2026-11-10 took the larger copies, and no measured field moved.
+- Sonnet 5.5's cache read was $0.20 per million at launch and has been $0.10 since 2026-10-07 (Anthropic's cut; Claude Code displayed the old rate until 2.1.296, 2026-10-09). Every corpus session with a Sonnet call starts on or after 2026-10-13. The `claude-api` skill's table (cached 2026-10-06) still gives $0.20.
+- Commits from brief 002's drafting on use the repo-local address `184751174+AndroidTheHuman@users.noreply.github.com`; earlier commits keep the student address (owner, 2026-11-10: the history is pushed as it is).
+- Repo names (owner, 2026-11-10): `androids-agent-token-ledger` (this repo) and `androids-agentic-harness` (the kit), on github.com/AndroidTheHuman, both MIT.
