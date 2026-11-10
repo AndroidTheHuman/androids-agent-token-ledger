@@ -8,10 +8,10 @@ What exists in the code right now, one fact per line. Sessions never append here
 
 ## Now
 
-- Status: brief 001 closed 2026-11-10 (parts A to D; `docs/archive/2026-11/001_TOKEN_SPEND.md`); part D's trial review clean (`530a9f5`), and the owner kept the caption error at D3.
-- Next: no brief is active; the next one is the owner's call (FINDINGS names package D's first targets).
-- Gate: `npm run check` (typecheck + vitest), 86/86 tests in 9 files.
-- Kit: `C:\Users\xande\agentic-harness` @ `4dc0840` (`git -C <kit> rev-parse --short HEAD`). Every file ported from it says so in its header.
+- Status: brief 001 closed 2026-11-10 (parts A to D; `docs/archive/2026-11/001_TOKEN_SPEND.md`); its findings were re-read the same day at Sonnet 5.5's published cache-read rate (`92d32df`), and four readings changed.
+- Next: no brief is active; the next one is the owner's call. The kit's plan (revision 2026-11-10) defers package D and names package E next (names, privacy pass, claims check, push).
+- Gate: `npm run check` (typecheck + vitest), 91/91 tests in 10 files.
+- Kit: `C:\Users\xande\agentic-harness` @ `917a546` (`git -C <kit> rev-parse --short HEAD`). Every file ported from it says so in its header.
 
 ## Phases and briefs
 
@@ -25,7 +25,8 @@ What exists in the code right now, one fact per line. Sessions never append here
 
 - `tools/sessions.ts`, `tools/sessionMeasures.ts`: the kit's session ledger. `npm run sessions` writes `docs/session-ledger.json` and `docs/SESSION_LEDGER.md` for this repo's own sessions; `-- --current` prints the newest row; `-- --project=<path> --ledger=<dir>` measures another project.
 - `tools/sessions.ts` differs from the kit only in D6 (the row's `title` is the id's first 8 characters) and in exporting `context` and `runs`, both listed in its header.
-- `tests/sessionMeasures.test.ts`: the kit's test of the measures, so the gate has something to check.
+- `tools/sessionMeasures.ts` and `tools/sessions.ts` are the kit's at `917a546`: Sonnet 5.5's cache read is $0.10 per million, *Cost* is the computed list price, and the price check runs per model and says FAILED outside 0.95–1.05.
+- `tests/sessionMeasures.test.ts` and `tests/sessions.test.ts`: the kit's tests of the measures, the price check and the cost column.
 - `.claude/settings.json`: the ledger's `UserPromptSubmit` hook (`tools/sessions.ts --hook`), which warns past 250k context.
 
 ### Tool (`src/`, brief 001)
@@ -61,8 +62,10 @@ What exists in the code right now, one fact per line. Sessions never append here
 - Transcripts hold no thinking text: 9,406 of 10,904 calls with recorded thinking tokens have 0 THINK characters, so THINK is sized by `thinking_tokens`.
 - 175 of MANIFEST's 176 main sessions have a row; `75eafff7` (game) made 0 calls, and the kit's ledger skips it too.
 - The "tool part" kind is back on Opus after brief 001 part A's trial failed. The narrower kind "UI part over fixed data" had one clean trial (brief 001 part D, 2026-11-10), and a second clean trial in a row promotes it (`docs/MODEL_CHOICE.md`).
-- The findings (2026-11-10, `docs/research/FINDINGS.md`): Q2, Q3, Q4 and Q8 met; Q9 associated; Q10 not associated; Q5 and Q7 under their lower bars; Q11 not met; Q1 and Q6 meet neither bar. Package D's first targets: the 250k limit, THINK, the start read, Read.
+- The findings (2026-11-10, re-read at the corrected Sonnet rate, `docs/research/FINDINGS.md`): Q1 (output 31.41%), Q2, Q3, Q4 and Q11 (12.8%) met; Q9 associated; Q10 not associated; Q5 and Q7 under their lower bars; Q6 and Q8 (28.4%) meet neither bar. Package D's first targets: thinking, model routing, the model's own output, the start read, Read.
 - The hand read (2026-11-09): κ 0.970 over 180 units; every sampled code F1 ≥ 0.909; OTHER has no unit with characters in the corpus, so it was not sampled and no figure uses it (`docs/research/HANDREAD.md`).
 - A failed trial narrows a kind rather than ending trials: a brief may propose a trial on a narrower kind (owner, 2026-11-09; `docs/MODEL_CHOICE.md` → Promotion).
 - After `npm run sessions` adds a row, run `npm run ledger -- dashboard` to refresh panel 5 (the gate passes either way).
 - `README.md` holds the commands.
+- Panel 3 of the dashboard draws the game's committed ledger, whose 42 rows with a Sonnet call carry the game's old cache-read rate; `sessions.json`, M9 and M10 use the corpus's re-priced rows.
+- Two corpus transcripts (`c2870417` game, `2203dd1d` kit) grew by a few hundred bytes after 2026-11-09 with no later timestamp; the rescan of 2026-11-10 took the larger copies, and no measured field moved.
