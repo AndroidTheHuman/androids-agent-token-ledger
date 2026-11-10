@@ -64,6 +64,7 @@ Agents from other providers read the repo without writing to it: `AGENTS.md` set
 - A commit review at the start of the next session, beside the merge.
 - A cold read of a brief or part, before it is approved or built.
 - A second answer to an owner question, put beside Claude's own.
+- A claims check of a document that makes factual claims about the repo (`outside-review` use D; brief 001 D10 names the first, on `FINDINGS.md`).
 
 **Measures (fix them before run 1):**
 - For each run: the model, wall time, items N, confirmed (D1–D3, or a gap), new (not in the handoff, the brief or the known issues), precision = confirmed ÷ N, and the session calls spent on triage.
@@ -77,6 +78,7 @@ Agents from other providers read the repo without writing to it: `AGENTS.md` set
 
 | Date | Run | Route and target | Tool, model | Wall | N | Confirmed | New | Precision | Triage calls | Note |
 | --- | --- | --- | --- | --: | --: | --: | --: | --: | --: | --- |
+| 2026-11-10 | r1-codex-D-findings | Claims check (use D), `docs/research/FINDINGS.md` @ `525e6d2` | Codex (codex-cli 0.167.0), the CLI's default model, read-only | 3 min 18 s | 8 | 8 | 8 | 100% | 20 (4 of them checking the log for private-path reads: none) | Brief 001 D10. 2 of the 8 are objections accepted; no reading changed. One tool bug found (`report` double-rounds shares, 6 cells in `METRICS.md`). Triage: `docs/research/OUTSIDE_REVIEW.md` |
 
 ## Trial log
 
