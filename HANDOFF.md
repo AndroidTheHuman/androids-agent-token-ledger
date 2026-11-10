@@ -1,0 +1,94 @@
+# Session handoff — 2026-11-10 · brief 001 part D trial review, and brief 001 closed · Opus 5.5 xhigh
+
+Session `e51e26df`. I ran the previous handoff's check-first items (all passed), merged its proposed lines and archived it (`8095688`). Then I reviewed part D's trial commit `933e77e` under `docs/MODEL_CHOICE.md` → Review. The verdict is clean, and I fixed the one D3. The owner had opened the dashboard from disk and seen all five panels with data, so I closed brief 001 and archived it (`530a9f5`). No brief is active now.
+
+## Files changed
+
+| File | Change | Type |
+|---|---|---|
+| `PROJECT_CONTEXT.md`, `docs/archive/CHANGELOG.md`, `docs/archive/2026-11/HANDOFF_2026-11-10_5fa6cda1.md` | The merge of session `5fa6cda1`'s handoff (`8095688`). The `src/cli.ts` context line now lists `dashboard`, which the proposals had missed | structural |
+| `dashboard/index.html` | Panel 4's caption gives both M9 windows (six days either side of E1; seven days before E2, and up to seven after, cut at X1). It said "six days before and after" for both | behavioural (text only) |
+| `docs/MODEL_CHOICE.md` | The UI kind's status (trial 1 clean); part D's trial-log row and its findings | structural |
+| `docs/research/FINDINGS.md` | "How this was built" carries part D's final ledger figures (62 calls, $3.77; totals 321 calls, $25.38; Sonnet $8.74; 101 min work) and part D's verdict. The header cites the brief's archive path | behavioural (figures) |
+| `docs/briefs/001_TOKEN_SPEND.md` → `docs/archive/2026-11/001_TOKEN_SPEND.md` | Archived, with a **Closed** line | structural |
+| `docs/session-ledger.json`, `docs/SESSION_LEDGER.md`, `dashboard/data.js` | Regenerated just before this handoff | structural |
+
+## Verification status
+
+### Check-first items of the previous handoff
+**Status**: VERIFIED
+**Evidence**: `npm run check` (Bash, the first run) → 9 files, 86/86, exit 0. `git ls-files data/private | wc -l` → 0, and `git status --short` was empty. `npm run ledger -- report` → `git status --short` still empty. `findings-figures.mjs` → "tokens 184, not found 8". `npm run sessions` then `npm run ledger -- dashboard` → only the two ledger files and `data.js` changed, and the gate stayed at 86/86.
+**Risk**: Low
+
+### The trial review of `933e77e`
+**Status**: VERIFIED (code read and data checks; the grades are judgment, see Judgment calls 1 and 2)
+**Evidence**:
+- I read `src/format.ts`, `src/dashboard.ts`, the `cli.ts` and `report.ts` diffs, all three test files, and `dashboard/index.html` lines 96–479.
+- Every new share keeps its old denominator (`report.ts` lines 112–141 against the new `pctOf` calls), and `git diff 933e77e^ 933e77e -- docs/research/METRICS.md` shows exactly 6 cells moved.
+- A data script over `data.js`: `m9` has only E1 and E2. The largest game session is $44.93 (axis $50) and the highest peak is 906k (axis 1,000k). Every field the page reads exists in `own` and `game`. `changePct` is stored at full precision and matches `METRICS.md`'s M9 tables.
+- FINDINGS' sums: 321 calls and $25.38 are rows 1–6 of `docs/session-ledger.json`. "10 tests in 1 file" matches `git grep` on the first three commits.
+**Risk**: Low
+
+### Panel 4's caption fix
+**Status**: VERIFIED for the text, CLAIMED for the rendering (not opened in a browser)
+**Evidence**: `npm run check` → 86/86, including the page's "inline script compiles" test. Only the `<p class="cap">` text changed (`git show 530a9f5 -- dashboard/index.html`: 1 line).
+**Risk**: Low
+
+### Brief 001 closed
+**Status**: VERIFIED
+**Evidence**: `ls docs/briefs` → empty. `git show --stat 530a9f5` shows the rename. The only live reference to the old path (FINDINGS line 3) now points to the archive. The other references are in archived handoffs and in the verbatim Codex prompt in `OUTSIDE_REVIEW.md` line 14, which are records and were left alone.
+**Risk**: Low
+
+### Gate and privacy
+**Status**: VERIFIED
+**Evidence**: `npm run check` → typecheck clean, 9 files, 86/86, exit 0. I ran it after the last edit and before `530a9f5`. All five runs this session were in Bash, and the import failure from the last handoff did not recur. `git ls-files data/private | wc -l` → 0. This session did not read the game repo.
+**Risk**: Low
+
+## Check first next session
+
+- [ ] `npm run check` → 86/86 tests in 9 files, exit 0.
+- [ ] `git ls-files data/private | wc -l` → 0; `git status --short` → empty.
+- [ ] `ls docs/briefs` → empty; `sed -n 5p docs/archive/2026-11/001_TOKEN_SPEND.md` → the **Closed** line.
+- [ ] Open `dashboard/index.html`: panel 4's caption names both windows (upgrades the rendering to VERIFIED; optional, text only).
+- [ ] The owner's word on part D's verdict (Questions, below).
+- Next: none. Brief 001 is closed, no brief is active, and the next brief is the owner's call (CLAUDE.md rule 3). FINDINGS names package D's first targets: the 250k limit, THINK, the start read, Read.
+
+## Known open issues
+
+- **FINDINGS' "How this was built" leaves out this session.** It tabulates the six sessions that built parts A to D, with final figures, and names `e51e26df` as the seventh. A row for it would be partial again, for the same reason part D's was.
+- **`triage-r1.mjs` prints 6 lines.** It checks the stored share, not `METRICS.md` (unchanged; `tests/dashboard.test.ts` is the check).
+- **The Bash import failure did not recur.** The last handoff saw `npm run check` fail 7 test files at import once in Bash. It happened in none of my 5 Bash runs, so the cause is still unknown.
+- Unchanged from earlier handoffs: IDEAS line 13 (ties in M9), calibration pooling main and sub-agent gaps, `rules.json`'s extra `closedAt`, two classifier refinements, the interrupt-marker question, and part D's three IDEAS lines (run `dashboard` from `sessions`, draw X2, keyboard focus for dots).
+
+## Judgment calls
+
+1. **The caption error is graded D3, not D1.** D1 is "a behaviour bug, or a deviation from the brief that the handoff doesn't report". The computed windows are the brief's, no number is wrong, the headings under the caption print the right dates, and the brief doesn't specify the caption. Against that, the page misstated the brief's method. A stricter reading would call that a deviation, which makes it a D1 and the verdict a fail. I took D3 because the product's numbers and dates were right. The owner may grade it otherwise.
+2. **The global's name is graded D4.** Brief D8 writes `window.LEDGER = …` to illustrate the mechanism (an assignment, so the page opens from `file://`). The mechanism is what `data.js` does; only the name differs.
+3. **I fixed a D3.** The protocol requires only D1 and D2 fixes. The caption was a one-line wrong statement in a research product, so I fixed it.
+4. **FINDINGS' closing section was refreshed, not counted against the trial.** The section was written inside the session it measures, and it said so. With the brief closing, final figures exist for all six sessions, so I put them in.
+5. **The owner's check counts as met.** It rests on "I can see the 5 panels with the data". The brief's checkpoint asks for exactly that. The handoff's suggestion to hover a bar and a dot wasn't reported on, and it isn't in the checkpoint.
+6. **The merge corrected one line beyond the proposals:** the `src/cli.ts` context line, which lacked `dashboard`.
+
+## Questions for the owner
+
+- **Do you accept part D's verdict, clean (0 D1, 0 D2, 1 D3, 1 D4)?** It rests on Judgment call 1. If you grade the caption a D1, the verdict is fail and the kind returns to Opus. If clean stands, "UI part over fixed data" needs one more clean trial in a row (a future UI part on Sonnet 5.5 xhigh) to be promoted.
+- **What comes next?** No brief is active. FINDINGS' package D targets are one candidate. The next brief starts in a fresh session on Opus 5.5 xhigh (`brief-spec`).
+
+## Session cost
+
+`e51e26df-1aee-46c3-bcd9-8cfe3b61e47a`: 35 calls, peak 136k, re-read 3.4M (sub-agents: 0), 5 gates, 0/39 tool errors, 0 big reads. Flags: 2 commits · opus-5.5 xhigh · $2.26. Measured just before this handoff; writing and committing it add a few calls.
+- **2 commits** (3 with this handoff's): the previous handoff's merge, then the review with the brief's closure. That is the usual merge, package, handoff shape, and it is one package: the trial review that finishes brief 001. Next session: a new brief gets its own session.
+- The review alone (merge included) cost 29 calls and $1.86, logged as part D's review cost in `docs/MODEL_CHOICE.md`.
+
+## Proposed changelog lines
+
+[PROPOSED — not yet confirmed]
+- 2026-11-10: Brief 001 part D's trial review on Opus 5.5 xhigh: clean (0 D1, 0 D2, 1 D3, 1 D4), logged in `docs/MODEL_CHOICE.md`. The D3 is fixed: panel 4's caption now names both M9 windows. FINDINGS' "How this was built" carries part D's final ledger figures (`530a9f5`). The owner opened `dashboard/index.html` from disk and saw five panels with data. Brief 001 closed and archived to `docs/archive/2026-11/`. Gate 86/86 in 9 files. Session `e51e26df`.
+
+## Proposed PROJECT_CONTEXT.md changes
+
+[PROPOSED — not yet confirmed]
+- Now: Status: brief 001 closed 2026-11-10 (parts A to D; `docs/archive/2026-11/001_TOKEN_SPEND.md`); part D's trial review clean (`530a9f5`). Replaces: "Status: brief 001 parts A to D built (D: `933e77e`); the trial review of part D and the owner's check of `dashboard/index.html` are open."
+- Now: Next: no brief is active; the next one is the owner's call (FINDINGS names package D's first targets). Replaces: "Next: the trial review of part D (`docs/MODEL_CHOICE.md` → Review) on Opus 5.5 xhigh; then, once the owner has opened the dashboard, archive brief 001."
+- Phases and briefs: row 001, Status `done (closed 2026-11-10, archived)`.
+- Things to be aware of: The "tool part" kind is back on Opus after brief 001 part A's trial failed. The narrower kind "UI part over fixed data" had one clean trial (brief 001 part D, 2026-11-10), and a second clean trial in a row promotes it (`docs/MODEL_CHOICE.md`). Replaces: "The "tool part" kind is back on Opus after brief 001 part A's trial failed; part D runs on Sonnet 5.5 xhigh as the first trial of the narrower kind "UI part over fixed data" (owner, 2026-11-10; `docs/MODEL_CHOICE.md`)."
