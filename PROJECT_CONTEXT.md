@@ -8,8 +8,8 @@ What exists in the code right now, one fact per line. Sessions never append here
 
 ## Now
 
-- Status: brief 001 parts A and B done (B: trial review `9390ea2`, hand read κ 0.970 `ad99263`).
-- Next: brief 001 part C (`FINDINGS.md`, the Codex claims check), on Opus 5.5 xhigh.
+- Status: brief 001 parts A, B and C done (C: findings `525e6d2`, Codex claims check `00d4511`).
+- Next: brief 001 part D (the dashboard, "How this was built", `README.md`), on Sonnet 5.5 xhigh as the first trial of "UI part over fixed data"; the owner reads `/usage` before and after.
 - Gate: `npm run check` (typecheck + vitest), 73/73 tests in 7 files.
 - Kit: `C:\Users\xande\agentic-harness` @ `4dc0840` (`git -C <kit> rev-parse --short HEAD`). Every file ported from it says so in its header.
 
@@ -17,7 +17,7 @@ What exists in the code right now, one fact per line. Sessions never append here
 
 | Phase | Brief | Kind | Status |
 |---|---|---|---|
-| 0 | 001 token spend and harness rules | research | parts A and B done |
+| 0 | 001 token spend and harness rules | research | parts A, B and C done |
 
 ## Architecture as built
 
@@ -42,6 +42,10 @@ What exists in the code right now, one fact per line. Sessions never append here
 - `tests/handread.test.ts`: the sampler's pick, shuffle, truncation and cache guard; κ and F1 on a hand-worked case; the `codes.json` validation.
 - The outputs `data/corpus/sessions.json`, `categories.json`, `summary.json`, `calibration.json` and `docs/research/METRICS.md` are committed; `report` regenerates them byte for byte.
 
+### Outside review (brief 001 part C)
+
+- `AGENTS.md` and `.claude/skills/outside-review/SKILL.md`, ported from kit @ `4dc0840`: Codex reads read-only, never `data/private/` or `~/.claude/projects/`; answers go to `data/private/outside/` (git-ignored); triage to `docs/research/OUTSIDE_REVIEW.md`.
+
 ## Things to be aware of
 
 - Read-only references, by absolute path. Never edit them or run their npm scripts: the kit (`C:\Users\xande\agentic-harness`), the game (`C:\Users\xande\infinity autobattler`) and Claude Code's transcripts (`C:\Users\xande\.claude\projects\`).
@@ -53,6 +57,7 @@ What exists in the code right now, one fact per line. Sessions never append here
 - Brief §5 was amended 2026-11-09 from T0 to T0′ (thinking stays in the context): under T0 the tool_result medians were CODE 1.929 and DOC 2.107; under T0′ they are 2.202 (n = 195) and 2.281 (n = 407).
 - Transcripts hold no thinking text: 9,406 of 10,904 calls with recorded thinking tokens have 0 THINK characters, so THINK is sized by `thinking_tokens`.
 - 175 of MANIFEST's 176 main sessions have a row; `75eafff7` (game) made 0 calls, and the kit's ledger skips it too.
-- The "tool part" kind is back on Opus after brief 001 part A's trial failed (`docs/MODEL_CHOICE.md`), so part D runs on Opus.
+- The "tool part" kind is back on Opus after brief 001 part A's trial failed; part D runs on Sonnet 5.5 xhigh as the first trial of the narrower kind "UI part over fixed data" (owner, 2026-11-10; `docs/MODEL_CHOICE.md`).
+- The findings (2026-11-10, `docs/research/FINDINGS.md`): Q2, Q3, Q4 and Q8 met; Q9 associated; Q10 not associated; Q5 and Q7 under their lower bars; Q11 not met; Q1 and Q6 meet neither bar. Package D's first targets: the 250k limit, THINK, the start read, Read.
 - The hand read (2026-11-09): κ 0.970 over 180 units; every sampled code F1 ≥ 0.909; OTHER has no unit with characters in the corpus, so it was not sampled and no figure uses it (`docs/research/HANDREAD.md`).
 - A failed trial narrows a kind rather than ending trials: a brief may propose a trial on a narrower kind (owner, 2026-11-09; `docs/MODEL_CHOICE.md` → Promotion).
