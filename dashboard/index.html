@@ -326,10 +326,22 @@
     return table(head, rows, { numeric: numeric });
   }
 
-  // ── panel 3: per-session cost and peak over time (the game's committed ledger) ───────────
+  // ── panel 3: per-session cost and peak over time (the game's committed ledger, priced from the corpus where a transcript survives) ───────────
   var inCorpus = {};
   L.sessions.forEach(function (r) { inCorpus[r.id] = true; });
-  var GAME = L.game.slice().sort(function (a, b) { return Date.parse(a.start) - Date.parse(b.start); });
+  // gameRows:start (brief 002 D1): each game session at the corpus's list price where a transcript survives
+  function gameRows(game, sessions) {
+    var corpusUSD = {};
+    sessions.forEach(function (r) { if (r.project === 'game') corpusUSD[r.id] = r.listUSD; });
+    return game.map(function (r) {
+      var row = {};
+      for (var k in r) row[k] = r[k];
+      if (Object.prototype.hasOwnProperty.call(corpusUSD, r.id)) row.listUSD = corpusUSD[r.id];
+      return row;
+    });
+  }
+  // gameRows:end
+  var GAME = gameRows(L.game, L.sessions).sort(function (a, b) { return Date.parse(a.start) - Date.parse(b.start); });
   var MARKED = ['E1', 'E2', 'E3', 'E4', 'X1'];
   var RULES = L.rules.filter(function (r) { return MARKED.indexOf(r.id) >= 0; })
     .sort(function (a, b) { return Date.parse(a.committedAt) - Date.parse(b.committedAt); });
@@ -454,8 +466,9 @@
   ]);
   var withTranscript = GAME.filter(function (r) { return inCorpus[r.id]; }).length;
   var others = L.sessions.filter(function (r) { return r.project !== 'game'; }).length;
-  $('p3-cap').textContent = 'The game’s committed ledger: ' + GAME.length + ' sessions, ' + withTranscript + ' with a surviving transcript. The ' + others +
-    ' sessions of the other projects are not plotted. Markers sit at each rule’s commit time.';
+  $('p3-cap').textContent = 'The game’s committed ledger: ' + GAME.length + ' sessions, ' + withTranscript + ' with a surviving transcript. ' +
+    'Cost is the corpus’s list price where a transcript survives (Sonnet 5.5 cache reads at $0.10 per million, the rate since 2026-10-07) and the ledger’s for the ' +
+    (GAME.length - withTranscript) + ' others, all on Opus. The ' + others + ' sessions of the other projects are not plotted. Markers sit at each rule’s commit time.';
   $('p1-table').appendChild(tableP1());
   $('p2-table').appendChild(tableP2());
   $('p3-table').appendChild(tableP3());

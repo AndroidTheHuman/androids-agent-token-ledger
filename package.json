@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Research project: where coding-agent sessions spend their tokens, and which harness rules change that. Built on the agentic-harness kit (lite tier).",
+  "license": "MIT",
   "engines": {
     "node": ">=22.18"
   },

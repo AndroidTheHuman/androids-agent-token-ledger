@@ -156,4 +156,33 @@ describe('dashboard/index.html', () => {
     expect(scripts.length).toBeGreaterThan(0);
     for (const s of scripts) expect(() => new vm.Script(s)).not.toThrow();
   });
+
+  it('prices panel 3 from the corpus where a transcript survives (brief 002 D1)', () => {
+    interface Row { id: string; listUSD: number; project?: string }
+    const start = html.indexOf('// gameRows:start');
+    const end = html.indexOf('// gameRows:end');
+    expect(start, 'gameRows:start marker').toBeGreaterThan(-1);
+    expect(end, 'gameRows:end marker').toBeGreaterThan(start);
+    const gameRows = new Function(`${html.slice(start, end)}\nreturn gameRows;`)() as (game: Row[], sessions: Row[]) => Row[];
+
+    const { ledger } = load();
+    const before = json<Row[]>('data', 'corpus', 'game-ledger.json');
+    const ledgerUSD = new Map(before.map((r) => [r.id, r.listUSD]));
+    const rows = gameRows(ledger.game as Row[], ledger.sessions as Row[]);
+    const sum = (usd: number[]): string => usd.reduce((a, b) => a + b, 0).toFixed(2);
+
+    expect(rows).toHaveLength(207);
+    const moved = rows.filter((r) => r.listUSD !== ledgerUSD.get(r.id));
+    expect(moved).toHaveLength(42);
+    expect(sum(moved.map((r) => ledgerUSD.get(r.id) ?? NaN))).toBe('265.76');
+    expect(sum(moved.map((r) => r.listUSD))).toBe('189.20');
+    expect(sum(rows.map((r) => r.listUSD))).toBe('1416.85');
+
+    const inCorpus = new Set((ledger.sessions as Row[]).filter((r) => r.project === 'game').map((r) => r.id));
+    const noTranscript = rows.filter((r) => !inCorpus.has(r.id));
+    expect(noTranscript).toHaveLength(37);
+    for (const r of noTranscript) expect(r.listUSD, r.id).toBe(ledgerUSD.get(r.id));
+
+    expect(ledger.game).toEqual(before);
+  });
 });
