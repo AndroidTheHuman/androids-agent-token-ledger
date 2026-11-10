@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token ledger</title>
+<!-- Open from disk. Reads data.js (npm run ledger -- dashboard); no server, no network. -->
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7; --surface: #fcfcfb;
+    --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+    --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11, 11, 11, 0.10);
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+    --s5: #e87ba4; --s6: #008300; --s7: #6250d6; --s8: #e34948;
+    --on4: #0b0b0b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --page: #0d0d0d; --surface: #1a1a19;
+      --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+      --grid: #2c2c2a; --axis: #383835; --ring: rgba(255, 255, 255, 0.10);
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+      --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+      --on4: #ffffff;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--page); }
+  body {
+    margin: 0; background: var(--page); color: var(--ink);
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 1040px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 22px; margin: 0 0 4px; font-weight: 600; }
+  h2 { font-size: 16px; margin: 0 0 2px; font-weight: 600; }
+  h3 { font-size: 13px; margin: 20px 0 6px; font-weight: 600; }
+  .sub, .cap { color: var(--ink2); margin: 0 0 12px; }
+  .cap { font-size: 13px; max-width: 78ch; }
+  .hero { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 20px; margin: 16px 0 8px; }
+  .hero b { font-size: 48px; line-height: 1.1; font-weight: 600; }
+  .hero span { color: var(--ink2); }
+  .panel { background: var(--surface); border: 1px solid var(--ring); border-radius: 12px; padding: 16px; margin: 20px 0; }
+  .num { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0 0 10px; font-size: 12px; color: var(--ink2); }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .legend i.dot { border-radius: 50%; }
+  .legend i.ring { border-radius: 50%; background: transparent; border: 2px solid var(--muted); width: 10px; height: 10px; }
+  .legend i.rule { width: 2px; height: 12px; border-radius: 0; background: var(--ink2); margin: 0 7px 0 4px; vertical-align: -2px; }
+  .legend i.lim { width: 14px; height: 0; border-radius: 0; border-top: 2px solid var(--ink2); margin-right: 6px; vertical-align: 3px; }
+  .chart { width: 100%; }
+  .chart svg { display: block; max-width: 100%; overflow: visible; }
+  svg text { font-family: inherit; font-size: 12px; }
+  svg .small { font-size: 11px; }
+  .t-ink { fill: var(--ink); } .t-ink2 { fill: var(--ink2); } .t-muted { fill: var(--muted); }
+  .grid { stroke: var(--grid); stroke-width: 1; }
+  .axis { stroke: var(--axis); stroke-width: 1; }
+  .rule-line { stroke: var(--ink2); stroke-width: 1; opacity: 0.7; }
+  .lim-line { stroke: var(--ink2); stroke-width: 1.5; }
+  .s1 { fill: var(--s1); } .s2 { fill: var(--s2); } .s3 { fill: var(--s3); } .s4 { fill: var(--s4); }
+  .s5 { fill: var(--s5); } .s6 { fill: var(--s6); } .s7 { fill: var(--s7); } .s8 { fill: var(--s8); } .sx { fill: var(--muted); }
+  .l1 { background: var(--s1); } .l2 { background: var(--s2); } .l3 { background: var(--s3); } .l4 { background: var(--s4); }
+  .l5 { background: var(--s5); } .l6 { background: var(--s6); } .l7 { background: var(--s7); } .l8 { background: var(--s8); } .lx { background: var(--muted); }
+  .on { fill: #ffffff; font-size: 11px; font-weight: 600; pointer-events: none; }
+  .on4 { fill: var(--on4); }
+  .dot { stroke: var(--surface); stroke-width: 2; }
+  .hollow { fill: var(--surface); stroke-width: 2; }
+  .hit { fill: transparent; pointer-events: all; }
+  rect[tabindex]:focus-visible, circle[tabindex]:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+  .scroll { overflow-x: auto; max-width: 100%; }
+  .scroll.tall { max-height: 340px; overflow-y: auto; }
+  table { border-collapse: collapse; font-size: 12.5px; width: 100%; }
+  th, td { text-align: left; padding: 5px 10px 5px 0; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+  th { color: var(--ink2); font-weight: 600; position: sticky; top: 0; background: var(--surface); }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; padding-right: 12px; }
+  tr.total td { font-weight: 600; border-top: 1px solid var(--axis); }
+  td.flags { white-space: normal; color: var(--ink2); }
+  details { margin-top: 10px; }
+  summary { cursor: pointer; color: var(--ink2); font-size: 13px; }
+  #tip {
+    position: fixed; z-index: 10; pointer-events: none; max-width: 320px; padding: 6px 10px;
+    background: var(--ink); color: var(--surface); border-radius: 8px; font-size: 12px; line-height: 1.4; white-space: pre-line;
+  }
+  #tip[hidden] { display: none; }
+  #error { border: 1px solid var(--s8); border-radius: 8px; padding: 12px 16px; margin: 16px 0; }
+  #error[hidden] { display: none; }
+  @media (max-width: 560px) { .hero b { font-size: 38px; } .panel { padding: 12px; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Token ledger</h1>
+    <p class="sub" id="lede">Where one owner's coding-agent sessions spent their tokens.</p>
+    <div class="hero"><b id="hero-total">&nbsp;</b><span id="hero-note"></span></div>
+    <p class="cap" id="hero-scope"></p>
+  </header>
+  <div id="error" hidden>No data. Run <code>npm run ledger -- dashboard</code> to write <code>dashboard/data.js</code>, then reload this page.</div>
+
+  <section class="panel" id="p1" aria-labelledby="p1h">
+    <div class="num">M1</div>
+    <h2 id="p1h">Cost by token type, per project</h2>
+    <p class="cap">Share of each project's list-price cost. Cache reads are the context re-read on every call; thinking is part of output.</p>
+    <div class="legend" id="p1-legend"></div>
+    <div class="chart" id="p1-chart"></div>
+    <details><summary>Table view</summary><div class="scroll" id="p1-table"></div></details>
+  </section>
+
+  <section class="panel" id="p2" aria-labelledby="p2h">
+    <div class="num">M2</div>
+    <h2 id="p2h">Cost by what filled the context, stacked by project</h2>
+    <p class="cap">List-price cost of each content code (brief §5), all projects together; each bar is split by project. BASE is the fixed start of a session, THINK is sized by recorded thinking tokens.</p>
+    <div class="legend" id="p2-legend"></div>
+    <div class="chart" id="p2-chart"></div>
+    <details><summary>Table view</summary><div class="scroll tall" id="p2-table"></div></details>
+  </section>
+
+  <section class="panel" id="p3" aria-labelledby="p3h">
+    <div class="num">Time</div>
+    <h2 id="p3h">Per-session cost and peak context, with the rules marked</h2>
+    <p class="cap" id="p3-cap"></p>
+    <div class="legend" id="p3-legend"></div>
+    <div class="chart" id="p3-chart"></div>
+    <details><summary>Table view: every session in the chart</summary><div class="scroll tall" id="p3-table"></div></details>
+  </section>
+
+  <section class="panel" id="p4" aria-labelledby="p4h">
+    <div class="num">M9 and M10</div>
+    <h2 id="p4h">Before and after each rule, and model routing</h2>
+    <p class="cap">Medians per session in the six days before and after (the game). These are observations, not causes: one project, no control group. The change column is the relative change; p is the seeded permutation test, and it is conservative on ties.</p>
+    <div id="p4-body"></div>
+  </section>
+
+  <section class="panel" id="p5" aria-labelledby="p5h">
+    <div class="num">This project</div>
+    <h2 id="p5h">This project's own sessions</h2>
+    <p class="cap" id="p5-cap"></p>
+    <div class="scroll" id="p5-table"></div>
+  </section>
+</main>
+<div id="tip" role="tooltip" hidden></div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  'use strict';
+  var L = window.TOKEN_LEDGER;
+  if (!L || typeof pctOf !== 'function') { document.getElementById('error').hidden = false; return; }
+
+  var NS = 'http://www.w3.org/2000/svg';
+  var GAP = 2; // the surface gap between touching marks
+  var S = L.summary;
+  var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  // ── helpers ──────────────────────────────────────────────────────────────────────────────
+  function $(id) { return document.getElementById(id); }
+  function h(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    for (var k in attrs || {}) n.setAttribute(k, attrs[k]);
+    (kids || []).forEach(function (c) { n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function s(tag, attrs, text) {
+    var n = document.createElementNS(NS, tag);
+    for (var k in attrs || {}) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function usd(x) { return '$' + x.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function int(x) { return Math.round(x).toLocaleString('en-US'); }
+  function r3(x) { return x === null ? '—' : String(Math.round(x * 1000) / 1000); }
+  function day(iso) { return iso.slice(0, 10); }
+  function table(head, rows, opts) {
+    opts = opts || {};
+    var numeric = opts.numeric || {};
+    var t = h('table');
+    var tr = h('tr');
+    head.forEach(function (c, i) { tr.appendChild(h('th', numeric[i] ? { 'class': 'n' } : {}, [c])); });
+    t.appendChild(h('thead', {}, [tr]));
+    var body = h('tbody');
+    rows.forEach(function (r, ri) {
+      var row = h('tr', opts.totalLast && ri === rows.length - 1 ? { 'class': 'total' } : {});
+      r.forEach(function (c, i) {
+        var cls = numeric[i] ? 'n' : (opts.flags === i ? 'flags' : '');
+        row.appendChild(h('td', cls ? { 'class': cls } : {}, [String(c)]));
+      });
+      body.appendChild(row);
+    });
+    t.appendChild(body);
+    return t;
+  }
+  function legend(host, items) {
+    host.textContent = '';
+    items.forEach(function (it) {
+      host.appendChild(h('span', {}, [h('i', { 'class': it.cls }), it.label]));
+    });
+  }
+
+  // ── the entities: colour follows the entity, never its rank ──────────────────────────────
+  var TYPES = [
+    { key: 'cacheReadUSD', label: 'cache read', slot: 1 },
+    { key: 'cacheWriteUSD', label: 'cache write', slot: 2 },
+    { key: 'inputUSD', label: 'uncached input', slot: 3 },
+    { key: 'outputUSD', label: 'output', slot: 4 }
+  ];
+  var SLOT = { game: 5, kit: 6, ledger: 7, omni: 8 };
+  function slotOf(project) { return SLOT[project] || 'x'; }
+  var PROJECTS = Object.keys(S.byProject).sort(function (a, b) {
+    return S.byProject[b].totalUSD - S.byProject[a].totalUSD || (a < b ? -1 : 1);
+  });
+  function metricsOf(key) { return key === 'all' ? S.overall : S.byProject[key]; }
+
+  // ── tooltip: one element, text only ──────────────────────────────────────────────────────
+  var tip = $('tip');
+  function showTip(target, x, y) {
+    var text = target.getAttribute('data-tip');
+    if (!text) { tip.hidden = true; return; }
+    tip.textContent = text;
+    tip.hidden = false;
+    var w = tip.offsetWidth, hgt = tip.offsetHeight;
+    var left = Math.min(Math.max(8, x + 14), window.innerWidth - w - 8);
+    var top = y + 16 + hgt > window.innerHeight ? y - hgt - 12 : y + 16;
+    tip.style.left = left + 'px';
+    tip.style.top = Math.max(8, top) + 'px';
+  }
+  document.addEventListener('pointermove', function (e) {
+    var t = e.target;
+    if (t && t.getAttribute && t.getAttribute('data-tip')) showTip(t, e.clientX, e.clientY); else tip.hidden = true;
+  });
+  document.addEventListener('focusin', function (e) {
+    var t = e.target;
+    if (t && t.getAttribute && t.getAttribute('data-tip')) { var b = t.getBoundingClientRect(); showTip(t, b.left, b.bottom); }
+  });
+  document.addEventListener('focusout', function () { tip.hidden = true; });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') tip.hidden = true; });
+
+  function mark(tag, attrs, tipText) {
+    attrs['data-tip'] = tipText;
+    attrs.tabindex = '0';
+    attrs.role = 'img';
+    attrs['aria-label'] = tipText.replace(/\n/g, ', ');
+    return s(tag, attrs);
+  }
+
+  // ── header ───────────────────────────────────────────────────────────────────────────────
+  var all = S.overall;
+  $('hero-total').textContent = usd(all.totalUSD);
+  $('hero-note').textContent = 'list price, ' + int(all.n.sessions) + ' sessions, ' + int(all.n.calls) + ' main-thread calls and ' + int(all.n.agentCalls) + ' sub-agent calls';
+  $('hero-scope').textContent = PROJECTS.map(function (p) { return p + ' ' + S.byProject[p].n.sessions; }).join(', ') +
+    ' sessions. One owner, one machine. Every figure is list price, not subscription usage, and calls the price list does not cover (' +
+    all.unpriced.calls + ' calls in ' + all.unpriced.sessions + ' sessions) are counted but not priced.';
+
+  // ── panel 1: M1 by project ───────────────────────────────────────────────────────────────
+  function drawP1(W) {
+    var keys = ['all'].concat(PROJECTS);
+    var narrow = W < 560, labW = narrow ? 70 : 200, rowH = narrow ? 36 : 46, barH = 26;
+    var x0 = labW + 8, span = W - x0 - 2, H = keys.length * rowH + 4;
+    var svg = s('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, role: 'group', 'aria-label': 'Cost share by token type, one bar per project' });
+    keys.forEach(function (key, i) {
+      var m = metricsOf(key), y = i * rowH + 2;
+      svg.appendChild(s('text', { x: 0, y: y + (narrow ? barH / 2 + 4 : barH / 2 - 1), 'class': 't-ink' }, key));
+      if (!narrow) svg.appendChild(s('text', { x: 0, y: y + barH / 2 + 13, 'class': 't-muted small' }, usd(m.totalUSD) + ' · ' + m.n.sessions + (m.n.sessions === 1 ? ' session' : ' sessions')));
+      if (m.totalUSD === 0) { svg.appendChild(s('text', { x: x0, y: y + barH / 2 + 4, 'class': 't-muted small' }, 'no priced calls')); return; }
+      var x = x0;
+      TYPES.forEach(function (t) {
+        var v = m.m1[t.key], w = v / m.totalUSD * span;
+        if (w < 1) return; // a part at zero draws nothing; the table view carries it
+        var dw = w > 6 ? w - GAP : w;
+        var label = pctOf(v, m.totalUSD);
+        var text = key + ' · ' + t.label + '\n' + usd(v) + ' · ' + label + ' of ' + usd(m.totalUSD) + (t.key === 'outputUSD' ? '\nof which thinking ' + usd(m.m1.thinkUSD) : '');
+        svg.appendChild(mark('rect', { x: x, y: i * rowH + 2, width: dw, height: barH, rx: 4, 'class': 's' + t.slot }, text));
+        if (dw >= label.length * 6.8 + 16) svg.appendChild(s('text', { x: x + 8, y: y + barH / 2 + 4, 'class': 'on' + (t.slot === 4 ? ' on4' : '') }, label));
+        x += w;
+      });
+    });
+    return svg;
+  }
+  function tableP1() {
+    var head = ['project', 'total', 'sessions'].concat(TYPES.map(function (t) { return t.label; })).concat(['of which thinking']);
+    var rows = ['all'].concat(PROJECTS).map(function (key) {
+      var m = metricsOf(key);
+      return [key, usd(m.totalUSD), m.n.sessions].concat(TYPES.map(function (t) { return pctOf(m.m1[t.key], m.totalUSD); })).concat([usd(m.m1.thinkUSD)]);
+    });
+    return table(head, rows, { numeric: { 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1 } });
+  }
+
+  // ── panel 2: M2 stacked by project ───────────────────────────────────────────────────────
+  function drawP2(W) {
+    var codes = Object.keys(all.m2.byCode); // written in rank order
+    var narrow = W < 560, labW = 62, valW = narrow ? 100 : 128, rowH = 26, barH = 18;
+    var x0 = labW + 4, xMax = W - valW, max = all.m2.byCode[codes[0]].usd;
+    var scale = (xMax - x0) / max, H = codes.length * rowH + 28;
+    var svg = s('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, role: 'group', 'aria-label': 'Cost by content code, one bar per code, split by project' });
+    [0, 100, 200, 300].filter(function (v) { return v <= max; }).forEach(function (v) {
+      var x = x0 + v * scale;
+      svg.appendChild(s('line', { x1: x, x2: x, y1: 0, y2: codes.length * rowH, 'class': 'grid' }));
+      svg.appendChild(s('text', { x: x, y: codes.length * rowH + 16, 'text-anchor': 'middle', 'class': 't-muted small' }, '$' + v));
+    });
+    svg.appendChild(s('line', { x1: x0, x2: x0, y1: 0, y2: codes.length * rowH, 'class': 'axis' }));
+    codes.forEach(function (code, i) {
+      var y = i * rowH + (rowH - barH) / 2, total = all.m2.byCode[code].usd, x = x0;
+      svg.appendChild(s('text', { x: 0, y: y + barH / 2 + 4, 'class': 't-ink' }, code));
+      PROJECTS.forEach(function (p) {
+        var cell = S.byProject[p].m2.byCode[code];
+        var v = cell ? cell.usd : 0, w = v * scale;
+        if (w < 1) return;
+        var dw = w > 6 ? w - GAP : w;
+        var text = code + ' · ' + p + '\n' + usd(v) + ' · ' + pctOf(v, S.byProject[p].totalUSD) + ' of ' + p + "'s cost, " + pctOf(v, all.totalUSD) + ' of all cost';
+        svg.appendChild(mark('rect', { x: x, y: y, width: dw, height: barH, rx: 3, 'class': 's' + slotOf(p) }, text));
+        x += w;
+      });
+      svg.appendChild(s('text', { x: x0 + total * scale + 6, y: y + barH / 2 + 4, 'class': 't-ink2 small' }, usd(total) + ' · ' + pctOf(total, all.totalUSD)));
+    });
+    return svg;
+  }
+  function tableP2() {
+    var head = ['code', 'all', 'share of all cost'].concat(PROJECTS);
+    var rows = Object.keys(all.m2.byCode).map(function (code) {
+      return [code, usd(all.m2.byCode[code].usd), pctOf(all.m2.byCode[code].usd, all.totalUSD)].concat(PROJECTS.map(function (p) {
+        var c = S.byProject[p].m2.byCode[code];
+        return c ? usd(c.usd) : '—';
+      }));
+    });
+    var numeric = {}; head.forEach(function (_, i) { if (i > 0) numeric[i] = 1; });
+    return table(head, rows, { numeric: numeric });
+  }
+
+  // ── panel 3: per-session cost and peak over time (the game's committed ledger) ───────────
+  var inCorpus = {};
+  L.sessions.forEach(function (r) { inCorpus[r.id] = true; });
+  var GAME = L.game.slice().sort(function (a, b) { return Date.parse(a.start) - Date.parse(b.start); });
+  var MARKED = ['E1', 'E2', 'E3', 'E4', 'X1'];
+  var RULES = L.rules.filter(function (r) { return MARKED.indexOf(r.id) >= 0; })
+    .sort(function (a, b) { return Date.parse(a.committedAt) - Date.parse(b.committedAt); });
+  var gameSlot = slotOf('game');
+
+  function drawP3(W) {
+    var narrow = W < 560, left = narrow ? 36 : 46, right = 14, top = 48, ph = narrow ? 110 : 140, gapY = 46;
+    var H = top + ph + gapY + ph + 28, plotW = W - left - right;
+    var t0 = Date.parse(GAME[0].start) - 12 * 36e5, t1 = Date.parse(GAME[GAME.length - 1].start) + 12 * 36e5;
+    function X(t) { return left + (t - t0) / (t1 - t0) * plotW; }
+    var svg = s('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, role: 'group', 'aria-label': 'Cost and peak context of each game session over time, with rule dates marked' });
+    var panels = [
+      { y: top, key: 'listUSD', max: 50, ticks: [0, 10, 20, 30, 40, 50], fmt: function (v) { return '$' + v; }, name: 'list-price cost per session' },
+      { y: top + ph + gapY, key: 'peakK', max: 1000, ticks: [0, 250, 500, 750, 1000], fmt: function (v) { return v + 'k'; }, name: 'peak context per session (the line is 250k)' }
+    ];
+    // week ticks (Mondays, UTC)
+    var d = new Date(t0); d.setUTCHours(0, 0, 0, 0);
+    while (d.getUTCDay() !== 1) d.setUTCDate(d.getUTCDate() + 1);
+    var weeks = [];
+    for (var t = d.getTime(); t <= t1; t += 7 * 864e5) weeks.push(t);
+    panels.forEach(function (p) {
+      function Y(v) { return p.y + ph - v / p.max * ph; }
+      p.Y = Y;
+      p.ticks.forEach(function (v) {
+        svg.appendChild(s('line', { x1: left, x2: left + plotW, y1: Y(v), y2: Y(v), 'class': v === 0 ? 'axis' : 'grid' }));
+        svg.appendChild(s('text', { x: left - 6, y: Y(v) + 4, 'text-anchor': 'end', 'class': 't-muted small' }, p.fmt(v)));
+      });
+      svg.appendChild(s('text', { x: left, y: p.y - 8, 'class': 't-ink2 small' }, p.name));
+      weeks.forEach(function (w) {
+        var dt = new Date(w);
+        svg.appendChild(s('text', { x: X(w), y: p.y + ph + 16, 'text-anchor': 'middle', 'class': 't-muted small' }, MONTHS[dt.getUTCMonth()] + ' ' + dt.getUTCDate()));
+      });
+    });
+    // the 250k context limit (register Q8), on the peak panel
+    var pk = panels[1];
+    svg.appendChild(s('line', { x1: left, x2: left + plotW, y1: pk.Y(250), y2: pk.Y(250), 'class': 'lim-line' }));
+    svg.appendChild(s('rect', { x: left, y: pk.Y(250) - 3, width: plotW, height: 6, 'class': 'hit', 'data-tip': '250k context\nthe limit the register tests (Q8); M8 is the main-thread cost past it' }));
+    // rule and event markers across both panels
+    var lastX = -100;
+    RULES.forEach(function (r) {
+      var x = X(Date.parse(r.committedAt));
+      var near = x - lastX < 22; // E2 and E3 are a day apart: the second label goes one row higher
+      lastX = x;
+      svg.appendChild(s('line', { x1: x, x2: x, y1: top - 4, y2: pk.y + ph, 'class': 'rule-line' }));
+      svg.appendChild(s('text', { x: x, y: top - 18 - (near ? 14 : 0), 'text-anchor': 'middle', 'class': 't-ink' }, r.id));
+      svg.appendChild(s('rect', { x: x - 5, y: top - 4, width: 10, height: pk.y + ph - top + 4, 'class': 'hit', 'data-tip': r.id + ' · committed ' + r.committedAt + (r.closedAt ? '\nclosed ' + r.closedAt : '') + '\n' + r.sha.join(', ') }));
+    });
+    // sessions
+    var extreme = {};
+    GAME.forEach(function (row) {
+      var t = Date.parse(row.start), x = X(t);
+      var has = !!inCorpus[row.id];
+      var text = day(row.start) + ' · ' + row.id.slice(0, 8) + ' · ' + row.model + '\n' + usd(row.listUSD) + ' · peak ' + row.peakK + 'k · ' + row.calls + ' calls' + (has ? '' : '\nno surviving transcript (ledger row only)');
+      panels.forEach(function (p) {
+        var y = p.Y(Math.min(row[p.key], p.max));
+        svg.appendChild(has
+          ? s('circle', { cx: x, cy: y, r: 5, 'class': 'dot s' + gameSlot })
+          : s('circle', { cx: x, cy: y, r: 4, 'class': 'hollow', style: 'stroke:var(--s' + gameSlot + ')' }));
+        svg.appendChild(s('circle', { cx: x, cy: y, r: 9, 'class': 'hit', 'data-tip': text }));
+        if (!extreme[p.key] || row[p.key] > extreme[p.key].v) extreme[p.key] = { v: row[p.key], x: x, y: y };
+      });
+    });
+    panels.forEach(function (p) { // label the extreme of each panel, and only that
+      var e = extreme[p.key], label = p.key === 'listUSD' ? usd(e.v) : e.v + 'k';
+      var atEdge = e.x > left + plotW - 60;
+      svg.appendChild(s('text', { x: e.x + (atEdge ? -9 : 9), y: e.y + 4, 'text-anchor': atEdge ? 'end' : 'start', 'class': 't-ink small' }, label));
+    });
+    return svg;
+  }
+  function tableP3() {
+    var rows = GAME.map(function (r) {
+      return [r.start.slice(0, 16).replace('T', ' '), r.id.slice(0, 8), r.model, r.calls, usd(r.listUSD), r.peakK + 'k', inCorpus[r.id] ? 'yes' : 'no'];
+    });
+    return table(['start (UTC)', 'session', 'model', 'calls', 'list price', 'peak', 'transcript'], rows, { numeric: { 3: 1, 4: 1, 5: 1 } });
+  }
+
+  // ── panel 4: M9 and M10 ──────────────────────────────────────────────────────────────────
+  var GLOSS = {
+    peakK: 'peak context (k tokens)', reReadM: 're-read (M tokens)', calls: 'calls', listUSD: 'list-price cost ($)',
+    multiCommit: 'share of sessions with 2+ commits', base1K: 'fixed start (k tokens)'
+  };
+  function drawP4() {
+    var host = $('p4-body');
+    ['E1', 'E2'].forEach(function (id) {
+      var w = S.m9[id], win = w.windows;
+      host.appendChild(h('h3', {}, [id + ': before ' + day(win.beforeStart) + ' to ' + day(win.beforeEnd) + ', after ' + day(win.afterStart) + ' to ' + day(win.afterEnd)]));
+      var rows = w.metrics.map(function (m) {
+        return [GLOSS[m.metric] || m.metric, m.nBefore, m.nAfter, r3(m.before), r3(m.after),
+          m.changePct === null ? '—' : (m.changePct > 0 ? '+' : '') + m.changePct.toFixed(1) + '%',
+          m.p === null ? '—' : m.p.toFixed(4), m.tooFew ? 'too few sessions' : ''];
+      });
+      host.appendChild(h('div', { 'class': 'scroll' }, [table(['metric', 'n before', 'n after', 'before', 'after', 'change', 'p', ''], rows, { numeric: { 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1 } })]));
+    });
+    var r = S.m10;
+    host.appendChild(h('h3', {}, ['M10: model routing']));
+    host.appendChild(h('p', { 'class': 'cap' }, [
+      int(r.nonOpus) + ' of ' + int(r.sessions) + ' priced game sessions ran some call off Opus. At Opus rates they would have cost ' +
+      usd(r.atOpusMinusOwnUSD) + ' more than they did, ' + (r.share === null ? '—' : pctOf(r.atOpusMinusOwnUSD, r.totalUSD)) +
+      " of the game's " + usd(r.totalUSD) + '.'
+    ]));
+  }
+
+  // ── panel 5: this project's own sessions ─────────────────────────────────────────────────
+  function drawP5() {
+    var rows = L.own.map(function (r) {
+      return [r.start.slice(0, 16).replace('T', ' '), r.title || r.id.slice(0, 8), r.model, r.calls, r.peakK + 'k', r.reReadM + 'M', int(r.workMin) + ' min', usd(r.listUSD), (r.flags || []).join(', ')];
+    });
+    var sum = function (k) { return L.own.reduce(function (a, r) { return a + (r[k] || 0); }, 0); };
+    rows.push(['total', L.own.length + ' sessions', '', int(sum('calls')), '', '', int(sum('workMin')) + ' min', usd(sum('listUSD')), '']);
+    $('p5-cap').textContent = 'The ledger of the sessions that built this tool (docs/session-ledger.json), at list price. The newest session appears after the next `npm run sessions` and `npm run ledger -- dashboard`.';
+    $('p5-table').appendChild(table(['start (UTC)', 'session', 'model', 'calls', 'peak', 're-read', 'work', 'list price', 'flags'], rows, { numeric: { 3: 1, 4: 1, 5: 1, 6: 1, 7: 1 }, totalLast: true, flags: 8 }));
+  }
+
+  // ── draw ─────────────────────────────────────────────────────────────────────────────────
+  legend($('p1-legend'), TYPES.map(function (t) { return { cls: 'l' + t.slot, label: t.label }; }));
+  legend($('p2-legend'), PROJECTS.map(function (p) { return { cls: 'l' + slotOf(p), label: p }; }));
+  legend($('p3-legend'), [
+    { cls: 'dot l' + gameSlot, label: 'a game session with a transcript' },
+    { cls: 'ring', label: 'in the game’s ledger, transcript gone' },
+    { cls: 'rule', label: 'rule or event (E1–E4, X1)' },
+    { cls: 'lim', label: '250k context' }
+  ]);
+  var withTranscript = GAME.filter(function (r) { return inCorpus[r.id]; }).length;
+  var others = L.sessions.filter(function (r) { return r.project !== 'game'; }).length;
+  $('p3-cap').textContent = 'The game’s committed ledger: ' + GAME.length + ' sessions, ' + withTranscript + ' with a surviving transcript. The ' + others +
+    ' sessions of the other projects are not plotted. Markers sit at each rule’s commit time.';
+  $('p1-table').appendChild(tableP1());
+  $('p2-table').appendChild(tableP2());
+  $('p3-table').appendChild(tableP3());
+  drawP4();
+  drawP5();
+
+  var charts = [['p1-chart', drawP1], ['p2-chart', drawP2], ['p3-chart', drawP3]];
+  var lastW = 0, pending = false;
+  function render() {
+    pending = false;
+    var W = Math.floor($('p1-chart').clientWidth);
+    if (W < 200 || W === lastW) return;
+    lastW = W;
+    charts.forEach(function (c) { var host = $(c[0]); host.textContent = ''; host.appendChild(c[1](W)); });
+  }
+  render();
+  window.addEventListener('resize', function () { if (!pending) { pending = true; requestAnimationFrame(render); } });
+}());
+</script>
+</body>
+</html>

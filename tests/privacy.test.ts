@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import vm from 'node:vm';
 import { describe, expect, it } from 'vitest';
 
 // D2: no transcript text in anything committed. Committed outputs hold numbers, session ids, timestamps,
@@ -71,6 +72,18 @@ describe('what is committed', () => {
       strings(JSON.parse(readFileSync(join(ROOT, f), 'utf8')), f, found);
       for (const { path, s } of found) if (!allowedString(s)) bad.push(`${path}: ${JSON.stringify(s.slice(0, 40))}`);
     }
+    expect(bad.slice(0, 10)).toEqual([]);
+  });
+
+  it('holds only allowed strings in dashboard/data.js, which is JavaScript and so escapes the scan above', () => {
+    // It also carries docs/session-ledger.json, which sits outside data/ and dashboard/.
+    const ctx: Record<string, unknown> = {};
+    vm.createContext(ctx);
+    vm.runInContext(readFileSync(join(ROOT, 'dashboard', 'data.js'), 'utf8'), ctx);
+    const found: { path: string; s: string }[] = [];
+    strings(JSON.parse(JSON.stringify(ctx['TOKEN_LEDGER'])), 'data.js', found);
+    expect(found.length).toBeGreaterThan(0);
+    const bad = found.filter(({ s }) => !allowedString(s)).map(({ path, s }) => `${path}: ${JSON.stringify(s.slice(0, 40))}`);
     expect(bad.slice(0, 10)).toEqual([]);
   });
 });

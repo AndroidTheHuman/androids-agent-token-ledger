@@ -1,10 +1,11 @@
-// npm run ledger -- <command>   (brief 001 §5 and §6; `dashboard` arrives in part D)
+// npm run ledger -- <command>   (brief 001 §5, §6 and part D)
 //   scan --before=<ISO>   read D1's corpus: MANIFEST.json, the merged copy and the per-unit cache
 //   game-ledger           the game's committed ledger (no titles) and the rule timeline, by `git show`
 //   report                calibrate, attribute, write sessions/categories/summary/calibration and METRICS.md
 //   check                 the part A checkpoints: MANIFEST counts, parity with the kit's ledger, identities
 //   sample                the hand read's sample (data/private/handread/sample.jsonl) and key (data/handread/key.json)
 //   agree                 score the tool against data/handread/codes.json; write docs/research/HANDREAD.md
+//   dashboard             write dashboard/data.js from the committed JSON (open dashboard/index.html from disk)
 // Runs under plain Node (type stripping), so it uses erasable TypeScript only.
 
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
@@ -13,6 +14,7 @@ import { scan } from '../tools/sessions.ts';
 import type { Row } from '../tools/sessions.ts';
 import { MAX_PROJECTS, ROOT, corpusProjects, defaultScan, findDirs, freshCount, scanCorpus } from './corpus.ts';
 import type { ManifestEntry } from './corpus.ts';
+import { runDashboard } from './dashboard.ts';
 import { BAR, runAgree, runSample } from './handread.ts';
 import { runReport, writeGameLedger } from './report.ts';
 import type { SessionOut } from './report.ts';
@@ -131,7 +133,12 @@ switch (command) {
     out('HANDREAD.md written');
     break;
   }
+  case 'dashboard': {
+    const r = runDashboard(dataDir, join(ROOT, 'docs'), join(ROOT, 'dashboard'));
+    out(`dashboard/data.js: ${r.bytes} bytes (open dashboard/index.html from disk)`);
+    break;
+  }
   default:
-    out('usage: npm run ledger -- scan --before=<ISO> | game-ledger | report | check | sample | agree');
+    out('usage: npm run ledger -- scan --before=<ISO> | game-ledger | report | check | sample | agree | dashboard');
     process.exit(command === '' ? 0 : 2);
 }
