@@ -19,6 +19,7 @@ Which model runs which kind of package, and how a kind earns a cheaper model. Th
 | --- | --- | --- |
 | Tool part whose brief gives the expected numbers | Opus 5.5, xhigh | back on the strong model: the first trial here (brief 001 part A on Sonnet 5.5 xhigh, 2026-11-09) failed on two latent D1s (Trial log); the owner accepted the verdict. Sonnet may be tried again on a narrower kind (Promotion). Prior: the game promoted this kind after two clean trials (kit `examples/04-trial-log.md`); a promotion doesn't carry across projects |
 | Content or data part with expected numbers | Opus 5.5, xhigh | not tried |
+| UI part over fixed data (a page over committed JSON, with a test and the owner's visual check) | Sonnet 5.5, xhigh | on trial: narrower than the tool-part kind that failed; the owner allowed it 2026-11-10 ("I'll allow a trial of sonnet regarding part D"). First trial: brief 001 part D |
 | Handoff merge and trial review | Opus 5.5, xhigh | fixed while any kind is on trial: the reviewer must be the stronger model |
 | Briefs, hand codes, findings | Opus 5.5, xhigh | not for trial: the judgment is the product |
 | Outside review (`outside-review`) | Codex (codex-cli 0.167.0), read-only | per route; see Outside agents |

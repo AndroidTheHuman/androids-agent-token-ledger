@@ -1,7 +1,7 @@
 # Brief 001 — Where the tokens go, and which rules moved them (research)
 
 **Status:** approved (2026-11-09) by the owner, with all five resolutions proposed at drafting: the transcript snapshot (D1), no titles in committed ledgers (D6), the corpus's aggregates as the dashboard's sample (D8), rules read as observations (D4), and the calibration stop condition (§5).
-**Amended:** 2026-11-09, §5 steps 2 and 5: T0 → T0′ (thinking stays in the context), after part A's stop condition fired; the owner delegated the choice. Evidence is in §5, below the attribution steps. 2026-11-09, D1 and §5 "Corpus capture": a fifth project's folder may join the corpus, capped at five projects (owner: "I'm up for a fifth project, just make sure this doesn't endlessly grow").
+**Amended:** 2026-11-09, §5 steps 2 and 5: T0 → T0′ (thinking stays in the context), after part A's stop condition fired; the owner delegated the choice. Evidence is in §5, below the attribution steps. 2026-11-09, D1 and §5 "Corpus capture": a fifth project's folder may join the corpus, capped at five projects (owner: "I'm up for a fifth project, just make sure this doesn't endlessly grow"). 2026-11-10, **Model** and part D's heading: part D runs on Sonnet 5.5 xhigh as the first trial of a narrower kind, "UI part over fixed data" (owner: "I'll allow a trial of sonnet regarding part D"), although part A's trial failed.
 **Kind:** research brief, in four parts. Its deliverable is four things: a **tool** (a standalone ledger CLI plus a static dashboard), a **corpus** (every surviving Claude Code transcript), **metrics**, and **hand codes with an agreement check**, ending in a findings document.
 - Part A builds the attribution tool over the corpus, captures the corpus's derived records and the rule timeline, and copies this brief's register into the findings document.
 - Part B reviews part A (a Sonnet trial), then codes a sample blind and scores the tool against it.
@@ -9,7 +9,7 @@
 - Part D builds the dashboard over the same numbers and adds the project's own build record.
 
 **Size:** L, in four parts (§7).
-**Model:** A on Sonnet 5.5 xhigh, as this repo's first trial of "tool part whose brief gives the expected numbers" (`docs/MODEL_CHOICE.md`). B and C on Opus 5.5 xhigh: B reviews the trial and codes, and C writes the findings, both judgment. D on Sonnet 5.5 xhigh if B's verdict on A is clean, else on Opus.
+**Model:** A on Sonnet 5.5 xhigh, as this repo's first trial of "tool part whose brief gives the expected numbers" (`docs/MODEL_CHOICE.md`). B and C on Opus 5.5 xhigh: B reviews the trial and codes, and C writes the findings, both judgment. D on Sonnet 5.5 xhigh, as the first trial of "UI part over fixed data" (amended 2026-11-10; part A's fail put the broader tool-part kind back on Opus).
 **Reading rule:** every part reads §1, §2, §3, §4, §7's head and its own block in §7, §8 and §9. Part A also reads §5. Part B also reads §6 and §5's "Units and codes". Part C reads `docs/research/METRICS.md` and `docs/research/HANDREAD.md` in place of §5 and §6.
 
 <!-- The register (§4) is committed with this brief, before any count is read, so the questions
@@ -263,7 +263,7 @@ Every part ends with: `npm run check` green; `npm run sessions -- --current` rec
   3. Triage each item into `docs/research/OUTSIDE_REVIEW.md`, and log the run in `docs/MODEL_CHOICE.md`.
 - **Checkpoint:** every figure in FINDINGS appears in `summary.json` or `HANDREAD.md`, and every Codex item is triaged.
 
-### Part D — the dashboard and the build record (Sonnet 5.5 xhigh if A was clean, else Opus)
+### Part D — the dashboard and the build record (Sonnet 5.5 xhigh, trial of "UI part over fixed data")
 
 - **Output:**
   - `npm run ledger -- dashboard` writes `dashboard/data.js` from `summary.json`, `sessions.json`, `game-ledger.json`, `rules.json` and `docs/session-ledger.json`.
