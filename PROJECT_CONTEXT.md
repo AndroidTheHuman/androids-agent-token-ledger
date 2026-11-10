@@ -8,16 +8,16 @@ What exists in the code right now, one fact per line. Sessions never append here
 
 ## Now
 
-- Status: brief 001 parts A, B and C done (C: findings `525e6d2`, Codex claims check `00d4511`).
-- Next: brief 001 part D (the dashboard, "How this was built", `README.md`), on Sonnet 5.5 xhigh as the first trial of "UI part over fixed data"; the owner reads `/usage` before and after.
-- Gate: `npm run check` (typecheck + vitest), 73/73 tests in 7 files.
+- Status: brief 001 parts A to D built (D: `933e77e`); the trial review of part D and the owner's check of `dashboard/index.html` are open.
+- Next: the trial review of part D (`docs/MODEL_CHOICE.md` → Review) on Opus 5.5 xhigh; then, once the owner has opened the dashboard, archive brief 001.
+- Gate: `npm run check` (typecheck + vitest), 86/86 tests in 9 files.
 - Kit: `C:\Users\xande\agentic-harness` @ `4dc0840` (`git -C <kit> rev-parse --short HEAD`). Every file ported from it says so in its header.
 
 ## Phases and briefs
 
 | Phase | Brief | Kind | Status |
 |---|---|---|---|
-| 0 | 001 token spend and harness rules | research | parts A, B and C done |
+| 0 | 001 token spend and harness rules | research | parts A to D built; part D's review and the owner's visual check open |
 
 ## Architecture as built
 
@@ -36,8 +36,11 @@ What exists in the code right now, one fact per line. Sessions never append here
 - `src/corpus.ts`: finds transcripts (live plus snapshot, larger copy), applies `--before`, lets one folder §2 doesn't name join under its slug (`MAX_PROJECTS` 5; with two or more, none joins and all are listed), writes `MANIFEST.json`, the merged copy `data/private/merged/<label>/` and the per-unit cache `data/private/units/<session>.json`.
 - `src/report.ts`: calibration, outputs and `METRICS.md`; `writeGameLedger` writes `game-ledger.json` and `rules.json` by `git show` on the game repo.
 - `src/handread.ts`: `sample` (§6: 15 per code by sha256, text from the merged copy to `data/private/handread/sample.jsonl`, codes to `data/handread/key.json`) and `agree` (validates `codes.json`; κ, per-code F1 with n and the confusion matrix to `docs/research/HANDREAD.md`).
-- `src/cli.ts`: `npm run ledger -- scan --before=<ISO> | game-ledger | report | check | sample | agree`.
-- `tests/privacy.test.ts`: every JSON under `data/` and `dashboard/` holds only ids, timestamps, codes, tool names, labels, the empty string and the kit's derived flag and model strings.
+- `src/cli.ts`: `npm run ledger -- scan --before=<ISO> | game-ledger | report | check | sample | agree | dashboard`.
+- `src/format.ts`: `pctOf(part, whole)` and `PCT_OF_SOURCE`, the one share formatter; `METRICS.md` and `dashboard/data.js` both format shares from the USD pair, never from the four-place `share` fields of `summary.json`.
+- `src/dashboard.ts` and `npm run ledger -- dashboard`: write `dashboard/data.js` (`globalThis.TOKEN_LEDGER` = summary, sessions, game, rules, own, then `pctOf`); `dashboard/index.html` is five panels of inline SVG, opened from disk, no network; panel 3 draws the game's committed ledger.
+- `tests/dashboard.test.ts` (`data.js` evaluates and matches the committed JSON; every share in `METRICS.md` equals the formatter's; `own` is a prefix of the ledger's ids), `tests/format.test.ts`.
+- `tests/privacy.test.ts`: every JSON under `data/` and `dashboard/`, and every string in `dashboard/data.js`, holds only ids, timestamps, codes, tool names, labels, the empty string and the kit's derived flag and model strings.
 - `tests/corpus.test.ts`: the unknown-folder listing and the five-project cap, on synthetic folders.
 - `tests/handread.test.ts`: the sampler's pick, shuffle, truncation and cache guard; κ and F1 on a hand-worked case; the `codes.json` validation.
 - The outputs `data/corpus/sessions.json`, `categories.json`, `summary.json`, `calibration.json` and `docs/research/METRICS.md` are committed; `report` regenerates them byte for byte.
@@ -61,3 +64,5 @@ What exists in the code right now, one fact per line. Sessions never append here
 - The findings (2026-11-10, `docs/research/FINDINGS.md`): Q2, Q3, Q4 and Q8 met; Q9 associated; Q10 not associated; Q5 and Q7 under their lower bars; Q11 not met; Q1 and Q6 meet neither bar. Package D's first targets: the 250k limit, THINK, the start read, Read.
 - The hand read (2026-11-09): κ 0.970 over 180 units; every sampled code F1 ≥ 0.909; OTHER has no unit with characters in the corpus, so it was not sampled and no figure uses it (`docs/research/HANDREAD.md`).
 - A failed trial narrows a kind rather than ending trials: a brief may propose a trial on a narrower kind (owner, 2026-11-09; `docs/MODEL_CHOICE.md` → Promotion).
+- After `npm run sessions` adds a row, run `npm run ledger -- dashboard` to refresh panel 5 (the gate passes either way).
+- `README.md` holds the commands.
