@@ -8,8 +8,8 @@ What exists in the code right now, one fact per line. Sessions never append here
 
 ## Now
 
-- Status: brief 001 parts A to D built (D: `933e77e`); the trial review of part D and the owner's check of `dashboard/index.html` are open.
-- Next: the trial review of part D (`docs/MODEL_CHOICE.md` → Review) on Opus 5.5 xhigh; then, once the owner has opened the dashboard, archive brief 001.
+- Status: brief 001 closed 2026-11-10 (parts A to D; `docs/archive/2026-11/001_TOKEN_SPEND.md`); part D's trial review clean (`530a9f5`), and the owner kept the caption error at D3.
+- Next: no brief is active; the next one is the owner's call (FINDINGS names package D's first targets).
 - Gate: `npm run check` (typecheck + vitest), 86/86 tests in 9 files.
 - Kit: `C:\Users\xande\agentic-harness` @ `4dc0840` (`git -C <kit> rev-parse --short HEAD`). Every file ported from it says so in its header.
 
@@ -17,7 +17,7 @@ What exists in the code right now, one fact per line. Sessions never append here
 
 | Phase | Brief | Kind | Status |
 |---|---|---|---|
-| 0 | 001 token spend and harness rules | research | parts A to D built; part D's review and the owner's visual check open |
+| 0 | 001 token spend and harness rules | research | done (closed 2026-11-10, archived) |
 
 ## Architecture as built
 
@@ -60,7 +60,7 @@ What exists in the code right now, one fact per line. Sessions never append here
 - Brief §5 was amended 2026-11-09 from T0 to T0′ (thinking stays in the context): under T0 the tool_result medians were CODE 1.929 and DOC 2.107; under T0′ they are 2.202 (n = 195) and 2.281 (n = 407).
 - Transcripts hold no thinking text: 9,406 of 10,904 calls with recorded thinking tokens have 0 THINK characters, so THINK is sized by `thinking_tokens`.
 - 175 of MANIFEST's 176 main sessions have a row; `75eafff7` (game) made 0 calls, and the kit's ledger skips it too.
-- The "tool part" kind is back on Opus after brief 001 part A's trial failed; part D runs on Sonnet 5.5 xhigh as the first trial of the narrower kind "UI part over fixed data" (owner, 2026-11-10; `docs/MODEL_CHOICE.md`).
+- The "tool part" kind is back on Opus after brief 001 part A's trial failed. The narrower kind "UI part over fixed data" had one clean trial (brief 001 part D, 2026-11-10), and a second clean trial in a row promotes it (`docs/MODEL_CHOICE.md`).
 - The findings (2026-11-10, `docs/research/FINDINGS.md`): Q2, Q3, Q4 and Q8 met; Q9 associated; Q10 not associated; Q5 and Q7 under their lower bars; Q11 not met; Q1 and Q6 meet neither bar. Package D's first targets: the 250k limit, THINK, the start read, Read.
 - The hand read (2026-11-09): κ 0.970 over 180 units; every sampled code F1 ≥ 0.909; OTHER has no unit with characters in the corpus, so it was not sampled and no figure uses it (`docs/research/HANDREAD.md`).
 - A failed trial narrows a kind rather than ending trials: a brief may propose a trial on a narrower kind (owner, 2026-11-09; `docs/MODEL_CHOICE.md` → Promotion).

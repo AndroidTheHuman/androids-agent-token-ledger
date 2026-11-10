@@ -17,3 +17,4 @@ Parked ideas, one line each. Nothing here is built without the owner's go-ahead.
 - 2026-11-10: Run `dashboard` from `npm run sessions`, so panel 5 never lags the ledger by a session; today the test only requires `data.js`'s own rows to be a prefix of the ledger's (brief 001 part D).
 - 2026-11-10: Mark X2 (2026-11-07, date only) on the dashboard's timeline; the brief asks for E1–E4 and X1, so it is in `rules.json` and not drawn (brief 001 part D).
 - 2026-11-10: Give the dashboard's session dots keyboard focus (207 tab stops is too many; arrow-key navigation along the series would do); today the per-session table view is the keyboard route (brief 001 part D).
+- 2026-11-10: A cold read of a finished brief's output before it closes, when the output is something people read (a dashboard, a page). The owner kept part D's caption error at D3 but judged that a cold read would likely have caught it.
