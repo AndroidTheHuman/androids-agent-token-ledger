@@ -1,6 +1,6 @@
 # Findings: where the tokens go, and which rules moved them
 
-Brief 001 (`docs/briefs/001_TOKEN_SPEND.md`). This file holds only the question register and the code table, copied from the brief and committed **before any transcript was scanned and before any count was read** (part A, step 2), so the questions and the readings that would change a decision can't bend to the answers. Part C writes the findings below this line; part D adds "How this was built".
+Brief 001 (`docs/archive/2026-11/001_TOKEN_SPEND.md`, closed 2026-11-10). This file holds only the question register and the code table, copied from the brief and committed **before any transcript was scanned and before any count was read** (part A, step 2), so the questions and the readings that would change a decision can't bend to the answers. Part C writes the findings below this line; part D adds "How this was built".
 
 ## The question register
 
@@ -122,7 +122,7 @@ Not targets, by the register: trimming the gate's output (Q5), the idle guard (Q
 
 ## How this was built
 
-This project's own sessions are part of its corpus, so the cost of the research is measurable the same way. Figures are from `docs/session-ledger.json` (`npm run sessions`), regenerated when this section was written; part D's row is its figures up to that point, and the ledger holds the final ones. List price, Claude usage only: Codex's tokens are not in it.
+This project's own sessions are part of its corpus, so the cost of the research is measurable the same way. Figures are from `docs/session-ledger.json` (`npm run sessions`), final for the six sessions below. A seventh, `e51e26df`, reviewed part D and closed the brief; its row is in the ledger. List price, Claude usage only: Codex's tokens are not in it.
 
 | Session | Work | Model | Calls | List price |
 |---|---|---|--:|--:|
@@ -131,12 +131,12 @@ This project's own sessions are part of its corpus, so the cost of the research 
 | `1e2da25b` | part A finished (T0′), part B's trial review of part A | opus-5.5 xhigh | 60 | $4.47 |
 | `904c719a` | part B: the hand read | opus-5.5 xhigh | 44 | $4.23 |
 | `ba1ea19b` | part C: these findings and the Codex claims check | opus-5.5 xhigh | 62 | $4.29 |
-| `5fa6cda1` | part D: the dashboard, this section and `README.md` (the second Sonnet trial) | sonnet-5.5 xhigh | 36 | $2.21 |
-| **Total** | six sessions | | **295** | **$23.82** |
+| `5fa6cda1` | part D: the dashboard, this section and `README.md` (the second Sonnet trial) | sonnet-5.5 xhigh | 62 | $3.77 |
+| **Total** | six sessions | | **321** | **$25.38** |
 
-- **Sessions and time.** Six sessions in two days (2026-11-09 and 2026-11-10), 1.7 hours of session time, 96 minutes of it work in the ledger's sense.
-- **Cost.** $23.82 at list price: $16.64 on Opus 5.5 and $7.18 on Sonnet 5.5. For comparison, the corpus the project measures is $1,179.69 over 175 sessions, so the research cost about 2% of what it measured. The Sonnet trials were $7.18 of it, and part A's failed trial had a review cost as well (`docs/MODEL_CHOICE.md` → Trial log).
+- **Sessions and time.** Six sessions in two days (2026-11-09 and 2026-11-10), 1.7 hours of session time, 101 minutes of it work in the ledger's sense.
+- **Cost.** $25.38 at list price: $16.64 on Opus 5.5 and $8.74 on Sonnet 5.5. For comparison, the corpus the project measures is $1,179.69 over 175 sessions, so the research cost about 2% of what it measured. The two Sonnet trials were $8.74 of it, and each had a review cost as well (`docs/MODEL_CHOICE.md` → Trial log).
 - **Tests.** 86 tests in 9 files at part D's gate, from 10 in 1 file when the lite tier was adopted; 73 in 7 files before part D.
 - **Outside findings.** One Codex claims check on this document (`docs/research/OUTSIDE_REVIEW.md`): 8 items, 8 confirmed, all new, and no reading changed. One of them found a bug in the tool (`report` rounded shares twice, so 6 cells of `METRICS.md` were one tenth off), fixed in part D with one shared formatter (`src/format.ts`).
-- **Checks inside the project.** The trial review of part A found 2 D1, 0 D2, 1 D3 and 3 D4, a fail. The hand read, coded blind by an Opus sub-agent, agreed with the classifier at κ 0.970.
-- **What this does not say.** Six sessions on one machine are an observation of how this project went, not a rate. Part D's trial verdict comes from the next session's review, not from this section.
+- **Checks inside the project.** The trial review of part A found 2 D1, 0 D2, 1 D3 and 3 D4, a fail; that of part D found 0 D1, 0 D2, 1 D3 and 1 D4, clean. The hand read, coded blind by an Opus sub-agent, agreed with the classifier at κ 0.970.
+- **What this does not say.** Six sessions on one machine are an observation of how this project went, not a rate.
