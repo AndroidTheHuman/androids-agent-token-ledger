@@ -32,7 +32,8 @@ wrong model's rates).
 
 | Start | Session | Model | Prompts | Calls | Work | Waited | Peak ctx | Re-read | Agents | Out (think) | Cost | Commits | $/commit | Lines + | Flags |
 |---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|---|
-| 2026-11-09 21:35 | 904c719a | opus-5.5 xhigh | 1 | 41 | 12m | 1m | 163k | 4.6M | 1 (0.3M, ≤84k) | 60k (27k) | $3.86 | 3 | $1.29 | — | 3 commits |
+| 2026-11-10 14:01 | ba1ea19b | opus-5.5 xhigh | 1 | 57 | 15m | 4m | 170k | 6.5M | 0 | 66k (37k) | $3.76 | 3 | $1.25 | — | 3 commits |
+| 2026-11-09 21:35 | 904c719a | opus-5.5 xhigh | 1 | 44 | 14m | 1m | 173k | 5M | 1 (0.3M, ≤84k) | 70k (30k) | $4.23 | 5 | $0.85 | — | 5 commits |
 | 2026-11-09 20:49 | 1e2da25b | opus-5.5 xhigh | 1 | 60 | 15m | 2m | 205k | 7.5M | 0 | 77k (41k) | $4.47 | 3 | $1.49 | — | 3 commits, 7 gates |
 | 2026-11-09 19:44 | 874927de | sonnet-5.5 xhigh | 1 | 59 | 25m | 3m | 286k | 10.2M | 0 | 190k (103k) | $4.97 | 5 | $0.99 | — | context 286k, 5 commits |
 | 2026-11-09 00:28 | 22d76ec3 | opus-5.5 xhigh | 2 | 34 | 15m | 1m | 178k | 3.4M | 0 | 89k (57k) | $3.65 | 1 | $3.65 | 459 |  |
