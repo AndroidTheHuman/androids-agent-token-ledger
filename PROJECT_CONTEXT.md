@@ -8,8 +8,8 @@ What exists in the code right now, one fact per line. Sessions never append here
 
 ## Now
 
-- Status: brief 002 part A done 2026-11-10 (`e6d1481`): panel 3 at the corpus's prices, the date of the Sonnet cut in FINDINGS, MIT `LICENSE`, `.nojekyll`, and the privacy pass (`docs/PRIVACY.md`).
-- Next: brief 002 part B (README for a visitor, résumé entry, claims check, push), on Opus 5.5 xhigh. The owner approved the ten quotes in `docs/PRIVACY.md` (P4″) on 2026-11-11.
+- Status: brief 002 part B done 2026-11-11 (`4d1aae5`): public README, claims check, and a push to `AndroidTheHuman/androids-agent-token-ledger` (private for now). Brief 002 closes when the repo is public and Pages serves the dashboard (§11 B's last check).
+- Next: the owner tests the README's commands, then maybe one more package before the résumé goes out (owner, 2026-11-11). The public switch, Pages and brief 002's last check come when the owner makes the repo public.
 - Gate: `npm run check` (typecheck + vitest), 92/92 tests in 10 files.
 - Kit: `C:\Users\xande\agentic-harness` @ `917a546` (`git -C <kit> rev-parse --short HEAD`). Every file ported from it says so in its header.
 
@@ -18,7 +18,7 @@ What exists in the code right now, one fact per line. Sessions never append here
 | Phase | Brief | Kind | Status |
 |---|---|---|---|
 | 0 | 001 token spend and harness rules | research | done (closed 2026-11-10, archived) |
-| E | 002 public release (token-ledger's side) | implementation | approved 2026-11-10; part A done (`e6d1481`) |
+| E | 002 public release (token-ledger's side) | implementation | approved 2026-11-10; A done (`e6d1481`), B done (`4d1aae5`); Pages check open |
 
 ## Architecture as built
 
@@ -67,7 +67,7 @@ What exists in the code right now, one fact per line. Sessions never append here
 - The hand read (2026-11-09): κ 0.970 over 180 units; every sampled code F1 ≥ 0.909; OTHER has no unit with characters in the corpus, so it was not sampled and no figure uses it (`docs/research/HANDREAD.md`).
 - A failed trial narrows a kind rather than ending trials: a brief may propose a trial on a narrower kind (owner, 2026-11-09; `docs/MODEL_CHOICE.md` → Promotion).
 - After `npm run sessions` adds a row, run `npm run ledger -- dashboard` to refresh panel 5 (the gate passes either way).
-- `README.md` holds the commands.
+- `README.md` is the public landing page; the commands are under "Run it".
 - Panel 3 prices game sessions from the corpus where a transcript survives (brief 002 D1; 170 sessions), and from the game's committed ledger otherwise (37, all Opus). Its total is $1,416.85 over 207 rows. `game-ledger.json` and `data.js` keep the game's figures, and the page joins them in `gameRows`.
 - Two corpus transcripts (`c2870417` game, `2203dd1d` kit) grew by a few hundred bytes after 2026-11-09 with no later timestamp; the rescan of 2026-11-10 took the larger copies, and no measured field moved.
 - Sonnet 5.5's cache read was $0.20 per million at launch and has been $0.10 since 2026-10-07 (Anthropic's cut; Claude Code displayed the old rate until 2.1.296, 2026-10-09). Every corpus session with a Sonnet call starts on or after 2026-10-13. The `claude-api` skill's table (cached 2026-10-06) still gives $0.20.
@@ -76,3 +76,7 @@ What exists in the code right now, one fact per line. Sessions never append here
 - The repo carries an MIT `LICENSE` in the owner's name, `"license": "MIT"` in `package.json`, and an empty `.nojekyll`, so GitHub Pages serves the files raw (brief 002 D4, D5).
 - The privacy pass of 2026-11-10 (`docs/PRIVACY.md`) covered HEAD and all 34 commits through `228826c`. It found no secret, phone number or transcript file, and only the three expected addresses (the student address in commit metadata only). The owner approved the ten quotes of the owner's words for release on 2026-11-11.
 - Edge's headless mode gives no output from the Bash tool. Launched from PowerShell (`Start-Process … -Wait`, its own `--user-data-dir`), `--screenshot` works (2026-11-10).
+- Remote: `origin` is `https://github.com/AndroidTheHuman/androids-agent-token-ledger.git`, branch `main` (renamed from `master` 2026-11-11), private until the owner makes it public. Once Pages is on, the dashboard is at `https://androidthehuman.github.io/androids-agent-token-ledger/dashboard/`.
+- A session that pushes does so before its handoff commit, so the remote never shows a root `HANDOFF.md`. The next session merges and archives it, and its own push carries it (owner, 2026-11-11; `CLAUDE.md` rule 7).
+- `docs/RESUME_ENTRY.md` (this project's résumé entry in English and Dutch, with sources) is git-ignored and exists only on the owner's machine (owner, 2026-11-11; brief 002 D7 amended).
+- Archived handoffs are `docs/archive/<YYYY-MM>/HANDOFF_<NNN>_<date>_<session>.md`, numbered in the order written; 001 is `22d76ec3`'s (`CLAUDE.md` read order step 4; owner, 2026-11-11).

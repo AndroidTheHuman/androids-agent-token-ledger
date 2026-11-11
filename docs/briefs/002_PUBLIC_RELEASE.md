@@ -1,14 +1,15 @@
 # Brief 002 — Public release (package E, token-ledger's side)
 
-**Status:** approved (owner, 2026-11-10). The owner settled the names, the public face, the commit address, the license and the résumé languages, then approved the rest of §3 the same day; D8 now carries the owner's direction on voice.
-**Kind:** implementation brief, in two parts.
+**Status:** approved (owner, 2026-11-10). The owner settled the names, the public face, the commit address, the license and the résumé languages, then approved the rest of §3 the same day; D8 now carries the owner's direction on voice. Parts A and B are done. Part C was added 2026-11-11, from a stranger's read of part B's README and a clean-clone run; it is a draft until the owner approves it.
+**Kind:** implementation brief, in three parts.
 - Part A prices panel 3 from the corpus, says when the Sonnet rate changed, adds the license and the Pages marker, and runs the privacy pass.
 - Part B writes the public text (the README for a visitor, the résumé entry in English and Dutch), runs the outside claims check over it, and pushes.
+- Part C rewrites the README for a stranger as a case study with its terms defined, says what a clone can run, makes the gate pass on a Windows clone, and names the set behind each game total on the dashboard.
 
-**Size:** M, in two parts (§7).
-**Model:** both parts on Opus 5.5 xhigh. No trial (D10).
-**Cost estimate:** A: two full gates, no outside run. B: two full gates, one Codex claims check, one headless screenshot, one push.
-**Reading rule:** every part reads §1, §2, §3, §7's head and its own block in §7, §8, §9, §10 and §11's head. Part A also reads §4.1–§4.4, §5 A, §6 and §11 A. Part B also reads §4.5–§4.8, §5 B, §11 B and part A's handoff.
+**Size:** M, in three parts (§7).
+**Model:** all three parts on Opus 5.5 xhigh. No trial (D10).
+**Cost estimate:** A: two full gates, no outside run. B: two full gates, one Codex claims check, one headless screenshot, one push. C: two full gates, one Codex claims check, one or two sub-agent stranger reads, one clean clone, one push.
+**Reading rule:** every part reads §1, §2, §3, §7's head and its own block in §7, §8, §9, §10 and §11's head. Part A also reads §4.1–§4.4, §5 A, §6 and §11 A. Part B also reads §4.5–§4.8, §5 B, §11 B and part A's handoff. Part C also reads §2 "Since part B", §4.9–§4.12, §5 C, §6 C, §11 C and part B's handoff (`docs/archive/2026-11/HANDOFF_011_2026-11-11_023a8245.md`).
 
 <!-- Package E is owner-led (the kit's plan): Claude drafts on the owner's direction, and nothing is
      pushed or sent without the owner's go-ahead in that session. -->
@@ -54,6 +55,37 @@ Someone clicks `AndroidTheHuman/androids-agent-token-ledger` on the owner's rés
   - This repo's first commit is dated 2026-11-09.
 - **Tools.** Edge is at `C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe` and can take headless screenshots. The `outside-review` skill (`.claude/skills/outside-review/SKILL.md`) runs Codex read-only, writes its answers to `data/private/outside/`, and records triage in `docs/research/OUTSIDE_REVIEW.md`.
 
+### Since part B (part C reads this)
+
+- **Repo.** Part B landed `4d1aae5` and pushed it to `origin` (`https://github.com/AndroidTheHuman/androids-agent-token-ledger.git`, branch `main`). The repo is private and Pages is off. Part B's handoff commit `d0282ee` is local by design. The session that drafted part C added `CLAUDE.md` rule 7 (push before the handoff commit; owner, 2026-11-11).
+- **The README at `4d1aae5`.** 380 words above `## Run it`. Sections: the title and one paragraph, the link line, the screenshot and the panel line, `## What it found` (4 bullets), `## How it was built` (4), `## Limits` (3), `## Run it`, `## License`. Part B dropped §4.5's section 7, `## What is committed, and what is not` (`git show e6d1481:README.md`, lines 31–35), and its handoff doesn't say so.
+- **The stranger read.** On 2026-11-11 the owner had an agent with no context read the README. Its text is `meta/review.md`, an untracked file of the owner's that stays out of the repo (D16). Its verdict: the README asks the reader "to interpret precise numbers before being given the concepts those numbers measure". §4.9's table lists each of its points and where part C answers it.
+- **A clean clone** (2026-11-11). `git clone` of the local repo at `d0282ee` into a scratch folder, then `npm install`. Node 24.10.0, `core.autocrlf=true`, no `data/private/`.
+  - `npm run check`: 91 of 92. `tests/dashboard.test.ts` › "is what `npm run ledger -- dashboard` writes, for every key but this project's own ledger" fails: the checkout gives `dashboard/data.js` CRLF line ends, and the test compares it byte for byte with the tool's LF output.
+  - `npm run ledger -- dashboard` and `npm run ledger -- agree`: exit 0. `git diff -w` shows `dashboard/data.js` and `docs/research/HANDREAD.md` unchanged (only line ends differ). After them, `npm run check` gives 92/92.
+  - `npm run sessions`: a stack trace ending in `no transcript folder <slug> under ~/.claude/projects` (`transcriptDir` in `tools/sessions.ts`).
+  - `npm run ledger -- report` and `-- sample`: ENOENT on `data/private/units`. `npm run ledger -- check`: exit 1, "0 sessions compared".
+  - Not run: `scan` reads `~/.claude/projects` for the four slugs in `PROJECTS` (`src/corpus.ts`), and `game-ledger` runs `git show` on `GAME_REPO` (`src/report.ts` line 18, the owner's game folder). Neither can run on another machine.
+  - `npm install` changed one line of `package-lock.json` (npm's own version). Part C leaves that alone.
+- **Line endings.** `git ls-files --eol`: every text file is LF in the index, and the repo has no `.gitattributes`. A scratch replay on 2026-11-11 committed §4.11's file on top of `d0282ee`. `git add .gitattributes` then `git add --renormalize .` staged only that file (`--renormalize` alone doesn't add a new file). A fresh clone of that commit checked out all 70 text files as LF, and `npm run check` gave 92/92 with nothing regenerated.
+- **The gate and the drive letter.** With the shell's working directory on a lower-case `c:\`, vitest fails every file with "failed to find the runner" and reports no tests. From `C:\` (PowerShell `Set-Location` to the upper-case path) it passes. Seen 2026-11-09 (handoff 003) and 2026-11-11.
+- **The three game totals.** None is wrong: they count different sets, and only panel 3's caption names its set.
+  - M1 (panel 1; `METRICS.md` line 13; FINDINGS line 127): the corpus's 171 game sessions, $1,088.19.
+  - Panel 3: the game ledger's 207 rows, $1,416.85 (170 at the corpus's prices, 37 at the ledger's). Its caption says "207 sessions, 170 with a surviving transcript".
+  - M10 (panel 4's last caption; `METRICS.md` line 116; FINDINGS line 77): 208 sessions, $1,422.87. `src/report.ts` lines 302–313 build the set from the ledger's rows, overridden by the corpus's game rows: the corpus's 171 plus the ledger's 37 without a transcript.
+  - The one corpus game session the ledger lacks is `c2870417` ($6.02). It is the 208th, and the gap between $1,422.87 and $1,416.85.
+  - The corpus's 171 game rows in `sessions.json` sum to $1,088.12, $0.07 under M1's $1,088.19. So no text adds dollar figures across these sets (D14).
+- **Sources for the README's terms** (§4.9):
+  - E1, E2, E3: the archived brief 001 (`docs/archive/2026-11/001_TOKEN_SPEND.md`) lines 60–62; the dates are in `data/rules.json`.
+  - Peak context: the largest context of one call, input plus cache-read plus cache-write tokens (`context` and `peakK` in `tools/sessions.ts`). Re-read: cache-read tokens summed over a session's calls, sub-agents included (`reReadM`).
+  - Fixed start (`base1K`): the context of a session's first call, in thousands of tokens (`src/attribute.ts` line 180), split as tool definitions, system text and first messages (`METRICS.md` M3). It exists only for sessions with a transcript (`src/rules.ts` line 23), which is why Q10's fixed start has n 28 / 31.
+  - The register's thresholds: FINDINGS lines 11–21. Q1's is "Output ≥ 30%: effort and model rules come first" (line 11).
+  - The test: a one-sided permutation test that the after-window's median is lower (`src/rules.ts` lines 45–49). The register reads falls only (FINDINGS line 88).
+  - Thinking's size: transcripts hold no thinking text, so THINK is sized by recorded thinking tokens (`PROJECT_CONTEXT.md` → "Things to be aware of"; FINDINGS line 133).
+  - What to trial next: FINDINGS lines 91–101 ("Proposal for package D").
+  - The hand read: HANDREAD line 3. The sub-agent's codes (`codes.json`) are kept apart from the tool's (`key.json`); it coded the units without the tool's codes.
+  - The projects: game 171, kit 2, omni 1, ledger 1 sessions (`METRICS.md` lines 7–9). omni is the owner's Omni Engine repo.
+
 ## 3. Decisions
 
 | # | Decision | Why | Owner |
@@ -69,6 +101,11 @@ Someone clicks `AndroidTheHuman/androids-agent-token-ledger` on the owner's rés
 | D9 | The privacy pass is a set of commands whose results go into `docs/PRIVACY.md`; it is not a new gate test. It covers HEAD and every commit. Two items are kept: the `xande` path segments (a first name, already public beside the owner's full name) and the student address in commit metadata (D3). Any hit for a secret, or for a contact detail beyond those two, stops the part: rewriting history is the owner's call. | It is a one-time check before history becomes public. | Recommended |
 | D10 | This brief gets no outside cold read and runs no model trial. The claims check over the final text is the outside check. | The deadline is this week, and the kit's audit found that a trial on a short project costs a review that cancels its saving. | Recommended |
 | D11 | Push only on the owner's go-ahead in part B's session, after the owner has created the empty public repo on github.com (no README, license or .gitignore). The owner enables Pages after the push. | Publishing is outward-facing and hard to undo. | Owner (plan: package E is owner-led) |
+| D12 | The README presents the repo as a case study: a study of the owner's sessions with the code that measured them, which reruns only on the owner's machine. A clone can run the gate, open the dashboard and rebuild two committed outputs, and the README says exactly that. Turning the code into a tool for anyone's transcripts is not in this brief (`docs/IDEAS.md`, 2026-11-11). | The code is wired to the owner's four projects (`PROJECTS`, `src/corpus.ts`) and the game's folder (`GAME_REPO`, `src/report.ts`). The stranger read couldn't tell which of the two the repo is (its §5, point 6). | Owner, 2026-11-11 |
+| D13 | The README's limit above `## Run it` rises from 380 to 750 words. It defines its terms before its figures (`## Terms`) and says what the findings mean for a reader (`## What it means`). D8's voice rule and filler list still apply. | The stranger read's main point: the README asks the reader "to interpret precise numbers before being given the concepts those numbers measure". 750 is today's 380 words, plus `## Terms` (≤ 200) and `## What it means` (≤ 70), plus about 100 words of rewording. | Drafted 2026-11-11; the owner approves it with part C |
+| D14 | The three game totals keep their figures and their sets. Panel 1's caption, panel 3's caption, panel 4's M10 caption and FINDINGS line 77 each name their set, and no text adds dollar figures across sets. `METRICS.md` is not regenerated. | Each set is right for its metric. M1 splits cost by content, which needs a transcript; M9 and M10 need the sessions whose transcript is gone. One set for all would move registered readings. | Owner, 2026-11-11 ("yes" to settling panel 4 before the repo goes public); the form drafted 2026-11-11 |
+| D15 | A root `.gitattributes` with `* text=auto eol=lf`, so every text file is checked out with LF on every platform. | A Windows clone (`core.autocrlf=true`) fails the gate: `tests/dashboard.test.ts` compares `dashboard/data.js` byte for byte with the tool's LF output. The tools write LF and the index is already LF, so nothing else changes (§2, "Since part B", the replay). | Drafted 2026-11-11 |
+| D16 | Part C checks its text twice. First a stranger read: a sub-agent that sees only `README.md`, scored against the stranger's questions (§4.12). Then the Codex claims check. `meta/review.md`, the owner's commission, stays out of the repo; `OUTSIDE_REVIEW.md` records which of its points part C answers. | The first stranger read found what the claims check couldn't: correct figures in an order a newcomer can't follow. Repeating it is the direct test of the fix. | Drafted 2026-11-11 |
 
 ## 4. What to build
 
@@ -211,6 +248,140 @@ Open the PNG with the Read tool. Panels 1 and 2 must be drawn, not empty. The fi
 6. The owner enables Pages: Settings → Pages → Deploy from a branch → `main`, `/ (root)`.
 7. Verify. `git ls-remote origin main` equals `git rev-parse HEAD`. A WebFetch of the dashboard URL shows the five panel headings. A WebFetch of `https://github.com/AndroidTheHuman/androids-agent-token-ledger` shows the README's title. Pages can take a few minutes to deploy, so retry once after two minutes.
 
+### 4.9 README for a stranger (C)
+
+Rewrite the README from the top through `## Run it`, and restore the section part B dropped. Headings, in order:
+
+1. `# Android's Agent Token Ledger`, then one paragraph (≤ 110 words) that says, in this order:
+   - It is a case study of the owner's own Claude Code sessions, with the code that measured them (D12).
+   - What the code does: it reads Claude Code's session transcripts (the JSONL files Claude Code keeps under `~/.claude/projects/`), prices every model call at list price, and splits each call's cost two ways (`## Terms`). A static dashboard shows the result.
+   - The corpus: 175 sessions over four of the owner's projects, 171 of them from a game the owner is building.
+   - The owner's question, quoted as now.
+   - D8's sentence on Claude Code sessions, with the harness link, as now.
+2. The link line, the screenshot and the panel line: unchanged.
+3. `## Terms` (new; ≤ 200 words). One bullet per item, in this order, from the sources in §2 ("Since part B"):
+   - **Harness rules**: the written rules the owner's Claude Code sessions work under (each repo's `CLAUDE.md`, its briefs, skills and hooks). The study dates three sets of them in the game's history, each by its commit:
+     - E1, session economy (2026-10-02): a cost ledger, a hook that warns at 250k and 400k context, one package per session, narrow reads, one full test run per batch, large briefs in parts.
+     - E2, the doc diet and part sizing (2026-10-12 to 10-14): a smaller start read, doc budgets in real tokens, parts sized by the files they touch.
+     - E3, model routing (2026-10-13): Sonnet for kinds of work that passed a trial.
+   - **Two splits of one cost.** By token type, as billed: uncached input, cache writes, cache reads and output, with thinking billed as output. By content, what those tokens were: thinking, the model's own output, docs read, tool results, the fixed start and the rest, assigned by the ledger's classifier.
+   - **Peak context**: the largest context of one model call in a session (input plus cached tokens). **Re-read**: the cache-read tokens summed over all of a session's calls, sub-agents included; this is the context the model reads again on every call. **Fixed start**: the context of a session's first call (tool definitions, system text, first messages).
+   - **Readings**: each finding answers one of eleven questions committed before the scan. Each question has a threshold that says which decision its answer changes.
+     - **Met**: the threshold was passed.
+     - **Associated**: peak context or re-read per session fell by 25% or more with p < 0.05. The comparison is between the sessions in fixed windows before and after a rule, by a one-sided permutation test on the medians. It says the change came at the same time as the rule, not that the rule caused it.
+4. `## What it found`: the same four readings and figures, reworded to use only defined terms.
+   - Bullet 1 names what the bar decides: output passed the 30% bar that puts effort and model rules first.
+   - Bullet 2 says why thinking is an estimate: transcripts hold no thinking text, so thinking is sized by recorded thinking tokens and assumed to stay in the context on later calls.
+   - Bullet 3 writes n as "17 sessions before, 19 after".
+   - Bullet 4 writes n as "32 / 31 sessions (fixed start 28 / 31: it needs a transcript)". It says the register tested for falls only, so the rises are observations, not readings.
+5. `## What it means` (new; ≤ 70 words):
+   - What to trial next, in FINDINGS' order (lines 93–97): thinking (effort per kind of work, and session length), model routing, the model's own output, the start read.
+   - None of these is shown to save anything yet: they are the first things to trial (FINDINGS line 93).
+6. `## How it was built`: the same four bullets. The hand-read bullet says what the second coder was blind to: it coded the sampled units without the classifier's codes (HANDREAD line 3).
+7. `## Limits`: the three bullets, then a fourth. The code is wired to these four projects and the game's repo, so the study reruns only on the owner's machine (`## Run it`).
+8. `## Run it`, in two parts:
+   - `### On a clone`: "Node 22.18 or later. Run `npm install` once." Then this block:
+     ```bash
+     npm run check                                  # the gate: typecheck + tests
+     npm run ledger -- dashboard                    # rebuild dashboard/data.js from the committed JSON
+     npm run ledger -- agree                        # re-score the classifier against the committed hand codes -> docs/research/HANDREAD.md
+     ```
+     Then: "Both rebuilds reproduce the committed files. Open `dashboard/index.html` straight from disk: it needs no server and no network."
+   - `### Reproducing the study`. First this sentence, in D8's voice: these commands read Claude Code's transcripts under `~/.claude/projects/`, their git-ignored copies in `data/private/`, and the game's repo, so they run only on the owner's machine.
+     - Then the current block's other seven commands (`sessions`, `sessions -- --current`, `scan`, `game-ledger`, `report`, `check`, `sample`), in its order, with their current comments.
+     - The one exception is `check`'s comment, which becomes `# the corpus checks: MANIFEST counts, parity with the game's ledger, cost identities`.
+     - Then the current `--before` paragraph, unchanged.
+9. `## What is committed, and what is not`. Restore the first paragraph of the README at `e6d1481` (`git show e6d1481:README.md`, line 33) verbatim, except its last sentence, which becomes: What a clone can run is under "Run it". Leave out its second paragraph, because `## Limits` carries it.
+10. `## License`: unchanged.
+
+Everything above `## Run it` is at most 750 words (D13). Every figure in it comes from a file in the repo, and the handoff lists each new figure and term with its file and line.
+
+The stranger read's points (`meta/review.md`) and where part C answers them:
+
+| Review | Point | Answered in |
+| --- | --- | --- |
+| §1.1 | What the ledger is; what "call by call" means | Section 1 |
+| §1.2, §1.7 | What harness rules are; what the rules changed | Terms: harness rules |
+| §1.3 | The four projects; "the game" | Section 1; Limits, fourth bullet |
+| §1.4 | "Output (thinking included)" against the content split | Terms: two splits |
+| §1.5 | "Met"; why 30% | Terms: readings; What it found, bullet 1 |
+| §1.6 | Peak context; re-read | Terms |
+| §1.8 | What n and p compare; fixed start's n | Terms: readings; What it found, bullets 3–4 |
+| §2 | "Come first": a recommendation or a rule? | What it found, bullet 1; What it means |
+| §2 | The thinking assumption | What it found, bullet 2 |
+| §2 | "Fixed start" | Terms |
+| §2 | "The rises weren't tested" | What it found, bullet 4 |
+| §2 | What the blind coder was blind to | How it was built |
+| §2 | "Part A checkpoints", "game-ledger", "parity, identities" | Run it: Reproducing the study (`check`'s comment) |
+| §5.6 | A tool or a case study? | Section 1; Limits; Run it |
+| §6 | Why a coding-agent user should care | What it means |
+
+### 4.10 The game totals' sets (C)
+
+Figures unchanged (D14). Three captions in `dashboard/index.html` and one row of FINDINGS name their set.
+
+1. **Panel 1's caption** (line 104), after "thinking is part of output.", add: ` Sessions with a surviving transcript only; panels 3 and 4 also count game sessions known only from the game’s ledger.`
+2. **Panel 4's M10 caption** (`drawP4`).
+   - Just before `host.appendChild(h('h3', {}, ['M10: model routing']));`, add:
+     ```js
+         var corpusIds = {};
+         L.sessions.forEach(function (s) { if (s.project === 'game') corpusIds[s.id] = true; });
+         var nCorpus = Object.keys(corpusIds).length;
+         var nLedgerOnly = L.game.filter(function (g) { return !corpusIds[g.id]; }).length;
+     ```
+   - Extend the caption string, after `" of the game's " + usd(r.totalUSD) + '.'`, with:
+     `+ ' The ' + int(r.sessions) + ' are the corpus’s ' + int(nCorpus) + ' game sessions and the ' + int(nLedgerOnly) + ' in the game’s ledger whose transcript is gone; panel 1 counts the ' + int(nCorpus) + ' only.'`
+3. **Panel 3's caption** (the `$('p3-cap')` assignment).
+   - Just before it, add:
+     ```js
+       var gameIds = {};
+       GAME.forEach(function (r) { gameIds[r.id] = true; });
+       var corpusOnly = L.sessions.filter(function (s) { return s.project === 'game' && !gameIds[s.id]; }).map(function (s) { return s.id.slice(0, 8); });
+     ```
+   - Extend the string, after "Markers sit at each rule’s commit time.", with:
+     `+ (corpusOnly.length === 0 ? '' : ' The ledger lacks ' + corpusOnly.length + ' corpus game session' + (corpusOnly.length === 1 ? '' : 's') + ' (' + corpusOnly.join(', ') + '); panel 4’s M10 counts ' + (corpusOnly.length === 1 ? 'it' : 'them') + ', this panel doesn’t.')`
+4. **FINDINGS line 77**, the Q11 row: after "12.8% of the game's $1,422.87", insert: ` (the corpus's 171 game sessions and the 37 in the game's ledger whose transcript is gone; M1's game column counts the 171 only)`.
+
+`METRICS.md` line 116 stays as `report` writes it.
+
+### 4.11 Line endings (C)
+
+`.gitattributes`, new, with exactly this content:
+
+```
+# Every text file is checked out with LF line ends, as the tools write them and the index stores them,
+# so the byte-for-byte tests also pass on a Windows clone with core.autocrlf=true (brief 002 D15).
+* text=auto eol=lf
+```
+
+Then run `git add .gitattributes` and `git add --renormalize .`. `git diff --cached --name-only` must list `.gitattributes` and nothing else. If another file appears, stop and show it to the owner.
+
+### 4.12 Checks and push (C)
+
+1. **Stranger read.** Run it after the README is written and the gate passes.
+   - Start a fresh sub-agent: the Agent tool, `general-purpose`, model `sonnet`. Paste `README.md`'s full text into its prompt and tell it to read no file and run no tool.
+   - The prompt: "You use coding agents and have never seen this project. From the README below alone, answer: (1) What does the software take in, and what does it produce? (2) What is a harness rule here, and what did E1 and E2 change? (3) What are the two ways the cost is split? (4) What does 'Met' mean, and what does the 30% bar decide? (5) What are peak context, re-read and fixed start? (6) What do '17 sessions before, 19 after' and the p-value compare? (7) Can you run this on your own transcripts, and what can you run on a clone? (8) What should a coding-agent user take from the findings? Then list anything still unclear, at most five items."
+   - Score each answer right, partly or wrong against the sources in §2 ("Since part B"). The bar is 8 of 8 right.
+   - For each answer that is partly right or wrong, fix the README, run the gate, and repeat the read once with a new sub-agent.
+   - If the second run is still under 8 of 8, stop and show the owner both tables. There is no third run.
+   - Record each run's table and its "still unclear" items, with what was done about each, in `docs/research/OUTSIDE_REVIEW.md` under `## Brief 002 part C: stranger read`. Add §4.9's table there too.
+2. **Claims check.** Repeat §4.8 steps 1–2 over:
+   - the README above `## Run it` and the `### On a clone` paragraph;
+   - the three captions (§4.10);
+   - FINDINGS line 77.
+
+   Triage goes under `## Brief 002 part C: claims check`, and its log row goes in `docs/MODEL_CHOICE.md` (outside-review skill, step 5). Fix what is judged wrong or unsupported, then run the gate.
+3. **Approval.** The owner reads the README and approves it in chat. Apply the owner's changes, run the gate, and commit.
+4. **A clean clone, after the commit.**
+   - From an upper-case `C:\` working directory (§2, "Since part B"), `git clone` the local repo into the scratchpad and run `npm install`.
+   - `npm run check` must give 93 tests in 10 files before any other command runs.
+   - `git ls-files --eol` must show no `w/crlf`.
+   - `npm run ledger -- dashboard` and `npm run ledger -- agree` must exit 0, and `git status --short` in the clone may list at most `package-lock.json`.
+5. **Push**, on the owner's go-ahead in that session.
+   - Push before the handoff commit (`CLAUDE.md` rule 7) with `git push origin main`, never forced.
+   - Then `git ls-remote origin main` must equal `git rev-parse HEAD`.
+   - The public switch, Pages and §11 B's last check stay the owner's steps, after which brief 002 is archived.
+
 ## 5. Expected effect
 
 **A**
@@ -226,7 +397,21 @@ Open the PNG with the Read tool. Panels 1 and 2 must be drawn, not empty. The fi
 - The claims check: every item is triaged, and none judged wrong is left open.
 - After the push: `git ls-remote origin main` equals HEAD, and the Pages URL serves the dashboard.
 
+**C**
+- `npm run check`: 93 tests in 10 files (92 plus §6 C's).
+- §6 C's test: 171 corpus game sessions, 37 ledger rows with no transcript, 208 = `summary.m10.sessions`, and one corpus game session the ledger lacks (`c2870417`).
+- `sed -n '1,/^## Run it/p' README.md | wc -w`: at most 750.
+- Edge's `--dump-dom` of `dashboard/index.html` contains both of these sentences:
+  - "The 208 are the corpus’s 171 game sessions and the 37 in the game’s ledger whose transcript is gone; panel 1 counts the 171 only."
+  - "The ledger lacks 1 corpus game session (c2870417); panel 4’s M10 counts it, this panel doesn’t."
+
+  Run Edge from PowerShell with `Start-Process … -Wait -RedirectStandardOutput <file>` and its own `--user-data-dir`, as part B ran the screenshot. If the dump comes back empty, take a `--screenshot` at `--window-size=1280,4000` and read the captions from it.
+- The stranger read: 8 of 8 right, in at most two runs.
+- The clean clone: 93/93 before anything is regenerated, no `w/crlf`, and `git status --short` lists at most `package-lock.json`.
+
 ## 6. Tests
+
+**A**
 
 - `tests/dashboard.test.ts`, new test, `it('prices panel 3 from the corpus where a transcript survives (brief 002 D1)')`. Write it first; it fails until §4.1 exists.
   - It reads `dashboard/index.html`, takes the text between `// gameRows:start` and `// gameRows:end`, builds the function with `new Function(text + '\nreturn gameRows;')()`, and runs it on the evaluated `data.js`'s `game` and `sessions` (the same `ledger` object the file's other tests evaluate).
@@ -236,6 +421,17 @@ Open the PNG with the Read tool. Panels 1 and 2 must be drawn, not empty. The fi
     - The total `.toFixed(2)` is `'1416.85'`.
     - Every id with no game row in `sessions` keeps its ledger figure.
     - The input is not mutated: `ledger.game` still deep-equals `game-ledger.json` afterwards.
+
+**C**
+
+- `tests/dashboard.test.ts`, new test, `it('M10 counts the corpus’s game sessions and the ledger’s rows with no transcript (brief 002 D14)')`.
+  - It uses the `ledger` object from the file's `load()`.
+  - It passes on today's data. It guards the identity that §4.10's captions state.
+  - Assertions:
+    - The ids of `ledger.sessions` rows with `project === 'game'` number 171.
+    - The `ledger.game` rows whose id is not among them number 37.
+    - 171 + 37 equals `ledger.summary.m10.sessions` (208).
+    - Exactly one of those 171 ids is not in `ledger.game`, and it starts with `c2870417`.
 
 ## 7. Parts
 
@@ -270,6 +466,29 @@ Each part ends at its checkpoint (§11), its commit and its handoff. The handoff
   8. Push and verify (§4.8 steps 4–7).
 - **Checkpoint:** §11 B.
 
+### Part C — a stranger's README, what a clone runs, line endings, the game totals' sets (Opus 5.5 xhigh)
+
+- **Working set, about 29k tokens** (characters ÷ 2.2, measured 2026-11-11):
+  - `README.md` 4,161; `tests/dashboard.test.ts` 9,982; `meta/review.md` 12,655;
+  - `docs/research/OUTSIDE_REVIEW.md` 9,678; `.claude/skills/outside-review/SKILL.md` 8,113; `docs/research/METRICS.md` 5,456;
+  - `dashboard/index.html` lines 100–125 and 420–475 only, 5,918;
+  - FINDINGS lines 5–21, 75–77, 88–101 and 125–135 only, 7,287.
+- **Order:**
+  1. Merge the drafting session's `HANDOFF.md` (CLAUDE.md read order).
+  2. Write `.gitattributes` and stage it (§4.11).
+  3. Write §6 C's test. `npx vitest run tests/dashboard.test.ts` must pass.
+  4. Make the §4.10 edits, then check the two sentences in the dumped DOM (§5 C).
+  5. Write the README (§4.9).
+  6. Run `npm run check`.
+  7. Run the stranger read (§4.12 step 1).
+  8. Run the claims check (§4.12 step 2).
+  9. Get the owner's approval (§4.12 step 3).
+  10. Commit `docs: README for a stranger (a case study, its terms, what a clone runs); the game totals' sets named; .gitattributes (LF)`.
+  11. Run the clean clone (§4.12 step 4).
+  12. Push, on the owner's go-ahead (§4.12 step 5).
+  13. Write the handoff and commit it, unpushed (rule 7).
+- **Checkpoint:** §11 C.
+
 ## 8. Files
 
 | File | Change | Part |
@@ -284,6 +503,13 @@ Each part ends at its checkpoint (§11), its commit and its handoff. The handoff
 | `docs/img/dashboard.png` | new (§4.6) | B |
 | `docs/RESUME_ENTRY.md` | new (§4.7) | B |
 | `docs/research/OUTSIDE_REVIEW.md` | edit: the claims check's triage (§4.8) | B |
+| `README.md` | edit: rewritten for a stranger; the dropped section restored (§4.9) | C |
+| `.gitattributes` | new (§4.11) | C |
+| `dashboard/index.html` | edit: three captions (§4.10) | C |
+| `tests/dashboard.test.ts` | edit: one new test (§6 C) | C |
+| `docs/research/FINDINGS.md` | edit: line 77 (§4.10) | C |
+| `docs/research/OUTSIDE_REVIEW.md` | edit: the stranger read and the claims check (§4.12) | C |
+| `docs/MODEL_CHOICE.md` | edit: the claims check's log row (§4.12) | C |
 
 ## 9. Must not
 
@@ -293,12 +519,14 @@ Each part ends at its checkpoint (§11), its commit and its handoff. The handoff
 - Commit transcript text, anything from `data/private/`, or the owner's résumé PDF.
 - Put a dollar figure or a cost share in `docs/RESUME_ENTRY.md`.
 - Put a figure or claim in the public text that has no source in the repo.
+- In part C, change a figure, a reading or the set a metric counts (D14), or commit anything under `meta/`.
 
 ## 10. Docs
 
 - `PROJECT_CONTEXT.md`, through each part's handoff as `[PROPOSED]` lines:
   - A: the panel 3 line becomes "panel 3 prices game sessions from the corpus where a transcript survives (brief 002 D1), and from the ledger otherwise". New lines for the license and Pages marker, for the privacy pass (`docs/PRIVACY.md`), and for the date of the price cut (2026-10-07).
   - B: the remote and the Pages URL; "`README.md` is the public landing page; the commands are under 'Run it'".
+  - C: the Now lines (part C done; brief 002 waits only for the public switch and Pages). "`README.md` is the public landing page …" says it is a case study and that "Run it → On a clone" lists what a clone runs. New lines: one for `.gitattributes` (D15), one naming the three game sets (M1 171, panel 3 207, M10 208), and one on the gate and the drive letter.
 - `docs/archive/CHANGELOG.md`: one line per part, through the handoffs.
 - **The kit's side** is a session run from the kit, since this repo can't change it. Part A's handoff lists it under "For the kit's next session":
   - a README for a visitor;
@@ -328,3 +556,14 @@ Each part ends at its checkpoint (§11), its commit and its handoff. The handoff
 - [ ] Every claims-check item is triaged in `OUTSIDE_REVIEW.md`.
 - [ ] The owner approved the README and `RESUME_ENTRY.md` in chat (quote the approval in the handoff).
 - [ ] `git ls-remote origin main` equals `git rev-parse HEAD`. The Pages URL shows the five panel headings, and the repo page shows the README title.
+
+### C
+
+- [ ] `npm run check`: 93 tests in 10 files.
+- [ ] §6 C's values, the README's word count and the two dumped sentences match §5 C.
+- [ ] README sections above `## Run it` were read once against D8's voice rule and filler list, and each hit was fixed.
+- [ ] The stranger read: 8 of 8, with each run recorded in `OUTSIDE_REVIEW.md`.
+- [ ] Every claims-check item is triaged in `OUTSIDE_REVIEW.md`.
+- [ ] The owner approved the README in chat (quote the approval in the handoff).
+- [ ] The clean clone matches §5 C.
+- [ ] If pushed: `git ls-remote origin main` equals the commit before the handoff's. `git status --short` after the handoff commit lists only `?? meta/`.

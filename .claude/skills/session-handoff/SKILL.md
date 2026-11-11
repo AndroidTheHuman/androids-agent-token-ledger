@@ -60,7 +60,7 @@ The next session runs Step 3's checks, then removes the markers and merges: chan
 
 ## Output
 
-Lite tier: `HANDOFF.md` at the repo root. Full tier: `docs/SESSION_HANDOFF_<YYYY-MM-DD>.md` (add `-2`, `-3` for several sessions on one day). Never overwrite an unmerged handoff. After committing it, end the session: tell the owner that the next package starts in a fresh session.
+Lite tier: `HANDOFF.md` at the repo root. Full tier: `docs/SESSION_HANDOFF_<YYYY-MM-DD>.md` (add `-2`, `-3` for several sessions on one day). Never overwrite an unmerged handoff. A session that pushes does so before it commits the handoff (`CLAUDE.md` rule 7). After committing it, end the session: tell the owner that the next package starts in a fresh session.
 
 ```markdown
 # Session handoff — <date> · <package or brief and part> · <model, effort>

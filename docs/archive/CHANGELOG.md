@@ -23,3 +23,11 @@ What landed, oldest first. Sessions never append here directly: the handoff prop
   - The privacy pass, in `docs/PRIVACY.md`: no stop condition, and ten owner quotes listed for approval.
 
   Checkpoint: 92/92 in 10 files.
+- 2026-11-11: Session `023a8245` (Opus 5.5 xhigh) merged `27ea19f7`'s handoff and built brief 002 part B (`4d1aae5`):
+  - `README.md` rewritten for a visitor (380 words above "Run it"), with a screenshot (`docs/img/dashboard.png`).
+  - The résumé entry (EN/NL) written and claims-checked, then git-ignored on the owner's decision.
+  - Codex claims check `r2-codex-D-public`: 8 items, 7 confirmed, 1 declined. Five wordings fixed, FINDINGS line 131 among them.
+  - Archived handoffs numbered 001–010 in the order written, and the rule added to `CLAUDE.md` and the session-handoff skill (owner).
+  - Pushed to `AndroidTheHuman/androids-agent-token-ledger` (private), branch `main`.
+
+  Checkpoint: 92/92 in 10 files; `git ls-remote origin main` = `4d1aae5`.
