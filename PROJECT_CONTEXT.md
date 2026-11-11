@@ -8,9 +8,9 @@ What exists in the code right now, one fact per line. Sessions never append here
 
 ## Now
 
-- Status: brief 002 part B done 2026-11-11 (`4d1aae5`), pushed (private). Part C (a README for a stranger, what a clone runs, `.gitattributes`, the game totals' sets) was drafted 2026-11-11 (`15a2ca2`) and approved by the owner the same day.
-- Next: brief 002 part C on Opus 5.5 xhigh. Then the owner makes the repo public and enables Pages, and §11 B's last check closes brief 002. The owner plans to turn this repo into a tool after the résumé is final (`docs/IDEAS.md`, 2026-11-11).
-- Gate: `npm run check` (typecheck + vitest), 92/92 tests in 10 files.
+- Status: brief 002 part C done 2026-11-11 (`6d766f9`), pushed (private): a README for a stranger, the game totals' sets named, `.gitattributes`. Brief 002 closes when the repo is public and Pages serves the dashboard (§11 B's last check).
+- Next: the owner makes the repo public and enables Pages; §11 B's last check then closes brief 002, which moves to the archive. The owner plans to turn this repo into a tool after the résumé is final (`docs/IDEAS.md`, 2026-11-11).
+- Gate: `npm run check` (typecheck + vitest), 93/93 tests in 10 files.
 - Kit: `C:\Users\xande\agentic-harness` @ `917a546` (`git -C <kit> rev-parse --short HEAD`). Every file ported from it says so in its header.
 
 ## Phases and briefs
@@ -18,7 +18,7 @@ What exists in the code right now, one fact per line. Sessions never append here
 | Phase | Brief | Kind | Status |
 |---|---|---|---|
 | 0 | 001 token spend and harness rules | research | done (closed 2026-11-10, archived) |
-| E | 002 public release (token-ledger's side) | implementation | approved 2026-11-10; A done (`e6d1481`), B done (`4d1aae5`); C approved 2026-11-11; Pages check open |
+| E | 002 public release (token-ledger's side) | implementation | approved 2026-11-10; A done (`e6d1481`), B done (`4d1aae5`), C done (`6d766f9`); Pages check open |
 
 ## Architecture as built
 
@@ -67,7 +67,7 @@ What exists in the code right now, one fact per line. Sessions never append here
 - The hand read (2026-11-09): κ 0.970 over 180 units; every sampled code F1 ≥ 0.909; OTHER has no unit with characters in the corpus, so it was not sampled and no figure uses it (`docs/research/HANDREAD.md`).
 - A failed trial narrows a kind rather than ending trials: a brief may propose a trial on a narrower kind (owner, 2026-11-09; `docs/MODEL_CHOICE.md` → Promotion).
 - After `npm run sessions` adds a row, run `npm run ledger -- dashboard` to refresh panel 5 (the gate passes either way).
-- `README.md` is the public landing page; the commands are under "Run it".
+- `README.md` is the public landing page, a case study written for a stranger. Its terms come before its figures. "Run it → On a clone" lists what a clone runs (the gate, `dashboard`, `agree`), and "Reproducing the study" needs the owner's machine (brief 002 D12, D13).
 - Panel 3 prices game sessions from the corpus where a transcript survives (brief 002 D1; 170 sessions), and from the game's committed ledger otherwise (37, all Opus). Its total is $1,416.85 over 207 rows. `game-ledger.json` and `data.js` keep the game's figures, and the page joins them in `gameRows`.
 - Two corpus transcripts (`c2870417` game, `2203dd1d` kit) grew by a few hundred bytes after 2026-11-09 with no later timestamp; the rescan of 2026-11-10 took the larger copies, and no measured field moved.
 - Sonnet 5.5's cache read was $0.20 per million at launch and has been $0.10 since 2026-10-07 (Anthropic's cut; Claude Code displayed the old rate until 2.1.296, 2026-10-09). Every corpus session with a Sonnet call starts on or after 2026-10-13. The `claude-api` skill's table (cached 2026-10-06) still gives $0.20.
@@ -82,3 +82,6 @@ What exists in the code right now, one fact per line. Sessions never append here
 - Archived handoffs are `docs/archive/<YYYY-MM>/HANDOFF_<NNN>_<date>_<session>.md`, numbered in the order written; 001 is `22d76ec3`'s (`CLAUDE.md` read order step 4; owner, 2026-11-11).
 - Run the gate from an upper-case `C:\` working directory. From `c:\`, vitest fails every file with "failed to find the runner" and reports no tests (seen 2026-11-09 and 2026-11-11).
 - The game's sessions come in three sets. M1 counts the corpus's 171. Panel 3 counts the game ledger's 207 rows. M9 and M10 count the union, 208: the corpus's 171 and the ledger's 37 without a transcript (`c2870417` is in the corpus but not the ledger; brief 002 §2, 2026-11-11).
+- A root `.gitattributes` (`* text=auto eol=lf`) checks every text file out as LF, so the byte-for-byte tests pass on a Windows clone; a clean clone of `6d766f9` gave 93/93 (brief 002 D15).
+- Panels 1, 3 and 4 and FINDINGS line 77 name the set each game total counts (brief 002 D14). `tests/dashboard.test.ts` guards 171 + 37 = 208 and the one corpus game session the ledger lacks.
+- `meta/` is git-ignored. It holds the owner's own notes, such as the commissioned stranger reads of the README (owner, 2026-11-11).

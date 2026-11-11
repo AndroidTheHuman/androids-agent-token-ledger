@@ -167,3 +167,21 @@ After the claims check, the owner had an agent with no context read the README a
 | §2.E | Uncached input 0.0% | "(rounded: almost all input is cached)" | `METRICS.md` line 23; r3 found $0.10 |
 | §3 | "The threshold names the decision it changes" is abstract | "passing its threshold triggers a decision set in advance, such as which rules to trial first" | FINDINGS lines 11–21 |
 | §3 | "Observations, not readings" | "the rises are reported, not tested" | FINDINGS line 88 |
+
+## Brief 002 part C: claims check of the whole README
+
+Run `r4-codex-D-readme`, 2026-11-11, on the owner's request ("You can also have codex check the readme again"), after the repo went public: Codex (codex-cli 0.167.0, the CLI's default model), read-only, 4 min 11 s, 842,794 input tokens (752,640 cached) and 9,760 output. The target was all of `README.md` at `d019652`, including the sentences added after r3 in answer to the owner's second read, "Reproducing the study" and "What is committed, and what is not", which r3 did not cover.
+
+No command in the log reads `data/private/` or `~/.claude/projects/` (12 commands). `git status --short` afterwards listed only the session's own files.
+
+Codex's table holds 84 claims: 81 confirmed, 1 wrong, 2 overclaims. It recomputed the token-type shares, M9's medians and p-values, M10 (43 of 208, $182.23 / $1,422.87 = 12.807%), κ (0.9697 over 180), THINK's split ($176.67 output + $130.36 carried context = $307.04), and both rebuilds (byte for byte equal to the committed files). It confirmed every sentence added after r3: the E3 bullet, how the splits relate, what thinking's 27.9% is made of and what doesn't rest on it, the p definition (`src/rules.ts` lines 54 and 69) and the uncached note ($0.10, 0.0094% of the cost). It did not run `npm run check` (AGENTS.md); it counted 93 tests in 10 files.
+
+| # | Codex | Claim | Triage | New | Action |
+| --- | --- | --- | --- | --- | --- |
+| 1 | WRONG and OVERCLAIM; objection 1 | README, `check`'s comment: "parity with the game's ledger, cost identities" | **Confirmed.** `check` recounts MANIFEST and re-parses the merged copies with `tools/sessions.ts` (`src/cli.ts` lines 35–73); it only prints the last report's identities and game-ledger parity (line 76), and they don't set its exit code. **Declined** as a code change in this session: the stored identities all pass, the game-ledger parity's one mismatch is the named exception `4d89f881` (FINDINGS line 136), and `tests/attribute.test.ts` guards the identities | new | Comment: "recount MANIFEST, re-parse against tools/sessions.ts; print the last report's identity and game-ledger checks". The code change is parked in `docs/IDEAS.md` |
+| 2 | OVERCLAIM; objection 2 | README: "No transcript text is ever committed (`tests/privacy.test.ts` checks …)" | **Confirmed.** The test checks the shape of each committed string (one token, or a known derived label: `tests/privacy.test.ts` lines 15–35), so a single word would pass; it doesn't make "never" an established fact. The privacy pass searched every commit for transcript files (`docs/PRIVACY.md`, P4) | new | "The project's rule is that no transcript text is committed", then what the test checks ("so no sentence passes") and the privacy pass |
+| 3 | Objection 3 | README: "After E1 … **Associated**" | **Declined.** E1's before-window rests entirely on the game's committed ledger, with no surviving transcript; FINDINGS → Limits says so (line 128), and the README links it. The README's text above `## Run it` is at 864 of D13's 870 words | new | none |
+| 4 | Objection 4 | README: "committed before any transcript was scanned" | **Declined.** Settled by r2 (item 2) and r3 (item 4); Codex itself confirms the chronology and that the sentence claims order only | known (r2, item 2; r3, item 4) | none |
+| 5 | Objection 5 | README: thinking's 27.9% as a first target | **Declined.** The owner's second read raised how far the 27.9% would move; it was left to FINDINGS → Limits (T0′, line 133). The README now says what the 27.9% is made of | known (the owner's second read, §5) | none |
+
+**Score:** N 5, confirmed 2, declined 3, new 3, precision 40%. No figure changed: two wordings below `## Run it`, and one idea parked.

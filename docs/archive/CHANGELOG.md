@@ -38,3 +38,11 @@ What landed, oldest first. Sessions never append here directly: the handoff prop
   - The tool idea parked in `docs/IDEAS.md` (owner).
 
   Checkpoint: 92/92 in 10 files.
+- 2026-11-11: Session `7f14a89b` (Opus 5.5 xhigh) built brief 002 part C (`6d766f9`) and pushed it (private):
+  - The README was rewritten for a stranger as a case study. It has Terms, What it found with E3's reading, What it means, and "Run it" split into "On a clone" and "Reproducing the study", and the dropped "What is committed, and what is not" is back.
+  - Panels 1, 3 and 4 and FINDINGS line 77 name each game total's set, and a new test guards 171 + 37 = 208.
+  - `.gitattributes` (LF): a Windows clone gives 93/93.
+  - Checks: the stranger read gave 8 of 8 in two runs. Codex claims check r3 tabled 62 claims, and its 2 overclaims were fixed. The owner's second read was answered, with D13's limit amended to 870 words.
+  - `meta/` is git-ignored (owner); the $0.07 gap is left (owner).
+
+  Checkpoint: 93/93 in 10 files; clean clone 93/93 with no `w/crlf`; `git ls-remote origin main` = `6d766f9`.

@@ -69,7 +69,7 @@ npm run sessions -- --current                  # the newest session's row
 npm run ledger -- scan --before=<ISO>          # find transcripts, write MANIFEST.json and the git-ignored caches
 npm run ledger -- game-ledger                  # the game's committed ledger and the rule timeline (git show, read-only)
 npm run ledger -- report                       # attribute cost; write data/corpus/*.json and docs/research/METRICS.md
-npm run ledger -- check                        # the corpus checks: MANIFEST counts, parity with the game's ledger, cost identities
+npm run ledger -- check                        # recount MANIFEST, re-parse against tools/sessions.ts; print the last report's identity and game-ledger checks
 npm run ledger -- sample                       # the hand read's sample (text goes to data/private/, git-ignored)
 ```
 
@@ -77,7 +77,7 @@ npm run ledger -- sample                       # the hand read's sample (text go
 
 ## What is committed, and what is not
 
-Committed: numbers, ids, timestamps, content codes, tool names and project labels. No transcript text is ever committed (`tests/privacy.test.ts` checks every JSON under `data/` and `dashboard/`, and `dashboard/data.js`). Everything that holds text (the raw transcript copy, the merged copy, the per-unit cache, the hand read's sample) lives in `data/private/`, which `.gitignore` excludes. What a clone can run is under "Run it".
+Committed: numbers, ids, timestamps, content codes, tool names and project labels. The project's rule is that no transcript text is committed. `tests/privacy.test.ts` checks every string in each committed JSON under `data/` and `dashboard/`, and in `dashboard/data.js`: each must be one token (an id, a code, a tool name) or a known derived label, so no sentence passes. Before release, a privacy pass found no transcript file in any commit ([PRIVACY](docs/PRIVACY.md)). Everything that holds text (the raw transcript copy, the merged copy, the per-unit cache, the hand read's sample) lives in `data/private/`, which `.gitignore` excludes. What a clone can run is under "Run it".
 
 ## License
 
