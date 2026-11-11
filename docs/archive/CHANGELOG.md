@@ -31,3 +31,10 @@ What landed, oldest first. Sessions never append here directly: the handoff prop
   - Pushed to `AndroidTheHuman/androids-agent-token-ledger` (private), branch `main`.
 
   Checkpoint: 92/92 in 10 files; `git ls-remote origin main` = `4d1aae5`.
+- 2026-11-11: Session `dd36fe6b` (Opus 5.5 xhigh) merged `023a8245`'s handoff and drafted brief 002 part C (`15a2ca2`), from the owner's stranger read of the README and a clean-clone run:
+  - On a Windows clone the gate gave 91/92, from line endings.
+  - Part C covers a README for a stranger as a case study, what a clone runs, `.gitattributes`, and the game totals' sets.
+  - `CLAUDE.md` rule 7, push before the handoff commit (owner).
+  - The tool idea parked in `docs/IDEAS.md` (owner).
+
+  Checkpoint: 92/92 in 10 files.

@@ -1,6 +1,6 @@
 # Brief 002 — Public release (package E, token-ledger's side)
 
-**Status:** approved (owner, 2026-11-10). The owner settled the names, the public face, the commit address, the license and the résumé languages, then approved the rest of §3 the same day; D8 now carries the owner's direction on voice. Parts A and B are done. Part C was added 2026-11-11, from a stranger's read of part B's README and a clean-clone run; it is a draft until the owner approves it.
+**Status:** approved (owner, 2026-11-10). The owner settled the names, the public face, the commit address, the license and the résumé languages, then approved the rest of §3 the same day; D8 now carries the owner's direction on voice. Parts A and B are done. Part C was added 2026-11-11, from a stranger's read of part B's README and a clean-clone run, and the owner approved it the same day; the $0.07 gap between M1's game total and the game's session rows is left (owner, 2026-11-11), and `meta/` is git-ignored (owner).
 **Kind:** implementation brief, in three parts.
 - Part A prices panel 3 from the corpus, says when the Sonnet rate changed, adds the license and the Pages marker, and runs the privacy pass.
 - Part B writes the public text (the README for a visitor, the résumé entry in English and Dutch), runs the outside claims check over it, and pushes.
@@ -102,10 +102,10 @@ Someone clicks `AndroidTheHuman/androids-agent-token-ledger` on the owner's rés
 | D10 | This brief gets no outside cold read and runs no model trial. The claims check over the final text is the outside check. | The deadline is this week, and the kit's audit found that a trial on a short project costs a review that cancels its saving. | Recommended |
 | D11 | Push only on the owner's go-ahead in part B's session, after the owner has created the empty public repo on github.com (no README, license or .gitignore). The owner enables Pages after the push. | Publishing is outward-facing and hard to undo. | Owner (plan: package E is owner-led) |
 | D12 | The README presents the repo as a case study: a study of the owner's sessions with the code that measured them, which reruns only on the owner's machine. A clone can run the gate, open the dashboard and rebuild two committed outputs, and the README says exactly that. Turning the code into a tool for anyone's transcripts is not in this brief (`docs/IDEAS.md`, 2026-11-11). | The code is wired to the owner's four projects (`PROJECTS`, `src/corpus.ts`) and the game's folder (`GAME_REPO`, `src/report.ts`). The stranger read couldn't tell which of the two the repo is (its §5, point 6). | Owner, 2026-11-11 |
-| D13 | The README's limit above `## Run it` rises from 380 to 750 words. It defines its terms before its figures (`## Terms`) and says what the findings mean for a reader (`## What it means`). D8's voice rule and filler list still apply. | The stranger read's main point: the README asks the reader "to interpret precise numbers before being given the concepts those numbers measure". 750 is today's 380 words, plus `## Terms` (≤ 200) and `## What it means` (≤ 70), plus about 100 words of rewording. | Drafted 2026-11-11; the owner approves it with part C |
+| D13 | The README's limit above `## Run it` rises from 380 to 750 words. It defines its terms before its figures (`## Terms`) and says what the findings mean for a reader (`## What it means`). D8's voice rule and filler list still apply. | The stranger read's main point: the README asks the reader "to interpret precise numbers before being given the concepts those numbers measure". 750 is today's 380 words, plus `## Terms` (≤ 200) and `## What it means` (≤ 70), plus about 100 words of rewording. | Drafted 2026-11-11; approved with part C (owner, 2026-11-11). Amended the same day: the owner's second stranger read (`meta/review2.md`) asked for E3's reading, how the two splits relate and what the thinking assumption touches, and the owner's approval covers the answers. The limit becomes 870 words, with Terms ≤ 250 |
 | D14 | The three game totals keep their figures and their sets. Panel 1's caption, panel 3's caption, panel 4's M10 caption and FINDINGS line 77 each name their set, and no text adds dollar figures across sets. `METRICS.md` is not regenerated. | Each set is right for its metric. M1 splits cost by content, which needs a transcript; M9 and M10 need the sessions whose transcript is gone. One set for all would move registered readings. | Owner, 2026-11-11 ("yes" to settling panel 4 before the repo goes public); the form drafted 2026-11-11 |
-| D15 | A root `.gitattributes` with `* text=auto eol=lf`, so every text file is checked out with LF on every platform. | A Windows clone (`core.autocrlf=true`) fails the gate: `tests/dashboard.test.ts` compares `dashboard/data.js` byte for byte with the tool's LF output. The tools write LF and the index is already LF, so nothing else changes (§2, "Since part B", the replay). | Drafted 2026-11-11 |
-| D16 | Part C checks its text twice. First a stranger read: a sub-agent that sees only `README.md`, scored against the stranger's questions (§4.12). Then the Codex claims check. `meta/review.md`, the owner's commission, stays out of the repo; `OUTSIDE_REVIEW.md` records which of its points part C answers. | The first stranger read found what the claims check couldn't: correct figures in an order a newcomer can't follow. Repeating it is the direct test of the fix. | Drafted 2026-11-11 |
+| D15 | A root `.gitattributes` with `* text=auto eol=lf`, so every text file is checked out with LF on every platform. | A Windows clone (`core.autocrlf=true`) fails the gate: `tests/dashboard.test.ts` compares `dashboard/data.js` byte for byte with the tool's LF output. The tools write LF and the index is already LF, so nothing else changes (§2, "Since part B", the replay). | Drafted 2026-11-11; approved with part C (owner, 2026-11-11) |
+| D16 | Part C checks its text twice. First a stranger read: a sub-agent that sees only `README.md`, scored against the stranger's questions (§4.12). Then the Codex claims check. `meta/review.md`, the owner's commission, stays out of the repo; `OUTSIDE_REVIEW.md` records which of its points part C answers. | The first stranger read found what the claims check couldn't: correct figures in an order a newcomer can't follow. Repeating it is the direct test of the fix. | Drafted 2026-11-11; approved with part C, and `meta/` git-ignored (owner, 2026-11-11) |
 
 ## 4. What to build
 
@@ -259,7 +259,7 @@ Rewrite the README from the top through `## Run it`, and restore the section par
    - The owner's question, quoted as now.
    - D8's sentence on Claude Code sessions, with the harness link, as now.
 2. The link line, the screenshot and the panel line: unchanged.
-3. `## Terms` (new; ≤ 200 words). One bullet per item, in this order, from the sources in §2 ("Since part B"):
+3. `## Terms` (new; ≤ 200 words, 250 after D13's amendment). One bullet per item, in this order, from the sources in §2 ("Since part B"):
    - **Harness rules**: the written rules the owner's Claude Code sessions work under (each repo's `CLAUDE.md`, its briefs, skills and hooks). The study dates three sets of them in the game's history, each by its commit:
      - E1, session economy (2026-10-02): a cost ledger, a hook that warns at 250k and 400k context, one package per session, narrow reads, one full test run per batch, large briefs in parts.
      - E2, the doc diet and part sizing (2026-10-12 to 10-14): a smaller start read, doc budgets in real tokens, parts sized by the files they touch.
@@ -294,7 +294,7 @@ Rewrite the README from the top through `## Run it`, and restore the section par
 9. `## What is committed, and what is not`. Restore the first paragraph of the README at `e6d1481` (`git show e6d1481:README.md`, line 33) verbatim, except its last sentence, which becomes: What a clone can run is under "Run it". Leave out its second paragraph, because `## Limits` carries it.
 10. `## License`: unchanged.
 
-Everything above `## Run it` is at most 750 words (D13). Every figure in it comes from a file in the repo, and the handoff lists each new figure and term with its file and line.
+Everything above `## Run it` is at most 870 words (D13, amended). Every figure in it comes from a file in the repo, and the handoff lists each new figure and term with its file and line.
 
 The stranger read's points (`meta/review.md`) and where part C answers them:
 
@@ -400,7 +400,7 @@ Then run `git add .gitattributes` and `git add --renormalize .`. `git diff --cac
 **C**
 - `npm run check`: 93 tests in 10 files (92 plus §6 C's).
 - §6 C's test: 171 corpus game sessions, 37 ledger rows with no transcript, 208 = `summary.m10.sessions`, and one corpus game session the ledger lacks (`c2870417`).
-- `sed -n '1,/^## Run it/p' README.md | wc -w`: at most 750.
+- `sed -n '1,/^## Run it/p' README.md | wc -w`: at most 870 (D13, amended).
 - Edge's `--dump-dom` of `dashboard/index.html` contains both of these sentences:
   - "The 208 are the corpus’s 171 game sessions and the 37 in the game’s ledger whose transcript is gone; panel 1 counts the 171 only."
   - "The ledger lacks 1 corpus game session (c2870417); panel 4’s M10 counts it, this panel doesn’t."
@@ -510,6 +510,7 @@ Each part ends at its checkpoint (§11), its commit and its handoff. The handoff
 | `docs/research/FINDINGS.md` | edit: line 77 (§4.10) | C |
 | `docs/research/OUTSIDE_REVIEW.md` | edit: the stranger read and the claims check (§4.12) | C |
 | `docs/MODEL_CHOICE.md` | edit: the claims check's log row (§4.12) | C |
+| `.gitignore` | edit: `meta/` (owner, 2026-11-11) | C |
 
 ## 9. Must not
 
@@ -566,4 +567,4 @@ Each part ends at its checkpoint (§11), its commit and its handoff. The handoff
 - [ ] Every claims-check item is triaged in `OUTSIDE_REVIEW.md`.
 - [ ] The owner approved the README in chat (quote the approval in the handoff).
 - [ ] The clean clone matches §5 C.
-- [ ] If pushed: `git ls-remote origin main` equals the commit before the handoff's. `git status --short` after the handoff commit lists only `?? meta/`.
+- [ ] If pushed: `git ls-remote origin main` equals the commit before the handoff's. `git status --short` after the handoff commit is empty (`meta/` is git-ignored).

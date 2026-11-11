@@ -8,8 +8,8 @@ What exists in the code right now, one fact per line. Sessions never append here
 
 ## Now
 
-- Status: brief 002 part B done 2026-11-11 (`4d1aae5`): public README, claims check, and a push to `AndroidTheHuman/androids-agent-token-ledger` (private for now). Brief 002 closes when the repo is public and Pages serves the dashboard (§11 B's last check).
-- Next: the owner tests the README's commands, then maybe one more package before the résumé goes out (owner, 2026-11-11). The public switch, Pages and brief 002's last check come when the owner makes the repo public.
+- Status: brief 002 part B done 2026-11-11 (`4d1aae5`), pushed (private). Part C (a README for a stranger, what a clone runs, `.gitattributes`, the game totals' sets) was drafted 2026-11-11 (`15a2ca2`) and approved by the owner the same day.
+- Next: brief 002 part C on Opus 5.5 xhigh. Then the owner makes the repo public and enables Pages, and §11 B's last check closes brief 002. The owner plans to turn this repo into a tool after the résumé is final (`docs/IDEAS.md`, 2026-11-11).
 - Gate: `npm run check` (typecheck + vitest), 92/92 tests in 10 files.
 - Kit: `C:\Users\xande\agentic-harness` @ `917a546` (`git -C <kit> rev-parse --short HEAD`). Every file ported from it says so in its header.
 
@@ -18,7 +18,7 @@ What exists in the code right now, one fact per line. Sessions never append here
 | Phase | Brief | Kind | Status |
 |---|---|---|---|
 | 0 | 001 token spend and harness rules | research | done (closed 2026-11-10, archived) |
-| E | 002 public release (token-ledger's side) | implementation | approved 2026-11-10; A done (`e6d1481`), B done (`4d1aae5`); Pages check open |
+| E | 002 public release (token-ledger's side) | implementation | approved 2026-11-10; A done (`e6d1481`), B done (`4d1aae5`); C approved 2026-11-11; Pages check open |
 
 ## Architecture as built
 
@@ -80,3 +80,5 @@ What exists in the code right now, one fact per line. Sessions never append here
 - A session that pushes does so before its handoff commit, so the remote never shows a root `HANDOFF.md`. The next session merges and archives it, and its own push carries it (owner, 2026-11-11; `CLAUDE.md` rule 7).
 - `docs/RESUME_ENTRY.md` (this project's résumé entry in English and Dutch, with sources) is git-ignored and exists only on the owner's machine (owner, 2026-11-11; brief 002 D7 amended).
 - Archived handoffs are `docs/archive/<YYYY-MM>/HANDOFF_<NNN>_<date>_<session>.md`, numbered in the order written; 001 is `22d76ec3`'s (`CLAUDE.md` read order step 4; owner, 2026-11-11).
+- Run the gate from an upper-case `C:\` working directory. From `c:\`, vitest fails every file with "failed to find the runner" and reports no tests (seen 2026-11-09 and 2026-11-11).
+- The game's sessions come in three sets. M1 counts the corpus's 171. Panel 3 counts the game ledger's 207 rows. M9 and M10 count the union, 208: the corpus's 171 and the ledger's 37 without a transcript (`c2870417` is in the corpus but not the ledger; brief 002 §2, 2026-11-11).

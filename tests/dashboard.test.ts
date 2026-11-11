@@ -80,6 +80,25 @@ describe('dashboard/data.js', () => {
       ['kit DOC', '20.2%'],
     ]);
   });
+
+  it('M10 counts the corpus’s game sessions and the ledger’s rows with no transcript (brief 002 D14)', () => {
+    // The identity panels 1, 3 and 4 state in their captions: M1 counts the corpus's game sessions, panel 3 the
+    // game ledger's rows, and M10 the two together.
+    const { ledger } = load();
+    const corpus = new Set((ledger.sessions as { id: string; project: string }[]).filter((s) => s.project === 'game').map((s) => s.id));
+    const game = ledger.game as { id: string }[];
+    const ledgerIds = new Set(game.map((g) => g.id));
+    const m10 = (ledger.summary as { m10: { sessions: number } }).m10;
+
+    expect(corpus.size).toBe(171);
+    const ledgerOnly = game.filter((g) => !corpus.has(g.id));
+    expect(ledgerOnly).toHaveLength(37);
+    expect(corpus.size + ledgerOnly.length).toBe(m10.sessions);
+    expect(m10.sessions).toBe(208);
+    const corpusOnly = [...corpus].filter((id) => !ledgerIds.has(id));
+    expect(corpusOnly).toHaveLength(1);
+    expect(corpusOnly[0]?.startsWith('c2870417')).toBe(true);
+  });
 });
 
 describe('docs/research/METRICS.md', () => {

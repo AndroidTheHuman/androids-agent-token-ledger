@@ -74,7 +74,7 @@ Every other reading stands, with the corrected figures below. Part C's text at t
 | Q8 | 28.4% of main-thread cost ($285.80 of $1,005.51) | **Neither bar** (between 10% and 30%): the 250k limit is not D's first rule; not ruled out | None: from recorded context sizes |
 | Q9 | E1, n 17 before / 19 after: median peak 470k → 247k (−47.4%, p 0.0010); re-read 27.2M → 6.7M (−75.4%, p 0.0006) | **Associated**: both fall ≥ 25% with p < 0.05. The case study may say E1 "coincided with" the fall | None: session-level rows |
 | Q10 | E2, n 32 / 31 (`base1K` 28 / 31): peak 239.5k → 287k (+19.8%, p 0.9926); re-read 9.1M → 12.7M (+39.6%, p 0.9005); `base1K` 45.7k → 49.6k (+8.5%, p 1.0000) | **Not associated**: none of the three fell. The case study may not say E2 "coincided with" a fall | None |
-| Q11 | $182.23 more at Opus rates over the 43 of 208 priced game sessions that ran a call off Opus: 12.8% of the game's $1,422.87 | **Met** (≥ 10%): routing is a lever worth more trials in D | None |
+| Q11 | $182.23 more at Opus rates over the 43 of 208 priced game sessions that ran a call off Opus: 12.8% of the game's $1,422.87 (the corpus's 171 game sessions and the 37 in the game's ledger whose transcript is gone; M1's game column counts the 171 only) | **Met** (≥ 10%): routing is a lever worth more trials in D | None |
 
 No figure above uses a code under the hand read's bar. OTHER is the only one (F1 0.000, n hand 1, n tool 0), and M2 has no OTHER row: the tool gave no costed unit that code.
 
