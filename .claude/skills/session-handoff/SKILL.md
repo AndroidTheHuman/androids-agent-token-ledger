@@ -8,7 +8,8 @@ description: End-of-session accountability document. Run at the end of any sessi
 <!-- Generalized from Infinity Autobattler's .claude/skills/session-handoff/SKILL.md @ 636f378.
      Kept: the labels, the evidence rule, check-first, judgment calls, session cost, [PROPOSED]
      entries. Made optional: change classes and the snapshot section (full tier). The output path
-     is the project's: lite tier HANDOFF.md at the root, full tier docs/SESSION_HANDOFF_<date>.md. -->
+     is the project's: lite tier HANDOFF.md at the root, full tier docs/SESSION_HANDOFF_<date>.md.
+     Changed here 2026-11-11 (owner): merged handoffs are archived with a running number. -->
 
 ## Purpose
 
@@ -55,7 +56,7 @@ Write them exactly as they should appear, each block marked `[PROPOSED — not y
 - **Changelog lines**, for the end of `docs/archive/CHANGELOG.md` (oldest first): `- <YYYY-MM-DD>: <what landed>` with the brief and part, the commit and the checkpoint numbers.
 - **Context changes**, for `PROJECT_CONTEXT.md`: the "Now" lines that change, a row or cell for the briefs table, and each new or changed fact under the heading it belongs to, **one fact per line**. A changed fact quotes the line it replaces.
 
-The next session runs Step 3's checks, then removes the markers and merges: changelog lines appended, context changes applied in place. It corrects an entry first when a check fails, and moves the merged handoff to `docs/archive/<YYYY-MM>/`. When the merge breaks the doc budget (full tier), it moves facts word for word to the document that owns them (`npm run doc-moves`) before new work; it never cuts.
+The next session runs Step 3's checks, then removes the markers and merges: changelog lines appended, context changes applied in place. It corrects an entry first when a check fails, and moves the merged handoff to `docs/archive/<YYYY-MM>/HANDOFF_<NNN>_<date>_<session>.md`, numbered one past the highest number in `docs/archive/` (`CLAUDE.md`, read order step 4). When the merge breaks the doc budget (full tier), it moves facts word for word to the document that owns them (`npm run doc-moves`) before new work; it never cuts.
 
 ## Output
 

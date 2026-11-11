@@ -79,6 +79,7 @@ Agents from other providers read the repo without writing to it: `AGENTS.md` set
 | Date | Run | Route and target | Tool, model | Wall | N | Confirmed | New | Precision | Triage calls | Note |
 | --- | --- | --- | --- | --: | --: | --: | --: | --: | --: | --- |
 | 2026-11-10 | r1-codex-D-findings | Claims check (use D), `docs/research/FINDINGS.md` @ `525e6d2` | Codex (codex-cli 0.167.0), the CLI's default model, read-only | 3 min 18 s | 8 | 8 | 8 | 100% | 20 (4 of them checking the log for private-path reads: none) | Brief 001 D10. 2 of the 8 are objections accepted; no reading changed. One tool bug found (`report` double-rounds shares, 6 cells in `METRICS.md`). Triage: `docs/research/OUTSIDE_REVIEW.md` |
+| 2026-11-11 | r2-codex-D-public | Claims check (use D), the public text before release: README sections 1–5, `docs/RESUME_ENTRY.md`, FINDINGS lines 52 and 131, panel 3's caption (brief 002 §4.8), working tree on `a520bf7` | Codex (codex-cli 0.167.0), the CLI's default model, read-only | about 3 min | 8 | 7 | 7 | 88% | 8 (2 of them checking the log for private-path reads: none) | 49 claims tabled, 44 confirmed. 2 objections accepted (one in part), 1 declined. No figure changed: five wordings and one regeneration (`docs/research/OUTSIDE_REVIEW.md`). |
 
 ## Trial log
 

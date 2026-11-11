@@ -19,21 +19,23 @@ Brief 002 §4.4, run 2026-11-10 in Git Bash at the repo root, before part A's co
 
 All ten are already in history. In part B the owner approves them for release or names the ones to remove. Removing one means rewriting history, which D3 and D9 leave to the owner.
 
+**Decision:** the owner approved all ten for release on 2026-11-11, at the start of part B.
+
 | # | Where | First five words | Note |
 | --- | --- | --- | --- |
 | 1 | `CLAUDE.md:3`; `docs/archive/2026-11/001_TOKEN_SPEND.md:21` | "Where do my coding-agent sessions" | the project's question; part B's README quotes it (§4.5) |
 | 2 | `docs/MODEL_CHOICE.md:22`; `docs/archive/2026-11/001_TOKEN_SPEND.md:4` | "I'll allow a trial of" | |
 | 3 | `docs/MODEL_CHOICE.md:57` | "it's about finding where they" | |
-| 4 | `docs/archive/2026-11/001_TOKEN_SPEND.md:4`; `docs/archive/2026-11/HANDOFF_2026-11-09_904c719a.md:83` (its last six words) | "I'm up for a fifth" | |
-| 5 | `docs/archive/2026-11/HANDOFF_2026-11-09_904c719a.md:12` | "kind too big for the" | probably the owner's; `MODEL_CHOICE.md` doesn't use the phrase |
-| 6 | `docs/archive/2026-11/HANDOFF_2026-11-09_1e2da25b.md:3` | "I'll leave T0 to you" | |
-| 7 | `docs/archive/2026-11/HANDOFF_2026-11-09_874927de.md:3` | "let's work on part A" | |
-| 8 | `docs/archive/2026-11/HANDOFF_2026-11-10_2a3ec6ee.md:50`; `docs/archive/2026-11/HANDOFF_2026-11-10_7edf2e22.md:53` | "don't know but that probably" | |
-| 9 | `docs/archive/2026-11/HANDOFF_2026-11-10_e51e26df.md:69` | "I can see the 5" | |
-| 10 | `docs/archive/2026-11/HANDOFF_2026-11-10_5fa6cda1.md:75` | "one formatter for both" | the option the owner picked; possibly the session's label rather than the owner's typing |
+| 4 | `docs/archive/2026-11/001_TOKEN_SPEND.md:4`; `docs/archive/2026-11/HANDOFF_004_2026-11-09_904c719a.md:83` (its last six words) | "I'm up for a fifth" | |
+| 5 | `docs/archive/2026-11/HANDOFF_004_2026-11-09_904c719a.md:12` | "kind too big for the" | probably the owner's; `MODEL_CHOICE.md` doesn't use the phrase |
+| 6 | `docs/archive/2026-11/HANDOFF_003_2026-11-09_1e2da25b.md:3` | "I'll leave T0 to you" | |
+| 7 | `docs/archive/2026-11/HANDOFF_002_2026-11-09_874927de.md:3` | "let's work on part A" | |
+| 8 | `docs/archive/2026-11/HANDOFF_008_2026-11-10_2a3ec6ee.md:50`; `docs/archive/2026-11/HANDOFF_009_2026-11-10_7edf2e22.md:53` | "don't know but that probably" | |
+| 9 | `docs/archive/2026-11/HANDOFF_007_2026-11-10_e51e26df.md:69` | "I can see the 5" | |
+| 10 | `docs/archive/2026-11/HANDOFF_006_2026-11-10_5fa6cda1.md:75` | "one formatter for both" | the option the owner picked; possibly the session's label rather than the owner's typing |
 
 P4″ only sees straight double quotes of four or more words on lines that name the owner. Two extra scans, outside §4.4, cover what it misses. Curly-quoted strings of four or more words on lines naming the owner: 0. Straight quotes opening with "I", "I'm", "I'll", "my" or "let's" on lines that don't name the owner: 0.
 
 ## P5 by file
 
-`tests/corpus.test.ts` 10, `src/corpus.ts` 4, `src/report.ts` 1 (`GAME_REPO`), `PROJECT_CONTEXT.md` 3, `CLAUDE.md` 1, `AGENTS.md` 1, `LICENSE` 1, `docs/briefs/002_PUBLIC_RELEASE.md` 5, and 17 in seven files under `docs/archive/2026-11/` (`001_TOKEN_SPEND.md` 5, `HANDOFF_2026-11-09_1e2da25b.md` 3, `HANDOFF_2026-11-10_2a3ec6ee.md` 3, `HANDOFF_2026-11-09.md` 2, `HANDOFF_2026-11-10_5fa6cda1.md` 2, `HANDOFF_2026-11-09_874927de.md` 1, `HANDOFF_2026-11-09_904c719a.md` 1). This file adds its own hits once committed.
+`tests/corpus.test.ts` 10, `src/corpus.ts` 4, `src/report.ts` 1 (`GAME_REPO`), `PROJECT_CONTEXT.md` 3, `CLAUDE.md` 1, `AGENTS.md` 1, `LICENSE` 1, `docs/briefs/002_PUBLIC_RELEASE.md` 5, and 17 in seven files under `docs/archive/2026-11/` (`001_TOKEN_SPEND.md` 5, `HANDOFF_003_2026-11-09_1e2da25b.md` 3, `HANDOFF_008_2026-11-10_2a3ec6ee.md` 3, `HANDOFF_001_2026-11-09_22d76ec3.md` 2, `HANDOFF_006_2026-11-10_5fa6cda1.md` 2, `HANDOFF_002_2026-11-09_874927de.md` 1, `HANDOFF_004_2026-11-09_904c719a.md` 1). This file adds its own hits once committed.

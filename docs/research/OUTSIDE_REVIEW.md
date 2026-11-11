@@ -35,3 +35,24 @@ Each item was checked against the lines it cites. "New" means it was not in the 
 | 8 | WRONG | "output 29.3%" | **Confirmed, and wider.** $346.25755 ÷ $1,179.686642 is 29.3517%. `summary.json` stores the share as 0.2935, and `report` formats that stored share to one place, rounding twice. `data/private/diag/triage-r1.mjs` finds 6 such cells in `METRICS.md`: output (all, 29.3 for 29.4), CODE (all, 8.0 for 7.9), Glob (all and game, 0.1 for 0.0), the kit's cache read (34.9 for 35.0) and DOC (20.3 for 20.2). Only the first is quoted in `FINDINGS.md`. No reading changes: output stays under 30% | new | Output given as 29.35% (the stored share, exact), with a note on `METRICS.md`. The `report` fix is a check-first item for the next planned part (the skill, step 4) |
 
 **Score:** N 8, confirmed 8 (2 of them objections accepted), new 8, precision 100%.
+
+## Brief 002 part B: claims check
+
+Run `r2-codex-D-public`, 2026-11-11: Codex (codex-cli 0.167.0, the CLI's default model), read-only, about 3 minutes, 376,467 input tokens (320,128 cached) and 6,322 output. The target was the public text before release: `README.md` down to `## Run it`, `docs/RESUME_ENTRY.md`, FINDINGS lines 52 and 131, and panel 3's caption (`dashboard/index.html` lines 469–471). After the check, the owner had `docs/RESUME_ENTRY.md` git-ignored (2026-11-11): the résumé carries its text, so it stays on the owner's machine. The prompt is template D, adapted to brief 002 §4.8: for each figure and factual claim, find its source and answer CONFIRMED, WRONG or UNSUPPORTED (OVERCLAIM when it says more than its source); then at most 8 objections a reader arriving from the résumé would raise.
+
+No command in the log reads `data/private/` or `~/.claude/projects/`; seven commands' output mentions the paths (`AGENTS.md`'s own rule, among others). `git status --short` afterwards listed only the session's own files.
+
+Codex's table holds 49 claims: 44 confirmed, 2 overclaims, 2 unsupported, 1 wrong. It did not run `npm run check` (`AGENTS.md` rules out project commands) and counted 92 test declarations in 10 files.
+
+| # | Codex | Claim | Triage | New | Action |
+| --- | --- | --- | --- | --- | --- |
+| 1 | OVERCLAIM; objection 2 | README: "prices every call … at list price" | **Confirmed.** 59 calls in 3 sessions are counted but unpriced (`METRICS.md` line 15) | new | "prices Claude Code's session transcripts call by call at list price" |
+| 2 | OVERCLAIM; objection 1 | Résumé: "committed before any count was read" | **Confirmed.** Brief 001 §2 lists figures known before the register and says its thresholds were written knowing them (`docs/archive/2026-11/001_TOKEN_SPEND.md` lines 50–55). The register (`158e2b7`) does precede the scan's first commit (`9668f2c`) | new | Both languages say "before the data was scanned"; the README already said "before any transcript was scanned" |
+| 3 | UNSUPPORTED; objection 3 | README: Codex checked "this page" | **Confirmed** at the time of the run: this file held only run r1, on FINDINGS | new | This section records the check over the README |
+| 4 | Objection 4 | README and résumé: "blind hand read" | **Accepted in part.** The second coder was a blind Opus sub-agent (`HANDREAD.md` line 3), and "hand read" suggests a person. Declined: that κ leaves THINK unvalidated. BASE, THINK and COMPACT are assigned by structure (the first call, the block type, a flag), not by judgment, and the README says how THINK is sized | new | README: "A blind second coder, an Opus sub-agent"; résumé: "a blind AI second coder", "een tweede AI-agent" |
+| 5 | WRONG; objection 5 | README: "12 sessions … panel 5" | **Confirmed.** `data.js`'s `"own"` held 11 rows: `npm run ledger -- dashboard` had not run since this session's row was added | new | `data.js` regenerated before the commit. The README says "12 sessions to this release", since later sessions add rows |
+| 6 | Objection 6 | Résumé: "4 projects" | **Accepted.** True, but 171 of the 175 sessions are the game's (`METRICS.md` line 9), and a résumé has no Limits section | new | "(171 in one)", "(171 in één)", with a Sources row |
+| 7 | Objection 7 | README: E1 "Associated" | **Declined.** The bullet already says the rules split work into smaller sessions, and it claims nothing per unit of work | known (r1, item 2) | none |
+| 8 | UNSUPPORTED | FINDINGS line 131: "the kit hasn't found why" | **Confirmed.** No file in this repo records the kit's investigation | new | "this repo doesn't establish why" |
+
+**Score:** N 8, confirmed 7 (2 of them objections accepted, one in part), declined 1, new 7, precision 88%. No figure changed: five wordings and one regeneration.

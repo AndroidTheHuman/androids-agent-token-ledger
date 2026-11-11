@@ -1,2 +1,4 @@
 node_modules/
 data/private/
+# The résumé entry stays on the owner's machine; the résumé carries its text (owner, 2026-11-11).
+docs/RESUME_ENTRY.md

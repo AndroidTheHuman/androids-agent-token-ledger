@@ -8,9 +8,9 @@ What exists in the code right now, one fact per line. Sessions never append here
 
 ## Now
 
-- Status: brief 001 closed 2026-11-10 (parts A to D; `docs/archive/2026-11/001_TOKEN_SPEND.md`); its findings were re-read the same day at Sonnet 5.5's published cache-read rate (`92d32df`), and four readings changed.
-- Next: brief 002 (public release, package E's token-ledger side), approved by the owner 2026-11-10; part A on Opus 5.5 xhigh.
-- Gate: `npm run check` (typecheck + vitest), 91/91 tests in 10 files.
+- Status: brief 002 part A done 2026-11-10 (`e6d1481`): panel 3 at the corpus's prices, the date of the Sonnet cut in FINDINGS, MIT `LICENSE`, `.nojekyll`, and the privacy pass (`docs/PRIVACY.md`).
+- Next: brief 002 part B (README for a visitor, résumé entry, claims check, push), on Opus 5.5 xhigh. The owner approved the ten quotes in `docs/PRIVACY.md` (P4″) on 2026-11-11.
+- Gate: `npm run check` (typecheck + vitest), 92/92 tests in 10 files.
 - Kit: `C:\Users\xande\agentic-harness` @ `917a546` (`git -C <kit> rev-parse --short HEAD`). Every file ported from it says so in its header.
 
 ## Phases and briefs
@@ -18,7 +18,7 @@ What exists in the code right now, one fact per line. Sessions never append here
 | Phase | Brief | Kind | Status |
 |---|---|---|---|
 | 0 | 001 token spend and harness rules | research | done (closed 2026-11-10, archived) |
-| E | 002 public release (token-ledger's side) | implementation | approved 2026-11-10 |
+| E | 002 public release (token-ledger's side) | implementation | approved 2026-11-10; part A done (`e6d1481`) |
 
 ## Architecture as built
 
@@ -68,8 +68,11 @@ What exists in the code right now, one fact per line. Sessions never append here
 - A failed trial narrows a kind rather than ending trials: a brief may propose a trial on a narrower kind (owner, 2026-11-09; `docs/MODEL_CHOICE.md` → Promotion).
 - After `npm run sessions` adds a row, run `npm run ledger -- dashboard` to refresh panel 5 (the gate passes either way).
 - `README.md` holds the commands.
-- Panel 3 of the dashboard draws the game's committed ledger, whose 42 rows with a Sonnet call carry the game's old cache-read rate; `sessions.json`, M9 and M10 use the corpus's re-priced rows.
+- Panel 3 prices game sessions from the corpus where a transcript survives (brief 002 D1; 170 sessions), and from the game's committed ledger otherwise (37, all Opus). Its total is $1,416.85 over 207 rows. `game-ledger.json` and `data.js` keep the game's figures, and the page joins them in `gameRows`.
 - Two corpus transcripts (`c2870417` game, `2203dd1d` kit) grew by a few hundred bytes after 2026-11-09 with no later timestamp; the rescan of 2026-11-10 took the larger copies, and no measured field moved.
 - Sonnet 5.5's cache read was $0.20 per million at launch and has been $0.10 since 2026-10-07 (Anthropic's cut; Claude Code displayed the old rate until 2.1.296, 2026-10-09). Every corpus session with a Sonnet call starts on or after 2026-10-13. The `claude-api` skill's table (cached 2026-10-06) still gives $0.20.
 - Commits from brief 002's drafting on use the repo-local address `184751174+AndroidTheHuman@users.noreply.github.com`; earlier commits keep the student address (owner, 2026-11-10: the history is pushed as it is).
 - Repo names (owner, 2026-11-10): `androids-agent-token-ledger` (this repo) and `androids-agentic-harness` (the kit), on github.com/AndroidTheHuman, both MIT.
+- The repo carries an MIT `LICENSE` in the owner's name, `"license": "MIT"` in `package.json`, and an empty `.nojekyll`, so GitHub Pages serves the files raw (brief 002 D4, D5).
+- The privacy pass of 2026-11-10 (`docs/PRIVACY.md`) covered HEAD and all 34 commits through `228826c`. It found no secret, phone number or transcript file, and only the three expected addresses (the student address in commit metadata only). The owner approved the ten quotes of the owner's words for release on 2026-11-11.
+- Edge's headless mode gives no output from the Bash tool. Launched from PowerShell (`Start-Process … -Wait`, its own `--user-data-dir`), `--screenshot` works (2026-11-10).
